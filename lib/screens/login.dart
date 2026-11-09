@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
+import '../services/auth_service.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_theme.dart';
 
@@ -16,7 +16,11 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _authService = AuthService();
+
   bool _hidePassword = true;
+  bool _loading = false;
+  String? _error;
 
   @override
   void dispose() {
@@ -25,8 +29,50 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _signIn() {
+  String _localNumber(String value) {
+    final digits = value.trim();
+    return digits.startsWith('0') ? digits.substring(1) : digits;
+  }
+
+  String? _validatePhone(String? value) {
+    final number = _localNumber(value ?? '');
+    if (number.isEmpty) {
+      return 'Enter your phone number';
+    }
+    if (!RegExp(r'^[17]\d{8}$').hasMatch(number)) {
+      return 'Enter a valid number, like 712 345 678';
+    }
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Enter your password';
+    }
+    return null;
+  }
+
+  Future<void> _signIn() async {
     FocusScope.of(context).unfocus();
+    setState(() => _error = null);
+
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    setState(() => _loading = true);
+
+    final phone = '+254${_localNumber(_phoneController.text)}';
+    final success = await _authService.login(phone, _passwordController.text);
+
+    if (!mounted) return;
+
+    setState(() {
+      _loading = false;
+      if (!success) {
+        _error = 'Incorrect phone number or password.';
+      }
+    });
   }
 
   @override
@@ -64,63 +110,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildHeader() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 24, 24, 28),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildBrand(),
-          const SizedBox(height: 32),
-          AspectRatio(
-            aspectRatio: 342 / 120,
-            child: SvgPicture.asset('assets/images/matatu.svg'),
-          ),
-        ],
+      padding: const EdgeInsets.fromLTRB(24, 40, 24, 32),
+      child: AspectRatio(
+        aspectRatio: 342 / 120,
+        child: SvgPicture.asset('assets/images/matatu.svg'),
       ),
-    );
-  }
-
-  Widget _buildBrand() {
-    return Row(
-      children: [
-        Container(
-          width: 40,
-          height: 40,
-          alignment: Alignment.center,
-          decoration: const BoxDecoration(
-            color: AppColors.orange,
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-          ),
-          child: const Text(
-            'P',
-            style: TextStyle(
-              color: AppColors.navy,
-              fontSize: 22,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-        const SizedBox(width: 12),
-        const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Pakiti',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            Text(
-              'Sacco parcel tracking',
-              style: TextStyle(
-                color: AppColors.lightBlue,
-                fontSize: 12,
-              ),
-            ),
-          ],
-        ),
-      ],
     );
   }
 
@@ -137,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Text(
-              'Sign in',
+              'Sign in to Pakiti',
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w600,
@@ -154,8 +148,14 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 8),
             TextFormField(
               controller: _phoneController,
+              enabled: !_loading,
               keyboardType: TextInputType.phone,
               textInputAction: TextInputAction.next,
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+                LengthLimitingTextInputFormatter(10),
+              ],
+              validator: _validatePhone,
               decoration: AppTheme.fieldDecoration(
                 hint: '712 345 678',
                 prefix: _buildPhonePrefix(),
@@ -166,16 +166,26 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 8),
             TextFormField(
               controller: _passwordController,
+              enabled: !_loading,
               obscureText: _hidePassword,
               textInputAction: TextInputAction.done,
+              validator: _validatePassword,
+              onChanged: (_) {
+                if (_error != null) {
+                  setState(() => _error = null);
+                }
+              },
               onFieldSubmitted: (_) => _signIn(),
               decoration: AppTheme.fieldDecoration(
                 hint: 'Enter your password',
+                error: _error,
                 suffix: IconButton(
                   tooltip: _hidePassword ? 'Show password' : 'Hide password',
-                  onPressed: () {
-                    setState(() => _hidePassword = !_hidePassword);
-                  },
+                  onPressed: _loading
+                      ? null
+                      : () {
+                          setState(() => _hidePassword = !_hidePassword);
+                        },
                   icon: Icon(
                     _hidePassword
                         ? Icons.visibility_outlined
@@ -189,7 +199,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
-                onPressed: () {},
+                onPressed: _loading ? null : () {},
                 style: TextButton.styleFrom(
                   foregroundColor: AppColors.link,
                   minimumSize: const Size(0, 44),
@@ -200,8 +210,24 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 12),
             FilledButton(
-              onPressed: _signIn,
-              child: const Text('Sign in'),
+              onPressed: _loading ? null : _signIn,
+              child: _loading
+                  ? const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.5,
+                            color: Colors.white,
+                          ),
+                        ),
+                        SizedBox(width: 12),
+                        Text('Signing in…'),
+                      ],
+                    )
+                  : const Text('Sign in'),
             ),
             const SizedBox(height: 24),
             const Text.rich(

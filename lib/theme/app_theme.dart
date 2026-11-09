@@ -21,6 +21,8 @@ class AppTheme {
         style: FilledButton.styleFrom(
           backgroundColor: AppColors.navy,
           foregroundColor: Colors.white,
+          disabledBackgroundColor: AppColors.navyLight,
+          disabledForegroundColor: Colors.white,
           minimumSize: const Size.fromHeight(56),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -38,10 +40,12 @@ class AppTheme {
     required String hint,
     Widget? prefix,
     Widget? suffix,
+    String? error,
   }) {
     return InputDecoration(
       hintText: hint,
       hintStyle: const TextStyle(color: AppColors.grey),
+      errorText: error,
       filled: true,
       fillColor: Colors.white,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -49,6 +53,7 @@ class AppTheme {
       prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
       suffixIcon: suffix,
       enabledBorder: _border(AppColors.border, 1.5),
+      disabledBorder: _border(AppColors.divider, 1.5),
       focusedBorder: _border(AppColors.link, 2),
       errorBorder: _border(AppColors.error, 1.5),
       focusedErrorBorder: _border(AppColors.error, 2),
