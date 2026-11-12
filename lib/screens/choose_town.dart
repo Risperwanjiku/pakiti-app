@@ -4,10 +4,14 @@ import '../models/destination.dart';
 import '../services/api_client.dart';
 import '../services/clerk_service.dart';
 import '../theme/app_colors.dart';
+import 'book_parcel.dart';
 import 'login.dart';
 
 class ChooseTownScreen extends StatefulWidget {
-  const ChooseTownScreen({super.key});
+  const ChooseTownScreen({super.key, this.pickOnly = false});
+
+  // true when the booking form opens this to change the town, so the town is sent back to it
+  final bool pickOnly;
 
   @override
   State<ChooseTownScreen> createState() => _ChooseTownScreenState();
@@ -49,7 +53,16 @@ class _ChooseTownScreenState extends State<ChooseTownScreen> {
   }
 
   void _choose(Destination destination) {
-    _comingSoon('Booking to ${destination.town} is coming next.');
+    if (widget.pickOnly) {
+      Navigator.of(context).pop(destination);
+      return;
+    }
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => BookParcelScreen(destination: destination),
+      ),
+    );
   }
 
   // only letters and numbers are compared, so "muranga" still finds Murang'a
