@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../models/staff_user.dart';
+import '../services/api_client.dart';
 import '../services/auth_service.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_theme.dart';
+import 'clerk_home.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -63,16 +66,41 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _loading = true);
 
     final phone = '+254${_localNumber(_phoneController.text)}';
-    final success = await _authService.login(phone, _passwordController.text);
 
-    if (!mounted) return;
+    try {
+      final user = await _authService.login(phone, _passwordController.text);
 
-    setState(() {
-      _loading = false;
-      if (!success) {
-        _error = 'Incorrect phone number or password.';
+      if (!mounted) return;
+
+      if (user.role != StaffRole.clerk) {
+        setState(() => _loading = false);
+        _showMessage('Only the clerk screens are ready for now.');
+        return;
       }
-    });
+
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => ClerkHomeScreen(user: user)),
+      );
+    } on ApiException catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _loading = false;
+        if (e.statusCode == 401) {
+          _error = e.message;
+        }
+      });
+
+      if (e.statusCode != 401) {
+        _showMessage(e.message);
+      }
+    }
+  }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 
   @override
