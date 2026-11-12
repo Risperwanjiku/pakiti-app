@@ -171,11 +171,6 @@ class _ClerkHomeScreenState extends State<ClerkHomeScreen> {
         hintText: 'PKT-20416 or 0712 345 678',
         hintStyle: const TextStyle(color: AppColors.grey),
         prefixIcon: const Icon(Icons.search, color: AppColors.grey),
-        suffixIcon: IconButton(
-          tooltip: 'Scan a label',
-          onPressed: _comingSoon,
-          icon: const Icon(Icons.qr_code_scanner, color: AppColors.navy),
-        ),
         filled: true,
         fillColor: Colors.white,
         contentPadding: const EdgeInsets.symmetric(vertical: 16),
