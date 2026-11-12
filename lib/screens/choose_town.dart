@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../models/booked_parcel.dart';
 import '../models/destination.dart';
 import '../services/api_client.dart';
 import '../services/clerk_service.dart';
@@ -22,6 +23,9 @@ class _ChooseTownScreenState extends State<ChooseTownScreen> {
   final _search = TextEditingController();
 
   late Future<List<Destination>> _destinations;
+
+  // set by Book another on the Parcel booked screen, so the next form keeps the same sender
+  BookedParcel? _sameSenderAs;
 
   @override
   void initState() {
@@ -52,17 +56,33 @@ class _ChooseTownScreenState extends State<ChooseTownScreen> {
       ..showSnackBar(SnackBar(content: Text(message)));
   }
 
-  void _choose(Destination destination) {
+  Future<void> _choose(Destination destination) async {
     if (widget.pickOnly) {
       Navigator.of(context).pop(destination);
       return;
     }
 
-    Navigator.of(context).push(
+    final booked = await Navigator.of(context).push<BookedParcel>(
       MaterialPageRoute(
-        builder: (_) => BookParcelScreen(destination: destination),
+        builder: (_) => BookParcelScreen(
+          destination: destination,
+          sameSenderAs: _sameSenderAs,
+          onBookAnother: _bookAnother,
+        ),
       ),
     );
+
+    // after a booking the next form starts empty, unless the clerk taps Book another
+    if (booked != null && mounted) {
+      setState(() => _sameSenderAs = null);
+    }
+  }
+
+  void _bookAnother(BookedParcel parcel) {
+    setState(() {
+      _sameSenderAs = parcel;
+      _search.clear();
+    });
   }
 
   // only letters and numbers are compared, so "muranga" still finds Murang'a

@@ -15,11 +15,23 @@ import '../utils/input_formatters.dart';
 import '../utils/phone.dart';
 import '../widgets/check_details_sheet.dart';
 import 'choose_town.dart';
+import 'parcel_booked.dart';
 
 class BookParcelScreen extends StatefulWidget {
-  const BookParcelScreen({super.key, required this.destination});
+  const BookParcelScreen({
+    super.key,
+    required this.destination,
+    this.sameSenderAs,
+    this.onBookAnother,
+  });
 
   final Destination destination;
+
+  // a parcel booked just before this one, whose sender fills in the sender fields
+  final BookedParcel? sameSenderAs;
+
+  // handed on to the Parcel booked screen for its Book another button
+  final void Function(BookedParcel parcel)? onBookAnother;
 
   @override
   State<BookParcelScreen> createState() => _BookParcelScreenState();
@@ -54,6 +66,7 @@ class _BookParcelScreenState extends State<BookParcelScreen> {
   final _senderEmail = TextEditingController();
   final _receiverName = TextEditingController();
   final _receiverPhone = TextEditingController();
+  final _emailFocus = FocusNode();
 
   late Destination _destination = widget.destination;
   ParcelSize? _size;
@@ -66,7 +79,26 @@ class _BookParcelScreenState extends State<BookParcelScreen> {
   String? _requestId;
 
   @override
+  void initState() {
+    super.initState();
+
+    final previous = widget.sameSenderAs;
+
+    if (previous != null) {
+      _senderName.text = previous.senderName;
+      _senderPhone.text = phoneAfterCode(previous.senderPhone);
+
+      if (previous.senderEmail != null) {
+        _showEmail = true;
+        _senderEmail.text = previous.senderEmail!;
+      }
+    }
+  }
+
+  @override
   void dispose() {
+    _emailFocus.dispose();
+
     for (final controller in [
       _contents,
       _value,
@@ -79,6 +111,11 @@ class _BookParcelScreenState extends State<BookParcelScreen> {
       controller.dispose();
     }
     super.dispose();
+  }
+
+  void _addEmail() {
+    setState(() => _showEmail = true);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _emailFocus.requestFocus());
   }
 
   void _changed(String field) {
@@ -258,13 +295,16 @@ class _BookParcelScreenState extends State<BookParcelScreen> {
     }
   }
 
-  // for now this goes back home; the Parcel booked screen comes in the next step
+  // the form is swapped for Parcel booked, so going back from there skips the filled form
   void _finish(BookedParcel parcel) {
-    final messenger = ScaffoldMessenger.of(context);
-
-    Navigator.of(context).popUntil((route) => route.isFirst);
-    messenger.showSnackBar(
-      SnackBar(content: Text('${parcel.trackingNo} is booked.')),
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => ParcelBookedScreen(
+          parcel: parcel,
+          onBookAnother: widget.onBookAnother,
+        ),
+      ),
+      result: parcel,
     );
   }
 
@@ -349,13 +389,13 @@ class _BookParcelScreenState extends State<BookParcelScreen> {
                         helper: 'For the booking receipt.',
                         keyboardType: TextInputType.emailAddress,
                         formatters: [LengthLimitingTextInputFormatter(254)],
-                        autofocus: true,
+                        focusNode: _emailFocus,
                       )
                     else
                       Align(
                         alignment: Alignment.centerLeft,
                         child: TextButton.icon(
-                          onPressed: () => setState(() => _showEmail = true),
+                          onPressed: _addEmail,
                           icon: const Icon(Icons.add, size: 20),
                           label: const Text('Add email for a receipt'),
                           style: TextButton.styleFrom(
@@ -615,7 +655,7 @@ class _BookParcelScreenState extends State<BookParcelScreen> {
     TextCapitalization capitalization = TextCapitalization.none,
     List<TextInputFormatter>? formatters,
     TextInputAction action = TextInputAction.next,
-    bool autofocus = false,
+    FocusNode? focusNode,
   }) {
     OutlineInputBorder border(Color color, double width) {
       return OutlineInputBorder(
@@ -637,7 +677,7 @@ class _BookParcelScreenState extends State<BookParcelScreen> {
             textCapitalization: capitalization,
             textInputAction: action,
             inputFormatters: formatters,
-            autofocus: autofocus,
+            focusNode: focusNode,
             onChanged: (_) => _changed(field),
             style: const TextStyle(
               fontSize: 16,
