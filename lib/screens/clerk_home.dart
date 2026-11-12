@@ -7,6 +7,7 @@ import '../services/api_client.dart';
 import '../services/clerk_service.dart';
 import '../theme/app_colors.dart';
 import '../utils/time_ago.dart';
+import 'choose_town.dart';
 import 'login.dart';
 
 class ClerkHomeScreen extends StatefulWidget {
@@ -42,6 +43,17 @@ class _ClerkHomeScreenState extends State<ClerkHomeScreen> {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (_) => const LoginScreen()),
     );
+  }
+
+  Future<void> _openBooking() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const ChooseTownScreen()),
+    );
+
+    // the counts and recent parcels change after a booking
+    if (mounted) {
+      _refresh();
+    }
   }
 
   void _comingSoon() {
@@ -141,7 +153,7 @@ class _ClerkHomeScreenState extends State<ClerkHomeScreen> {
 
   Widget _buildBookButton() {
     return FilledButton(
-      onPressed: _comingSoon,
+      onPressed: _openBooking,
       style: FilledButton.styleFrom(
         minimumSize: const Size.fromHeight(60),
         padding: const EdgeInsets.symmetric(horizontal: 20),
