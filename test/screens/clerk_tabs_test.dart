@@ -5,6 +5,7 @@ import 'package:pakiti_app/models/parcel_filter.dart';
 import 'package:pakiti_app/models/parcel_status.dart';
 import 'package:pakiti_app/screens/clerk_tabs.dart';
 import 'package:pakiti_app/screens/parcels.dart';
+import 'package:pakiti_app/screens/profile.dart';
 
 import '../support/fakes.dart';
 
@@ -51,13 +52,23 @@ void main() {
     expect(find.text('Sent from or to Nyeri office, newest first'), findsOneWidget);
   });
 
-  testWidgets('Scan and Profile say they are coming next', (tester) async {
+  testWidgets('Scan says it is coming next', (tester) async {
     await openTabs(tester, nyeri());
 
-    await tester.tap(find.byIcon(Icons.person_outline));
+    await tester.tap(find.byIcon(Icons.qr_code_scanner));
     await tester.pump();
 
     expect(find.text('This part is coming next.'), findsOneWidget);
     expect(find.text('Habari, Peter'), findsOneWidget);
+  });
+
+  testWidgets('Profile shows who is logged in', (tester) async {
+    await openTabs(tester, nyeri());
+
+    await tester.tap(find.byIcon(Icons.person_outline));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ProfileScreen), findsOneWidget);
+    expect(find.text('Clerk, Nyeri office'), findsOneWidget);
   });
 }

@@ -6,6 +6,7 @@ import '../services/clerk_service.dart';
 import '../theme/app_colors.dart';
 import 'clerk_home.dart';
 import 'parcels.dart';
+import 'profile.dart';
 
 // The bottom bar and the tab it shows. A tab is built again each time it opens,
 // so the numbers on home and the Parcels list are never out of date.
@@ -33,8 +34,8 @@ class _ClerkTabsState extends State<ClerkTabs> {
   }
 
   void _openTab(int tab) {
-    // Scan and Profile come in the next steps
-    if (tab > 1) {
+    // Scan comes with hand-off scanning in the next sprint
+    if (tab == 2) {
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
         ..showSnackBar(
@@ -49,18 +50,20 @@ class _ClerkTabsState extends State<ClerkTabs> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _tab == 0
-          ? ClerkHomeScreen(
-              user: widget.user,
-              onShowParcels: _showParcels,
-              service: widget.service,
-            )
-          : ParcelsScreen(
-              user: widget.user,
-              filter: _filter,
-              onFilterChanged: (filter) => _filter = filter,
-              service: widget.service,
-            ),
+      body: switch (_tab) {
+        0 => ClerkHomeScreen(
+            user: widget.user,
+            onShowParcels: _showParcels,
+            service: widget.service,
+          ),
+        1 => ParcelsScreen(
+            user: widget.user,
+            filter: _filter,
+            onFilterChanged: (filter) => _filter = filter,
+            service: widget.service,
+          ),
+        _ => ProfileScreen(user: widget.user),
+      },
       bottomNavigationBar: NavigationBar(
         selectedIndex: _tab,
         backgroundColor: Colors.white,
@@ -84,6 +87,7 @@ class _ClerkTabsState extends State<ClerkTabs> {
           ),
           NavigationDestination(
             icon: Icon(Icons.person_outline),
+            selectedIcon: Icon(Icons.person),
             label: 'Profile',
           ),
         ],

@@ -37,7 +37,7 @@ class AppTheme {
   }
 
   static InputDecoration fieldDecoration({
-    required String hint,
+    String? hint,
     Widget? prefix,
     Widget? suffix,
     String? error,

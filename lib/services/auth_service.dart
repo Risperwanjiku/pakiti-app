@@ -47,6 +47,14 @@ class AuthService {
     }
   }
 
+  // a wrong current password comes back as an ApiException with a 'current_password' field error
+  Future<void> changePassword(String currentPassword, String newPassword) async {
+    await _api.post('/auth/password', {
+      'current_password': currentPassword,
+      'new_password': newPassword,
+    });
+  }
+
   Future<void> logout() async {
     try {
       await _api.post('/auth/logout');

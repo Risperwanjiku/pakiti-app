@@ -55,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return null;
   }
 
-  Future<void> _signIn() async {
+  Future<void> _logIn() async {
     FocusScope.of(context).unfocus();
     setState(() => _error = null);
 
@@ -100,6 +100,50 @@ class _LoginScreenState extends State<LoginScreen> {
   void _showMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),
+    );
+  }
+
+  // there's no reset by SMS yet, so the admin sets a new password and the clerk changes it in Profile
+  void _showForgotPassword() {
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text(
+                  'Forgot your password?',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.darkText,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Your admin can reset it for you. Log in with the password they give you, '
+                  'then change it in Profile to one only you know.',
+                  style: TextStyle(fontSize: 16, color: AppColors.grey),
+                ),
+                const SizedBox(height: 24),
+                FilledButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Got it'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -159,7 +203,7 @@ class _LoginScreenState extends State<LoginScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Text(
-              'Sign in to Pakiti',
+              'Log in to Pakiti',
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w600,
@@ -203,7 +247,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   setState(() => _error = null);
                 }
               },
-              onFieldSubmitted: (_) => _signIn(),
+              onFieldSubmitted: (_) => _logIn(),
               decoration: AppTheme.fieldDecoration(
                 hint: 'Enter your password',
                 error: _error,
@@ -227,7 +271,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
-                onPressed: _loading ? null : () {},
+                onPressed: _loading ? null : _showForgotPassword,
                 style: TextButton.styleFrom(
                   foregroundColor: AppColors.link,
                   minimumSize: const Size(0, 44),
@@ -238,7 +282,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 12),
             FilledButton(
-              onPressed: _loading ? null : _signIn,
+              onPressed: _loading ? null : _logIn,
               child: _loading
                   ? const Row(
                       mainAxisSize: MainAxisSize.min,
@@ -252,10 +296,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         SizedBox(width: 12),
-                        Text('Signing in…'),
+                        Text('Logging in…'),
                       ],
                     )
-                  : const Text('Sign in'),
+                  : const Text('Log in'),
             ),
             const SizedBox(height: 24),
             const Text.rich(

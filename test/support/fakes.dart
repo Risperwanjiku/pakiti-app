@@ -9,6 +9,7 @@ import 'package:pakiti_app/models/parcel_page.dart';
 import 'package:pakiti_app/models/parcel_status.dart';
 import 'package:pakiti_app/models/search_result.dart';
 import 'package:pakiti_app/models/staff_user.dart';
+import 'package:pakiti_app/services/auth_service.dart';
 import 'package:pakiti_app/services/clerk_service.dart';
 import 'package:pakiti_app/services/parcel_service.dart';
 
@@ -109,6 +110,31 @@ class FakeClerkService extends ClerkService {
       parcels: page,
       nextOffset: next < all.length ? next : null,
     );
+  }
+}
+
+// remembers what it was asked to do instead of calling the API
+class FakeAuthService extends AuthService {
+  FakeAuthService({this.error});
+
+  final Object? error;
+
+  // each change asked for, like 'old one -> new one'
+  final changes = <String>[];
+  bool loggedOut = false;
+
+  @override
+  Future<void> changePassword(String currentPassword, String newPassword) async {
+    changes.add('$currentPassword -> $newPassword');
+
+    if (error != null) {
+      throw error!;
+    }
+  }
+
+  @override
+  Future<void> logout() async {
+    loggedOut = true;
   }
 }
 
