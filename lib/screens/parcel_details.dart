@@ -274,7 +274,7 @@ class _ParcelDetailsScreenState extends State<ParcelDetailsScreen> {
       ParcelStatus.inTransit => expected == null
           ? 'On the way to ${booking.to}'
           : details.isLate
-              ? 'Was expected in ${booking.to} at ${clockTime(expected)}'
+              ? 'Was expected in ${booking.to} ${atTimeOrDay(expected)}'
               : 'Expected in ${booking.to} about ${clockTime(expected)}',
       ParcelStatus.arrived => 'Ready for collection at ${details.toOffice}',
       ParcelStatus.collected => 'Collected by ${booking.receiverName}',
@@ -357,14 +357,14 @@ class _ParcelDetailsScreenState extends State<ParcelDetailsScreen> {
     final loaded = details.timeOf(CustodyStep.loaded);
 
     if (left != null) {
-      return 'Left at ${clockTime(left)}';
+      return 'Left ${atTimeOrDay(left)}';
     }
 
     if (loaded != null) {
-      return 'Loaded at ${clockTime(loaded)}';
+      return 'Loaded ${atTimeOrDay(loaded)}';
     }
 
-    return 'Booked at ${clockTime(details.booking.bookedAt)}';
+    return 'Booked ${atTimeOrDay(details.booking.bookedAt)}';
   }
 
   String _rightNote(ParcelDetails details) {
@@ -372,7 +372,7 @@ class _ParcelDetailsScreenState extends State<ParcelDetailsScreen> {
 
     return arrived == null
         ? travelTime(details.travelMinutes)
-        : 'Arrived at ${clockTime(arrived)}';
+        : 'Arrived ${atTimeOrDay(arrived)}';
   }
 
   Widget _buildPeople(ParcelDetails details) {

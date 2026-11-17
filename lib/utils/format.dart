@@ -37,10 +37,10 @@ String maskedPhone(String phone) {
   return parts.length == 3 ? '${parts[0]} *** ${parts[2]}' : localPhone(phone);
 }
 
-// 180 -> About 3 hrs on the road
+// 180 -> 3 hrs by road, short so it stays on one line under the town
 String travelTime(int minutes) {
   if (minutes < 60) {
-    return 'About $minutes min on the road';
+    return '$minutes min by road';
   }
 
   final rounded = (minutes / 15).round() * 15;
@@ -48,7 +48,7 @@ String travelTime(int minutes) {
   final rest = rounded % 60;
   final hrs = hours == 1 ? '1 hr' : '$hours hrs';
 
-  return rest == 0 ? 'About $hrs on the road' : 'About $hrs $rest min on the road';
+  return rest == 0 ? '$hrs by road' : '$hrs $rest min by road';
 }
 
 // 4:39 pm
@@ -72,4 +72,16 @@ String dateAndTime(DateTime time) {
 // 12 Nov, 4:41 pm
 String dayAndTime(DateTime time) {
   return '${time.day} ${_months[time.month - 1]}, ${clockTime(time)}';
+}
+
+// at 4:41 pm for a time today, on 12 Nov for an earlier day,
+// so a parcel booked days ago doesn't look like it was booked today
+String atTimeOrDay(DateTime time, {DateTime? now}) {
+  final today = now ?? DateTime.now();
+
+  if (time.year == today.year && time.month == today.month && time.day == today.day) {
+    return 'at ${clockTime(time)}';
+  }
+
+  return 'on ${time.day} ${_months[time.month - 1]}';
 }

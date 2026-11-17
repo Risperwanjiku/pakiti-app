@@ -28,14 +28,14 @@ void main() {
 
   group('travelTime', () {
     test('uses minutes for trips under an hour', () {
-      expect(travelTime(40), 'About 40 min on the road');
+      expect(travelTime(40), '40 min by road');
     });
 
     test('uses hours, rounded to 15 minutes', () {
-      expect(travelTime(60), 'About 1 hr on the road');
-      expect(travelTime(75), 'About 1 hr 15 min on the road');
-      expect(travelTime(180), 'About 3 hrs on the road');
-      expect(travelTime(212), 'About 3 hrs 30 min on the road');
+      expect(travelTime(60), '1 hr by road');
+      expect(travelTime(75), '1 hr 15 min by road');
+      expect(travelTime(180), '3 hrs by road');
+      expect(travelTime(212), '3 hrs 30 min by road');
     });
   });
 
@@ -53,6 +53,15 @@ void main() {
     test('dates in the parcel history and next to the photo', () {
       expect(longDate(DateTime(2026, 11, 12, 16, 41)), '12 Nov 2026');
       expect(dayAndTime(DateTime(2026, 11, 13, 9, 5)), '13 Nov, 9:05 am');
+    });
+
+    test('say which day when it was not today', () {
+      final now = DateTime(2026, 11, 17, 11, 7);
+
+      expect(atTimeOrDay(DateTime(2026, 11, 17, 0, 10), now: now), 'at 12:10 am');
+      expect(atTimeOrDay(DateTime(2026, 11, 16, 23, 50), now: now), 'on 16 Nov');
+      expect(atTimeOrDay(DateTime(2026, 11, 13, 0, 10), now: now), 'on 13 Nov');
+      expect(atTimeOrDay(DateTime(2025, 11, 17, 9, 0), now: now), 'on 17 Nov');
     });
   });
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pakiti_app/models/parcel_details.dart';
 import 'package:pakiti_app/widgets/parcel_history.dart';
-
 import '../support/fakes.dart';
 
 Future<void> showHistory(WidgetTester tester, ParcelDetails details) {
@@ -43,7 +42,7 @@ void main() {
     expect(find.text('Loaded onto a vehicle'), findsOneWidget);
     expect(find.text('Leaves Nyeri'), findsOneWidget);
     expect(find.text('Arrives at Nairobi office'), findsOneWidget);
-    expect(find.text('About 3 hrs on the road'), findsOneWidget);
+    expect(find.text('3 hrs by road'), findsOneWidget);
   });
 
   testWidgets('a hand-off on a later day shows its date', (tester) async {

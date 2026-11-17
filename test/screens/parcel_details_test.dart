@@ -37,13 +37,16 @@ Future<void> openParcel(WidgetTester tester, ParcelDetails details) async {
 }
 
 void main() {
+  // the fake parcels are from 12 Nov 2026, so the trip shows the day, like
+  // "Left on 12 Nov", instead of the time
+
   testWidgets('shows where the parcel is and which vehicle has it', (tester) async {
     await openParcel(tester, onTheWay());
 
     expect(find.text('On the way'), findsOneWidget);
     expect(find.text('Expected in Nairobi about 8:30 pm'), findsOneWidget);
-    expect(find.text('Left at 5:25 pm'), findsOneWidget);
-    expect(find.text('About 3 hrs on the road'), findsOneWidget);
+    expect(find.text('Left on 12 Nov'), findsOneWidget);
+    expect(find.text('3 hrs by road'), findsOneWidget);
     expect(find.text('KDG 117T, conductor John Otieno'), findsOneWidget);
   });
 
@@ -87,7 +90,7 @@ void main() {
 
     expect(find.text('Booked'), findsOneWidget);
     expect(find.text('Waiting at Nyeri office'), findsOneWidget);
-    expect(find.text('Booked at 4:41 pm'), findsOneWidget);
+    expect(find.text('Booked on 12 Nov'), findsOneWidget);
     expect(find.textContaining('conductor'), findsNothing);
   });
 
@@ -111,7 +114,7 @@ void main() {
     await openParcel(tester, collectedNextDay());
 
     expect(find.text('Collected'), findsOneWidget);
-    expect(find.text('Arrived at 8:20 pm'), findsOneWidget);
+    expect(find.text('Arrived on 12 Nov'), findsOneWidget);
     expect(find.text('Collected by Kevin Maina'), findsNWidgets(2));
   });
 }
