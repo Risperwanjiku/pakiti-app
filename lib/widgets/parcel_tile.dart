@@ -19,11 +19,13 @@ class ParcelTile extends StatelessWidget {
         ? 'To ${parcel.otherName}, ${parcel.otherTown}'
         : 'From ${parcel.otherName}, ${parcel.otherTown}';
 
-    // left at this office for 2 days or more without being collected
+    // Sitting at this office for 2 days or more: booked here and still not loaded,
+    // or arrived here and still not collected.
     final waited = DateTime.now().difference(parcel.lastActivity);
-    final overdue = !parcel.isOutgoing &&
-        parcel.status == ParcelStatus.arrived &&
-        waited.inDays >= 2;
+    final atThisOffice = parcel.isOutgoing
+        ? parcel.status == ParcelStatus.booked
+        : parcel.status == ParcelStatus.arrived;
+    final overdue = atThisOffice && waited.inDays >= 2;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),

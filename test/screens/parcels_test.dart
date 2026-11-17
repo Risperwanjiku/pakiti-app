@@ -61,7 +61,7 @@ void main() {
     );
 
     expect(find.text('2 parcels'), findsOneWidget);
-    expect(find.text('Waiting for collection at Nyeri office'), findsOneWidget);
+    expect(find.text('Waiting for collection at Nyeri office, oldest first'), findsOneWidget);
     expect(find.text('From Dennis Mwangi, Nakuru'), findsOneWidget);
     expect(find.text('From Faith Njeri, Meru'), findsOneWidget);
   });
@@ -81,7 +81,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(service.asked, ['all 0', 'booked 0']);
-    expect(find.text('Waiting to be loaded at Nyeri office'), findsOneWidget);
+    expect(find.text('Waiting to be loaded at Nyeri office, oldest first'), findsOneWidget);
     expect(find.text('To Mary Achieng, Karatina'), findsOneWidget);
     expect(find.text('To Kevin Maina, Nairobi'), findsNothing);
   });

@@ -236,18 +236,24 @@ class _ParcelsScreenState extends State<ParcelsScreen> {
           const SizedBox(width: 12),
         ],
       ),
-      body: RefreshIndicator(
-        onRefresh: _refresh,
-        child: ListView(
-          controller: _scroll,
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
-          children: [
-            _buildFilters(),
-            const SizedBox(height: 20),
-            ..._buildList(),
-          ],
-        ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const SizedBox(height: 16),
+          // outside the list, so the filters stay in reach however far down it goes
+          _buildFilters(),
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: _refresh,
+              child: ListView(
+                controller: _scroll,
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
+                children: _buildList(),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -256,6 +262,7 @@ class _ParcelsScreenState extends State<ParcelsScreen> {
     // all four fit on a 360 dp phone; this only scrolls with very large text
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Row(
         spacing: 8,
         children: [
@@ -336,12 +343,13 @@ class _ParcelsScreenState extends State<ParcelsScreen> {
     ];
   }
 
+  // the API sends All newest first, and the other three oldest first, like a queue
   String _caption() {
     return switch (_filter) {
       ParcelFilter.all => 'Sent from or to $_office, newest first',
-      ParcelFilter.booked => 'Waiting to be loaded at $_office',
-      ParcelFilter.onTheWay => 'On the way to $_office',
-      ParcelFilter.arrived => 'Waiting for collection at $_office',
+      ParcelFilter.booked => 'Waiting to be loaded at $_office, oldest first',
+      ParcelFilter.onTheWay => 'On the way to $_office, oldest first',
+      ParcelFilter.arrived => 'Waiting for collection at $_office, oldest first',
     };
   }
 

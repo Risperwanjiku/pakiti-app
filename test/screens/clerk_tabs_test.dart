@@ -37,7 +37,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(ParcelsScreen), findsOneWidget);
-    expect(find.text('Waiting for collection at Nyeri office'), findsOneWidget);
+    expect(find.text('Waiting for collection at Nyeri office, oldest first'), findsOneWidget);
     expect(service.asked, ['arrived 0']);
   });
 

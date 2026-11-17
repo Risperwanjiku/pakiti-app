@@ -78,6 +78,21 @@ void main() {
     expect(find.text('3 days ago'), findsOneWidget);
   });
 
+  testWidgets('a parcel booked here and not loaded for 2 days or more says so too', (tester) async {
+    await showTile(tester, card(status: ParcelStatus.booked, ago: const Duration(days: 4, hours: 1)));
+
+    expect(find.text('Waiting 4 days'), findsOneWidget);
+  });
+
+  testWidgets('but not one booked at another office and coming here', (tester) async {
+    await showTile(
+      tester,
+      card(status: ParcelStatus.booked, isOutgoing: false, ago: const Duration(days: 4, hours: 1)),
+    );
+
+    expect(find.text('4 days ago'), findsOneWidget);
+  });
+
   testWidgets('tapping it opens the parcel', (tester) async {
     var taps = 0;
     await showTile(tester, card(), onTap: () => taps++);
