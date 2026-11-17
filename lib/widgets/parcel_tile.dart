@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../models/parcel_card.dart';
+import '../models/parcel_status.dart';
 import '../theme/app_colors.dart';
 import '../utils/time_ago.dart';
 import 'status_tag.dart';
 
-// one parcel in the lists on home and in search
+// one parcel in the lists on home, in search and on the Parcels screen
 class ParcelTile extends StatelessWidget {
   const ParcelTile({super.key, required this.parcel, required this.onTap});
 
@@ -17,6 +18,12 @@ class ParcelTile extends StatelessWidget {
     final place = parcel.isOutgoing
         ? 'To ${parcel.otherName}, ${parcel.otherTown}'
         : 'From ${parcel.otherName}, ${parcel.otherTown}';
+
+    // left at this office for 2 days or more without being collected
+    final waited = DateTime.now().difference(parcel.lastActivity);
+    final overdue = !parcel.isOutgoing &&
+        parcel.status == ParcelStatus.arrived &&
+        waited.inDays >= 2;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
@@ -62,10 +69,11 @@ class ParcelTile extends StatelessWidget {
                     ),
                     const SizedBox(width: 12),
                     Text(
-                      timeAgo(parcel.lastActivity),
-                      style: const TextStyle(
+                      overdue ? 'Waiting ${waited.inDays} days' : timeAgo(parcel.lastActivity),
+                      style: TextStyle(
                         fontSize: 13,
-                        color: AppColors.grey,
+                        fontWeight: overdue ? FontWeight.w500 : FontWeight.w400,
+                        color: overdue ? AppColors.statusArrived : AppColors.grey,
                       ),
                     ),
                   ],

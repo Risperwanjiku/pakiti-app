@@ -6,7 +6,7 @@ import '../services/api_client.dart';
 import '../services/auth_service.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_theme.dart';
-import 'clerk_home.dart';
+import 'clerk_tabs.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -79,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
 
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => ClerkHomeScreen(user: user)),
+        MaterialPageRoute(builder: (_) => ClerkTabs(user: user)),
       );
     } on ApiException catch (e) {
       if (!mounted) return;

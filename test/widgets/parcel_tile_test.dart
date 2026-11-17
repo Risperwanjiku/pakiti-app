@@ -8,6 +8,7 @@ ParcelCard card({
   ParcelStatus status = ParcelStatus.inTransit,
   bool isLate = false,
   bool isOutgoing = true,
+  Duration ago = const Duration(hours: 1),
 }) {
   return ParcelCard(
     trackingNo: 'PKT-460048',
@@ -16,7 +17,7 @@ ParcelCard card({
     isOutgoing: isOutgoing,
     otherName: isOutgoing ? 'Kevin Maina' : 'Dennis Mwangi',
     otherTown: isOutgoing ? 'Nairobi' : 'Nakuru',
-    lastActivity: DateTime.now().subtract(const Duration(hours: 1)),
+    lastActivity: DateTime.now().subtract(ago),
   );
 }
 
@@ -50,6 +51,31 @@ void main() {
 
     expect(find.text('Late'), findsOneWidget);
     expect(find.text('On the way'), findsNothing);
+  });
+
+  testWidgets('a parcel left here 2 days or more says how long it has waited', (tester) async {
+    await showTile(
+      tester,
+      card(status: ParcelStatus.arrived, isOutgoing: false, ago: const Duration(days: 3, hours: 2)),
+    );
+
+    expect(find.text('Waiting 3 days'), findsOneWidget);
+    expect(find.text('3 days ago'), findsNothing);
+  });
+
+  testWidgets('one that only came in yesterday does not', (tester) async {
+    await showTile(
+      tester,
+      card(status: ParcelStatus.arrived, isOutgoing: false, ago: const Duration(days: 1, hours: 2)),
+    );
+
+    expect(find.text('Yesterday'), findsOneWidget);
+  });
+
+  testWidgets('nor does one waiting at the other office', (tester) async {
+    await showTile(tester, card(status: ParcelStatus.arrived, ago: const Duration(days: 3, hours: 2)));
+
+    expect(find.text('3 days ago'), findsOneWidget);
   });
 
   testWidgets('tapping it opens the parcel', (tester) async {

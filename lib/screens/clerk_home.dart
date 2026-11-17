@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/clerk_summary.dart';
+import '../models/parcel_filter.dart';
 import '../models/staff_user.dart';
 import '../services/api_client.dart';
 import '../services/clerk_service.dart';
@@ -12,16 +13,27 @@ import 'parcel_details.dart';
 import 'search.dart';
 
 class ClerkHomeScreen extends StatefulWidget {
-  const ClerkHomeScreen({super.key, required this.user});
+  const ClerkHomeScreen({
+    super.key,
+    required this.user,
+    required this.onShowParcels,
+    this.service,
+  });
 
   final StaffUser user;
+
+  // the numbers and See all open the Parcels tab on the matching filter
+  final ValueChanged<ParcelFilter> onShowParcels;
+
+  // tests pass in a fake one
+  final ClerkService? service;
 
   @override
   State<ClerkHomeScreen> createState() => _ClerkHomeScreenState();
 }
 
 class _ClerkHomeScreenState extends State<ClerkHomeScreen> {
-  final _clerkService = ClerkService();
+  late final ClerkService _clerkService = widget.service ?? ClerkService();
   final _search = TextEditingController();
 
   late Future<ClerkSummary> _summary;
@@ -129,7 +141,6 @@ class _ClerkHomeScreenState extends State<ClerkHomeScreen> {
           },
         ),
       ),
-      bottomNavigationBar: _buildNavigationBar(),
     );
   }
 
@@ -246,9 +257,9 @@ class _ClerkHomeScreenState extends State<ClerkHomeScreen> {
           children: [
             Expanded(
               child: _buildStat(
-                summary?.bookedToday,
+                summary?.booked,
                 'Booked',
-                onTap: summary == null ? null : _comingSoon,
+                onTap: summary == null ? null : () => widget.onShowParcels(ParcelFilter.booked),
               ),
             ),
             const SizedBox(width: 8),
@@ -256,7 +267,7 @@ class _ClerkHomeScreenState extends State<ClerkHomeScreen> {
               child: _buildStat(
                 summary?.onTheWay,
                 'On the way',
-                onTap: summary == null ? null : _comingSoon,
+                onTap: summary == null ? null : () => widget.onShowParcels(ParcelFilter.onTheWay),
               ),
             ),
             const SizedBox(width: 8),
@@ -265,7 +276,7 @@ class _ClerkHomeScreenState extends State<ClerkHomeScreen> {
                 summary?.arrived,
                 'Arrived',
                 highlight: true,
-                onTap: summary == null ? null : _comingSoon,
+                onTap: summary == null ? null : () => widget.onShowParcels(ParcelFilter.arrived),
               ),
             ),
           ],
@@ -277,7 +288,7 @@ class _ClerkHomeScreenState extends State<ClerkHomeScreen> {
         children: [
           _buildSectionTitle('Recent parcels'),
           TextButton(
-            onPressed: _comingSoon,
+            onPressed: () => widget.onShowParcels(ParcelFilter.all),
             style: TextButton.styleFrom(
               foregroundColor: AppColors.link,
               minimumSize: const Size(0, 44),
@@ -431,39 +442,6 @@ class _ClerkHomeScreenState extends State<ClerkHomeScreen> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildNavigationBar() {
-    return NavigationBar(
-      selectedIndex: 0,
-      backgroundColor: Colors.white,
-      surfaceTintColor: Colors.white,
-      indicatorColor: AppColors.navTint,
-      onDestinationSelected: (index) {
-        if (index != 0) {
-          _comingSoon();
-        }
-      },
-      destinations: const [
-        NavigationDestination(
-          icon: Icon(Icons.home_outlined),
-          selectedIcon: Icon(Icons.home),
-          label: 'Home',
-        ),
-        NavigationDestination(
-          icon: Icon(Icons.inventory_2_outlined),
-          label: 'Parcels',
-        ),
-        NavigationDestination(
-          icon: Icon(Icons.qr_code_scanner),
-          label: 'Scan',
-        ),
-        NavigationDestination(
-          icon: Icon(Icons.person_outline),
-          label: 'Profile',
-        ),
-      ],
     );
   }
 }

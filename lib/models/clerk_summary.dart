@@ -3,7 +3,7 @@ import 'parcel_card.dart';
 class ClerkSummary {
   const ClerkSummary({
     required this.town,
-    required this.bookedToday,
+    required this.booked,
     required this.onTheWay,
     required this.arrived,
     required this.recent,
@@ -16,7 +16,7 @@ class ClerkSummary {
 
     return ClerkSummary(
       town: office['town'] as String,
-      bookedToday: counts['booked_today'] as int,
+      booked: counts['booked'] as int,
       onTheWay: counts['on_the_way'] as int,
       arrived: counts['arrived'] as int,
       recent: recent
@@ -26,7 +26,8 @@ class ClerkSummary {
   }
 
   final String town;
-  final int bookedToday;
+  // booked here and still waiting to be loaded, the same parcels as the Booked filter
+  final int booked;
   final int onTheWay;
   final int arrived;
   final List<ParcelCard> recent;

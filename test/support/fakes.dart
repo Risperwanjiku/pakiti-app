@@ -1,8 +1,15 @@
 import 'dart:convert';
 
 import 'package:flutter/painting.dart';
+import 'package:pakiti_app/models/clerk_summary.dart';
+import 'package:pakiti_app/models/parcel_card.dart';
 import 'package:pakiti_app/models/parcel_details.dart';
+import 'package:pakiti_app/models/parcel_filter.dart';
+import 'package:pakiti_app/models/parcel_page.dart';
+import 'package:pakiti_app/models/parcel_status.dart';
 import 'package:pakiti_app/models/search_result.dart';
+import 'package:pakiti_app/models/staff_user.dart';
+import 'package:pakiti_app/services/clerk_service.dart';
 import 'package:pakiti_app/services/parcel_service.dart';
 
 // the details the API gave for a real booking, before it was loaded
@@ -54,6 +61,75 @@ class FakeParcelService extends ParcelService {
 
   @override
   ImageProvider photo(String trackingNo) => pixel;
+}
+
+const peter = StaffUser(
+  id: 1,
+  fullName: 'Peter Mwangi',
+  phone: '+254712345678',
+  role: StaffRole.clerk,
+  officeId: 2,
+  officeName: 'Nyeri office',
+);
+
+// gives out its lists 30 at a time, the same way the API does
+class FakeClerkService extends ClerkService {
+  FakeClerkService({this.summary, this.lists = const {}, this.error});
+
+  final ClerkSummary? summary;
+  final Map<ParcelFilter, List<ParcelCard>> lists;
+  final Object? error;
+
+  // each page asked for, like 'arrived 0'
+  final asked = <String>[];
+
+  @override
+  Future<ClerkSummary> fetchSummary() async {
+    if (error != null) {
+      throw error!;
+    }
+
+    return summary!;
+  }
+
+  @override
+  Future<ParcelPage> fetchParcels(ParcelFilter filter, {int offset = 0}) async {
+    asked.add('${filter.apiName} $offset');
+
+    if (error != null) {
+      throw error!;
+    }
+
+    final all = lists[filter] ?? const <ParcelCard>[];
+    final page = all.skip(offset).take(30).toList();
+    final next = offset + page.length;
+
+    return ParcelPage(
+      total: all.length,
+      parcels: page,
+      nextOffset: next < all.length ? next : null,
+    );
+  }
+}
+
+// a parcel in a list, by default one that came in from Nakuru and is waiting here
+ParcelCard listed(
+  String trackingNo, {
+  ParcelStatus status = ParcelStatus.arrived,
+  bool outgoing = false,
+  String name = 'Dennis Mwangi',
+  String town = 'Nakuru',
+  Duration ago = const Duration(minutes: 35),
+}) {
+  return ParcelCard(
+    trackingNo: trackingNo,
+    status: status,
+    isLate: false,
+    isOutgoing: outgoing,
+    otherName: name,
+    otherTown: town,
+    lastActivity: DateTime.now().subtract(ago),
+  );
 }
 
 // The times below have no offset, so they read the same in whatever
