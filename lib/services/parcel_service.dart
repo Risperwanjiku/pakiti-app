@@ -1,7 +1,11 @@
 import 'dart:math';
 
+import 'package:flutter/painting.dart';
+
 import '../models/booked_parcel.dart';
 import '../models/new_parcel.dart';
+import '../models/parcel_details.dart';
+import '../models/search_result.dart';
 import 'api_client.dart';
 
 class ParcelService {
@@ -29,6 +33,25 @@ class ParcelService {
     );
 
     return BookedParcel.fromJson(data['parcel'] as Map<String, dynamic>);
+  }
+
+  // a tracking number or a phone number, typed any way
+  Future<SearchResult> search(String query) async {
+    final data = await _api.get('/parcels?q=${Uri.encodeQueryComponent(query)}');
+    return SearchResult.fromJson(data);
+  }
+
+  Future<ParcelDetails> details(String trackingNo) async {
+    final data = await _api.get('/parcels/${Uri.encodeComponent(trackingNo)}');
+    return ParcelDetails.fromJson(data);
+  }
+
+  // the photo taken at booking
+  ImageProvider photo(String trackingNo) {
+    return NetworkImage(
+      _api.url('/parcels/${Uri.encodeComponent(trackingNo)}/photo').toString(),
+      headers: _api.authHeader,
+    );
   }
 
   // a random version 4 UUID

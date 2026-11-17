@@ -49,5 +49,10 @@ void main() {
     test('dates read the way the label shows them', () {
       expect(dateAndTime(DateTime(2026, 11, 12, 16, 41)), '12 Nov 2026, 4:41 pm');
     });
+
+    test('dates in the parcel history and next to the photo', () {
+      expect(longDate(DateTime(2026, 11, 12, 16, 41)), '12 Nov 2026');
+      expect(dayAndTime(DateTime(2026, 11, 13, 9, 5)), '13 Nov, 9:05 am');
+    });
   });
 }

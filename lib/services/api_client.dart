@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:http/http.dart' as http;
 
 import '../config.dart';
@@ -19,15 +20,19 @@ class ApiException implements Exception {
 }
 
 class ApiClient {
-  ApiClient._();
+  ApiClient._(this._client);
 
-  static final instance = ApiClient._();
+  static final instance = ApiClient._(http.Client());
 
-  final _client = http.Client();
+  // lets tests answer the requests themselves, without a server
+  @visibleForTesting
+  factory ApiClient.withClient(http.Client client) => ApiClient._(client);
+
+  final http.Client _client;
   String? token;
 
   Future<Map<String, dynamic>> get(String path) {
-    return _send(() => _client.get(_url(path), headers: _headers()));
+    return _send(() => _client.get(url(path), headers: _headers()));
   }
 
   Future<Map<String, dynamic>> post(
@@ -35,7 +40,7 @@ class ApiClient {
     Map<String, dynamic> body = const {},
   ]) {
     return _send(
-      () => _client.post(_url(path), headers: _headers(), body: jsonEncode(body)),
+      () => _client.post(url(path), headers: _headers(), body: jsonEncode(body)),
     );
   }
 
@@ -47,7 +52,7 @@ class ApiClient {
   }) {
     return _send(
       () async {
-        final request = http.MultipartRequest('POST', _url(path))
+        final request = http.MultipartRequest('POST', url(path))
           ..headers.addAll(_headers(json: false))
           ..fields.addAll(fields);
 
@@ -61,13 +66,18 @@ class ApiClient {
     );
   }
 
-  Uri _url(String path) => Uri.parse('$apiBaseUrl$path');
+  // Images load through their own requests, so they need the address and the token from here.
+  Uri url(String path) => Uri.parse('$apiBaseUrl$path');
+
+  Map<String, String> get authHeader {
+    return {if (token != null) 'Authorization': 'Bearer $token'};
+  }
 
   Map<String, String> _headers({bool json = true}) {
     return {
       if (json) 'Content-Type': 'application/json',
       'Accept': 'application/json',
-      if (token != null) 'Authorization': 'Bearer $token',
+      ...authHeader,
     };
   }
 

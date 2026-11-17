@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
 import '../models/clerk_summary.dart';
-import '../models/parcel_status.dart';
 import '../models/staff_user.dart';
 import '../services/api_client.dart';
 import '../services/clerk_service.dart';
 import '../theme/app_colors.dart';
-import '../utils/time_ago.dart';
+import '../widgets/parcel_tile.dart';
 import 'choose_town.dart';
 import 'login.dart';
+import 'parcel_details.dart';
+import 'search.dart';
 
 class ClerkHomeScreen extends StatefulWidget {
   const ClerkHomeScreen({super.key, required this.user});
@@ -21,6 +22,7 @@ class ClerkHomeScreen extends StatefulWidget {
 
 class _ClerkHomeScreenState extends State<ClerkHomeScreen> {
   final _clerkService = ClerkService();
+  final _search = TextEditingController();
 
   late Future<ClerkSummary> _summary;
 
@@ -30,13 +32,24 @@ class _ClerkHomeScreenState extends State<ClerkHomeScreen> {
     _summary = _clerkService.fetchSummary();
   }
 
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
+  }
+
   Future<void> _refresh() async {
-    setState(() => _summary = _clerkService.fetchSummary());
+    // braces, because setState throws in debug mode when its callback hands back a Future
+    setState(() {
+      _summary = _clerkService.fetchSummary();
+    });
     await _summary.then((_) {}, onError: (_) {});
   }
 
   void _retry() {
-    setState(() => _summary = _clerkService.fetchSummary());
+    setState(() {
+      _summary = _clerkService.fetchSummary();
+    });
   }
 
   void _goToLogin() {
@@ -54,6 +67,25 @@ class _ClerkHomeScreenState extends State<ClerkHomeScreen> {
     if (mounted) {
       _refresh();
     }
+  }
+
+  void _openSearch(String text) {
+    final query = text.trim();
+
+    if (query.isEmpty) {
+      return;
+    }
+
+    _search.clear();
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => SearchScreen(query: query)),
+    );
+  }
+
+  void _openParcel(String trackingNo) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => ParcelDetailsScreen(trackingNo: trackingNo)),
+    );
   }
 
   void _comingSoon() {
@@ -177,10 +209,11 @@ class _ClerkHomeScreenState extends State<ClerkHomeScreen> {
     );
 
     return TextField(
+      controller: _search,
       textInputAction: TextInputAction.search,
-      onSubmitted: (_) => _comingSoon(),
+      onSubmitted: _openSearch,
       decoration: InputDecoration(
-        hintText: 'PKT-20416 or 0712 345 678',
+        hintText: 'PKT-460048 or 0712 345 678',
         hintStyle: const TextStyle(color: AppColors.grey),
         prefixIcon: const Icon(Icons.search, color: AppColors.grey),
         filled: true,
@@ -256,11 +289,15 @@ class _ClerkHomeScreenState extends State<ClerkHomeScreen> {
       ),
       const SizedBox(height: 4),
       if (summary == null)
-        ...List.generate(3, (_) => _buildParcelPlaceholder())
+        for (var i = 0; i < 3; i++) const ParcelTilePlaceholder()
       else if (summary.recent.isEmpty)
         _buildEmpty()
       else
-        ...summary.recent.map(_buildParcelCard),
+        for (final parcel in summary.recent)
+          ParcelTile(
+            parcel: parcel,
+            onTap: () => _openParcel(parcel.trackingNo),
+          ),
     ];
   }
 
@@ -321,142 +358,6 @@ class _ClerkHomeScreenState extends State<ClerkHomeScreen> {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildParcelCard(RecentParcel parcel) {
-    final (label, textColor, background) = _statusStyle(parcel);
-    final place = parcel.isOutgoing
-        ? 'To ${parcel.otherName}, ${parcel.otherTown}'
-        : 'From ${parcel.otherName}, ${parcel.otherTown}';
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Material(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(16),
-          onTap: _comingSoon,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        parcel.trackingNo,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.darkText,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 3,
-                      ),
-                      decoration: BoxDecoration(
-                        color: background,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        label,
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: textColor,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        place,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: AppColors.grey,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      timeAgo(parcel.lastActivity),
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: AppColors.grey,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  (String, Color, Color) _statusStyle(RecentParcel parcel) {
-    if (parcel.isLate) {
-      return ('Late', AppColors.statusLate, AppColors.statusLateBg);
-    }
-
-    return switch (parcel.status) {
-      ParcelStatus.booked => (
-          'Booked',
-          AppColors.statusBooked,
-          AppColors.statusBookedBg,
-        ),
-      ParcelStatus.loaded => (
-          'Loaded',
-          AppColors.statusBooked,
-          AppColors.statusBookedBg,
-        ),
-      ParcelStatus.inTransit => (
-          'On the way',
-          AppColors.statusOnTheWay,
-          AppColors.statusOnTheWayBg,
-        ),
-      ParcelStatus.arrived => (
-          'Arrived',
-          AppColors.statusArrived,
-          AppColors.statusArrivedBg,
-        ),
-      ParcelStatus.collected => (
-          'Collected',
-          AppColors.statusCollected,
-          AppColors.statusCollectedBg,
-        ),
-    };
-  }
-
-  Widget _buildParcelPlaceholder() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Container(
-        height: 76,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [_buildBar(96, 16), _buildBar(180, 14)],
         ),
       ),
     );

@@ -40,7 +40,9 @@ class _ChooseTownScreenState extends State<ChooseTownScreen> {
   }
 
   void _retry() {
-    setState(() => _destinations = _clerkService.fetchDestinations());
+    setState(() {
+      _destinations = _clerkService.fetchDestinations();
+    });
   }
 
   void _goToLogin() {

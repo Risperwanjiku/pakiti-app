@@ -59,7 +59,17 @@ String clockTime(DateTime time) {
   return '$hour:$minute ${time.hour < 12 ? 'am' : 'pm'}';
 }
 
+// 12 Nov 2026
+String longDate(DateTime time) {
+  return '${time.day} ${_months[time.month - 1]} ${time.year}';
+}
+
 // 12 Nov 2026, 4:41 pm
 String dateAndTime(DateTime time) {
-  return '${time.day} ${_months[time.month - 1]} ${time.year}, ${clockTime(time)}';
+  return '${longDate(time)}, ${clockTime(time)}';
+}
+
+// 12 Nov, 4:41 pm
+String dayAndTime(DateTime time) {
+  return '${time.day} ${_months[time.month - 1]}, ${clockTime(time)}';
 }
