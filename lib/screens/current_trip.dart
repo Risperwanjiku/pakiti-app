@@ -120,19 +120,6 @@ class _CurrentTripScreenState extends State<CurrentTripScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Container(
-                      width: 48,
-                      height: 48,
-                      decoration: const BoxDecoration(
-                        color: AppColors.statusLateBg,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(Icons.error_outline, color: AppColors.error),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
                   Text(
                     one
                         ? '1 parcel is still on the vehicle'

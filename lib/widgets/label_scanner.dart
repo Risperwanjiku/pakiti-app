@@ -80,7 +80,7 @@ class _LabelScannerState extends State<LabelScanner> {
         children: [
           if (controller == null) ...[
             const ColoredBox(color: Colors.black),
-            ..._buildFrame(),
+            ..._buildOverlay(cameraWorks: true),
           ] else ...[
             MobileScanner(
               controller: controller,
@@ -90,50 +90,54 @@ class _LabelScannerState extends State<LabelScanner> {
             ValueListenableBuilder<MobileScannerState>(
               valueListenable: controller,
               builder: (context, state, _) {
-                if (state.error != null) {
-                  return const SizedBox.shrink();
-                }
+                final works = state.error == null;
 
                 return Stack(
                   fit: StackFit.expand,
                   children: [
-                    ..._buildFrame(),
-                    if (state.torchState != TorchState.unavailable)
+                    ..._buildOverlay(cameraWorks: works),
+                    if (works && state.torchState != TorchState.unavailable)
                       _buildTorch(controller, on: state.torchState == TorchState.on),
                   ],
                 );
               },
             ),
           ],
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 16,
-            child: Center(child: _buildTypeNumber()),
-          ),
         ],
       ),
     );
   }
 
-  List<Widget> _buildFrame() {
+  // Type the number instead is always there, even when the camera won't start
+  List<Widget> _buildOverlay({required bool cameraWorks}) {
     return [
-      CustomPaint(
-        painter: _FramePainter(size: widget.frame, top: widget.frameTop),
-      ),
+      if (cameraWorks)
+        CustomPaint(
+          painter: _FramePainter(size: widget.frame, top: widget.frameTop),
+        ),
       Positioned(
         left: 24,
         right: 24,
-        top: widget.frameTop + widget.frame + 18,
-        child: const Text(
-          'Point the camera at the QR code on the label',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: Colors.white,
-            shadows: [Shadow(color: Color(0x99000000), blurRadius: 6)],
-          ),
+        bottom: 16,
+        // the hint sits on top of the button, so on a narrow phone it can't run into it
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (cameraWorks) ...[
+              const Text(
+                'Fit the QR code inside the frame',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white,
+                  shadows: [Shadow(color: Color(0x99000000), blurRadius: 6)],
+                ),
+              ),
+              const SizedBox(height: 12),
+            ],
+            _buildTypeNumber(),
+          ],
         ),
       ),
     ];

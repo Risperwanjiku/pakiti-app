@@ -72,6 +72,7 @@ class _LoadParcelsScreenState extends State<LoadParcelsScreen> {
 
   Future<void> _tell(LoadResult result) async {
     final parcel = result.parcel;
+    final trip = widget.trip;
 
     switch (result.outcome) {
       case LoadOutcome.loaded:
@@ -81,12 +82,23 @@ class _LoadParcelsScreenState extends State<LoadParcelsScreen> {
         _showMessage('${parcel.trackingNo} is already on board.');
       case LoadOutcome.wrongRoute:
         _buzzWarning();
-        await _showKeepOff(
-          parcel.trackingNo,
-          before: 'Give ',
-          after: ' back to the clerk at ${widget.trip.from} so it goes on a ${parcel.to} vehicle.',
-          parcelGoesTo: parcel.to,
-        );
+
+        // booked at another office, so it shouldn't be here at all
+        if (parcel.from != trip.from) {
+          await _showKeepOff(
+            parcel.trackingNo,
+            before: 'Give ',
+            after: ' to the clerk at ${trip.from} to sort out.',
+            compare: _buildCompare('This parcel is from', parcel.from, 'This vehicle is at', trip.from),
+          );
+        } else {
+          await _showKeepOff(
+            parcel.trackingNo,
+            before: 'Give ',
+            after: ' back to the clerk at ${trip.from} so it goes on a ${parcel.to} vehicle.',
+            compare: _buildCompare('This parcel goes to', parcel.to, 'This vehicle goes to', trip.to),
+          );
+        }
       case LoadOutcome.otherVehicle:
         _buzzWarning();
         await _showKeepOff(
@@ -131,6 +143,12 @@ class _LoadParcelsScreenState extends State<LoadParcelsScreen> {
   }
 
   Future<void> _depart() async {
+    // the button stays blue with nothing on board, so a tap says what is missing
+    if (widget.trip.parcels.isEmpty) {
+      _showMessage('Scan at least one parcel onto the vehicle before you depart.');
+      return;
+    }
+
     setState(() {
       _busy = true;
       _departing = true;
@@ -203,7 +221,7 @@ class _LoadParcelsScreenState extends State<LoadParcelsScreen> {
     String trackingNo, {
     String before = '',
     required String after,
-    String? parcelGoesTo,
+    Widget? compare,
   }) {
     return showModalBottomSheet<void>(
       context: context,
@@ -223,19 +241,6 @@ class _LoadParcelsScreenState extends State<LoadParcelsScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Container(
-                      width: 48,
-                      height: 48,
-                      decoration: const BoxDecoration(
-                        color: AppColors.statusLateBg,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(Icons.error_outline, color: AppColors.error),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
                   const Text(
                     'Keep this one off',
                     style: TextStyle(
@@ -244,27 +249,9 @@ class _LoadParcelsScreenState extends State<LoadParcelsScreen> {
                       color: AppColors.darkText,
                     ),
                   ),
-                  if (parcelGoesTo != null) ...[
+                  if (compare != null) ...[
                     const SizedBox(height: 16),
-                    // the two boxes stay the same height when a label runs onto two lines
-                    IntrinsicHeight(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Expanded(
-                            child: _buildGoesTo(
-                              'This parcel goes to',
-                              parcelGoesTo,
-                              wrong: true,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: _buildGoesTo('This vehicle goes to', widget.trip.to),
-                          ),
-                        ],
-                      ),
-                    ),
+                    compare,
                   ],
                   const SizedBox(height: 12),
                   Text.rich(
@@ -297,7 +284,22 @@ class _LoadParcelsScreenState extends State<LoadParcelsScreen> {
     );
   }
 
-  Widget _buildGoesTo(String label, String town, {bool wrong = false}) {
+  // the parcel's town in red next to the vehicle's, so the reason shows at a glance
+  Widget _buildCompare(String parcelLabel, String parcelTown, String vehicleLabel, String vehicleTown) {
+    // the two boxes stay the same height when a label runs onto two lines
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(child: _buildTown(parcelLabel, parcelTown, wrong: true)),
+          const SizedBox(width: 8),
+          Expanded(child: _buildTown(vehicleLabel, vehicleTown)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTown(String label, String town, {bool wrong = false}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
@@ -368,7 +370,7 @@ class _LoadParcelsScreenState extends State<LoadParcelsScreen> {
             child: ListView(
               padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
               children: [
-                _buildTitle('On board', _count(trip.parcels.length)),
+                _buildTitle('On board', trip.parcels.length),
                 const SizedBox(height: 8),
                 if (trip.parcels.isEmpty)
                   _buildEmpty('Nothing on board yet. Scan a label to load the parcel.')
@@ -380,10 +382,14 @@ class _LoadParcelsScreenState extends State<LoadParcelsScreen> {
                     ],
                   ),
                 const SizedBox(height: 20),
-                _buildTitle('Still at ${trip.from}', _count(trip.waiting.length)),
+                _buildTitle('Still at ${trip.from}', trip.waiting.length),
                 const SizedBox(height: 8),
                 if (trip.waiting.isEmpty)
-                  _buildEmpty('Nothing else is waiting at ${trip.from} for ${trip.to}.')
+                  _buildEmpty(
+                    trip.parcels.isEmpty
+                        ? 'Nothing is waiting at ${trip.from} for ${trip.to}.'
+                        : 'Nothing else is waiting at ${trip.from} for ${trip.to}.',
+                  )
                 else
                   TripParcelCard(
                     rows: [
@@ -419,7 +425,8 @@ class _LoadParcelsScreenState extends State<LoadParcelsScreen> {
     );
   }
 
-  Widget _buildTitle(String title, String count) {
+  // no count when the list is empty, since the box under it already says so
+  Widget _buildTitle(String title, int count) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.baseline,
       textBaseline: TextBaseline.alphabetic,
@@ -434,10 +441,11 @@ class _LoadParcelsScreenState extends State<LoadParcelsScreen> {
             ),
           ),
         ),
-        Text(
-          count,
-          style: const TextStyle(fontSize: 13, color: AppColors.grey),
-        ),
+        if (count > 0)
+          Text(
+            _count(count),
+            style: const TextStyle(fontSize: 13, color: AppColors.grey),
+          ),
       ],
     );
   }
@@ -472,7 +480,7 @@ class _LoadParcelsScreenState extends State<LoadParcelsScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             FilledButton(
-              onPressed: onBoard == 0 || _busy ? null : _depart,
+              onPressed: _busy ? null : _depart,
               child: _departing
                   ? const Row(
                       mainAxisSize: MainAxisSize.min,

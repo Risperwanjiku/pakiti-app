@@ -331,6 +331,7 @@ LoadResult scanResult(
   String trackingNo,
   Trip trip, {
   String status = 'booked',
+  String from = 'Nyeri',
   String to = 'Nairobi',
   String? vehicle,
 }) {
@@ -339,7 +340,7 @@ LoadResult scanResult(
     parcel: ScannedParcel.fromJson(_json({
       'tracking_no': trackingNo,
       'status': status,
-      'from': 'Nyeri',
+      'from': from,
       'to': to,
       'vehicle': vehicle,
     })),

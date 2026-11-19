@@ -57,6 +57,20 @@ void main() {
     expect(find.text('1 parcel is waiting at Nyeri for Nakuru.'), findsOneWidget);
   });
 
+  testWidgets('routes with parcels waiting come first', (tester) async {
+    await openStart(tester, nyeri());
+
+    await tester.tap(find.text('Change').first);
+    await tester.pumpAndSettle();
+
+    // Nairobi is first in the list the API gives, but nothing is waiting there
+    expect(
+      tester.getTopLeft(find.text('From Nyeri')).dy,
+      lessThan(tester.getTopLeft(find.text('From Nairobi')).dy),
+    );
+    expect(find.text('2 parcels waiting'), findsOneWidget);
+  });
+
   testWidgets('a vehicle out on another trip cannot be chosen', (tester) async {
     await openStart(tester, nyeri());
 
@@ -91,17 +105,25 @@ void main() {
     expect(started!.status, TripStatus.loading);
   });
 
-  testWidgets('before a first trip, both have to be chosen', (tester) async {
-    await openStart(
-      tester,
-      nyeri(choices: nyeriChoices(suggestedRouteId: null, suggestedVehicleId: null)),
-    );
+  testWidgets('before a first trip, Start loading asks for the route and then the vehicle', (tester) async {
+    final service = nyeri(choices: nyeriChoices(suggestedRouteId: null, suggestedVehicleId: null));
+    await openStart(tester, service);
 
-    expect(find.text('Choose the route'), findsOneWidget);
+    expect(find.text('Not chosen yet'), findsNWidgets(2));
+
+    await tester.tap(find.text('Start loading'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('To Nairobi'));
+    await tester.pumpAndSettle();
+
     expect(find.text('Choose the vehicle'), findsOneWidget);
 
-    final button = tester.widget<FilledButton>(find.widgetWithText(FilledButton, 'Start loading'));
+    await tester.tap(find.text('KDG 117T'));
+    await tester.pumpAndSettle();
 
-    expect(button.onPressed, isNull);
+    expect(find.text('Nyeri to Nairobi'), findsOneWidget);
+    expect(find.text('KDG 117T'), findsOneWidget);
+    // the trip only starts on the next tap, once the conductor has seen both
+    expect(service.calls, isNot(contains('start 1 1')));
   });
 }

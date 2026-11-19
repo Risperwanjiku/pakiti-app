@@ -18,7 +18,13 @@ void main() {
       ),
     );
 
-    expect(find.text('Point the camera at the QR code on the label'), findsOneWidget);
+    expect(find.text('Fit the QR code inside the frame'), findsOneWidget);
+
+    // the hint sits on top of the button, so the two can't run into each other
+    expect(
+      tester.getBottomLeft(find.text('Fit the QR code inside the frame')).dy,
+      lessThan(tester.getTopLeft(find.text('Type the number instead')).dy),
+    );
 
     await tester.tap(find.text('Type the number instead'));
 

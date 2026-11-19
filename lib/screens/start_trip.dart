@@ -115,11 +115,24 @@ class _StartTripScreenState extends State<StartTripScreen> {
     }
   }
 
-  Future<void> _start() async {
+  // before a first trip nothing is filled in, so the lists open one after the other
+  Future<void> _chooseMissing(TripChoices choices) async {
+    if (_route == null) {
+      await _chooseRoute(choices);
+    }
+
+    if (mounted && _route != null && _vehicle == null) {
+      await _chooseVehicle(choices);
+    }
+  }
+
+  Future<void> _start(TripChoices choices) async {
     final route = _route;
     final vehicle = _vehicle;
 
+    // the button isn't greyed out, so a tap asks for whatever is still missing
     if (route == null || vehicle == null) {
+      await _chooseMissing(choices);
       return;
     }
 
@@ -205,19 +218,15 @@ class _StartTripScreenState extends State<StartTripScreen> {
         child: Column(
           children: [
             _buildChoice(
-              icon: Icons.route,
               label: 'Route',
               value: route?.name,
-              hint: 'Choose the route',
               note: route == null ? null : 'About ${travelTime(route.minutes)}',
               onChange: () => _chooseRoute(choices),
             ),
             const Divider(height: 1, thickness: 1, color: AppColors.page),
             _buildChoice(
-              icon: Icons.directions_bus_outlined,
               label: 'Vehicle',
               value: vehicle?.regNumber,
-              hint: 'Choose the vehicle',
               note: _vehicleNote(choices, vehicle),
               onChange: () => _chooseVehicle(choices),
             ),
@@ -226,22 +235,14 @@ class _StartTripScreenState extends State<StartTripScreen> {
       ),
       if (route != null) ...[
         const SizedBox(height: 12),
-        Row(
-          children: [
-            const Icon(Icons.inventory_2_outlined, size: 20, color: AppColors.grey),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                _waiting(route),
-                style: const TextStyle(fontSize: 14, color: AppColors.statusBooked),
-              ),
-            ),
-          ],
+        Text(
+          _waiting(route),
+          style: const TextStyle(fontSize: 14, color: AppColors.statusBooked),
         ),
       ],
       const SizedBox(height: 24),
       FilledButton(
-        onPressed: route == null || vehicle == null || _starting ? null : _start,
+        onPressed: _starting ? null : () => _start(choices),
         child: _starting
             ? const Row(
                 mainAxisSize: MainAxisSize.min,
@@ -264,10 +265,8 @@ class _StartTripScreenState extends State<StartTripScreen> {
   }
 
   Widget _buildChoice({
-    required IconData icon,
     required String label,
     required String? value,
-    required String hint,
     required String? note,
     required VoidCallback onChange,
   }) {
@@ -275,16 +274,6 @@ class _StartTripScreenState extends State<StartTripScreen> {
       padding: const EdgeInsets.fromLTRB(16, 14, 8, 14),
       child: Row(
         children: [
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: AppColors.statusOnTheWayBg,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(icon, color: AppColors.navy),
-          ),
-          const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -294,7 +283,7 @@ class _StartTripScreenState extends State<StartTripScreen> {
                   style: const TextStyle(fontSize: 13, color: AppColors.grey),
                 ),
                 Text(
-                  value ?? hint,
+                  value ?? 'Not chosen yet',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -399,7 +388,12 @@ class _RouteSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final towns = {for (final route in routes) route.from};
+    // routes with parcels waiting go first, so the one that matters isn't far down the list
+    final ordered = [
+      ...routes.where((route) => route.waiting > 0),
+      ...routes.where((route) => route.waiting == 0),
+    ];
+    final towns = {for (final route in ordered) route.from};
 
     return ConstrainedBox(
       constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.75),
@@ -436,7 +430,7 @@ class _RouteSheet extends StatelessWidget {
                         ),
                       ),
                     ),
-                    for (final route in routes.where((route) => route.from == town))
+                    for (final route in ordered.where((route) => route.from == town))
                       _SheetRow(
                         title: 'To ${route.to}',
                         note: switch (route.waiting) {
@@ -444,6 +438,7 @@ class _RouteSheet extends StatelessWidget {
                           1 => '1 parcel waiting',
                           _ => '${route.waiting} parcels waiting',
                         },
+                        noteColor: route.waiting > 0 ? AppColors.link : AppColors.grey,
                         chosen: route.id == chosen?.id,
                         onTap: () => Navigator.of(context).pop(route),
                       ),
@@ -513,12 +508,14 @@ class _SheetRow extends StatelessWidget {
   const _SheetRow({
     required this.title,
     this.note,
+    this.noteColor = AppColors.grey,
     required this.chosen,
     required this.onTap,
   });
 
   final String title;
   final String? note;
+  final Color noteColor;
   final bool chosen;
   final VoidCallback? onTap;
 
@@ -548,7 +545,11 @@ class _SheetRow extends StatelessWidget {
                   if (note != null)
                     Text(
                       note,
-                      style: const TextStyle(fontSize: 13, color: AppColors.grey),
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: noteColor == AppColors.grey ? FontWeight.w400 : FontWeight.w500,
+                        color: noteColor,
+                      ),
                     ),
                 ],
               ),
