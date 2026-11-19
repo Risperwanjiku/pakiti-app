@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pakiti_app/models/parcel_details.dart';
+import 'package:pakiti_app/theme/app_colors.dart';
 import 'package:pakiti_app/widgets/parcel_history.dart';
+
 import '../support/fakes.dart';
 
 Future<void> showHistory(WidgetTester tester, ParcelDetails details) {
@@ -43,6 +45,16 @@ void main() {
     expect(find.text('Leaves Nyeri'), findsOneWidget);
     expect(find.text('Arrives at Nairobi office'), findsOneWidget);
     expect(find.text('3 hrs by road'), findsOneWidget);
+  });
+
+  testWidgets('a parcel left on the vehicle stands out in red', (tester) async {
+    await showHistory(tester, leftOnBoard());
+
+    final title = tester.widget<Text>(find.text('Not offloaded from KDG 117T'));
+
+    expect(title.style!.color, AppColors.error);
+    expect(find.text('Still on board when John Otieno ended the trip'), findsOneWidget);
+    expect(find.text('Arrives at Nairobi office'), findsOneWidget);
   });
 
   testWidgets('a hand-off on a later day shows its date', (tester) async {

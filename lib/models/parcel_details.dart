@@ -1,8 +1,21 @@
 import 'booked_parcel.dart';
 import 'parcel_status.dart';
 
-// the hand-offs in the order they happen
-enum CustodyStep { booked, loaded, departed, arrived, collected }
+// The hand-offs in the order they happen. notOffloaded is when the conductor
+// ended the trip with the parcel still on the vehicle.
+enum CustodyStep { booked, loaded, departed, notOffloaded, arrived, collected }
+
+CustodyStep custodyStepFromApi(String value) {
+  return switch (value) {
+    'booked' => CustodyStep.booked,
+    'loaded' => CustodyStep.loaded,
+    'departed' => CustodyStep.departed,
+    'not_offloaded' => CustodyStep.notOffloaded,
+    'arrived' => CustodyStep.arrived,
+    'collected' => CustodyStep.collected,
+    _ => throw FormatException('Unknown hand-off: $value'),
+  };
+}
 
 class ParcelEvent {
   const ParcelEvent({
@@ -18,7 +31,7 @@ class ParcelEvent {
 
   factory ParcelEvent.fromJson(Map<String, dynamic> json) {
     return ParcelEvent(
-      step: CustodyStep.values.byName(json['type'] as String),
+      step: custodyStepFromApi(json['type'] as String),
       at: DateTime.parse(json['at'] as String).toLocal(),
       by: json['by'] as String,
       byRole: json['by_role'] as String,
@@ -115,7 +128,9 @@ class ParcelDetails {
   List<CustodyStep> get stepsLeft {
     final last = events.isEmpty ? CustodyStep.booked : events.last.step;
 
-    return CustodyStep.values.where((step) => step.index > last.index).toList();
+    return CustodyStep.values
+        .where((step) => step.index > last.index && step != CustodyStep.notOffloaded)
+        .toList();
   }
 
   DateTime? timeOf(CustodyStep step) {

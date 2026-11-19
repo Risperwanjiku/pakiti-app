@@ -7,6 +7,7 @@ import '../services/auth_service.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_theme.dart';
 import 'clerk_tabs.dart';
+import 'conductor_tabs.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -72,14 +73,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (!mounted) return;
 
-      if (user.role != StaffRole.clerk) {
+      if (user.role == StaffRole.admin) {
         setState(() => _loading = false);
-        _showMessage('Only the clerk screens are ready for now.');
+        _showMessage('The admin screens are not ready yet.');
         return;
       }
 
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => ClerkTabs(user: user)),
+        MaterialPageRoute(
+          builder: (_) => user.role == StaffRole.conductor
+              ? ConductorTabs(user: user)
+              : ClerkTabs(user: user),
+        ),
       );
     } on ApiException catch (e) {
       if (!mounted) return;

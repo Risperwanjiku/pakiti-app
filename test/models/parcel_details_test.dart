@@ -51,6 +51,14 @@ void main() {
     expect(collectedNextDay().stepsLeft, isEmpty);
   });
 
+  test('a parcel left on the vehicle can still arrive', () {
+    final details = leftOnBoard();
+
+    expect(details.events.last.step, CustodyStep.notOffloaded);
+    expect(details.stepsLeft, [CustodyStep.arrived, CustodyStep.collected]);
+    expect(onTheWay().stepsLeft, isNot(contains(CustodyStep.notOffloaded)));
+  });
+
   test('reads the vehicle and when the parcel should arrive', () {
     final details = onTheWay();
 

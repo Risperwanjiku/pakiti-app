@@ -6,6 +6,7 @@ import '../models/staff_user.dart';
 import '../services/api_client.dart';
 import '../services/clerk_service.dart';
 import '../theme/app_colors.dart';
+import '../widgets/pakiti_app_bar.dart';
 import '../widgets/parcel_tile.dart';
 import 'choose_town.dart';
 import 'login.dart';
@@ -112,7 +113,19 @@ class _ClerkHomeScreenState extends State<ClerkHomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.page,
-      appBar: _buildAppBar(),
+      appBar: PakitiAppBar(
+        actions: [
+          IconButton(
+            tooltip: 'Notifications',
+            onPressed: _comingSoon,
+            icon: const Icon(
+              Icons.notifications_none_rounded,
+              color: AppColors.darkText,
+            ),
+          ),
+          const SizedBox(width: 12),
+        ],
+      ),
       body: RefreshIndicator(
         onRefresh: _refresh,
         child: FutureBuilder<ClerkSummary>(
@@ -141,56 +154,6 @@ class _ClerkHomeScreenState extends State<ClerkHomeScreen> {
           },
         ),
       ),
-    );
-  }
-
-  PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-      backgroundColor: Colors.white,
-      surfaceTintColor: Colors.white,
-      scrolledUnderElevation: 0,
-      titleSpacing: 24,
-      title: Row(
-        children: [
-          Container(
-            width: 36,
-            height: 36,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: AppColors.navy,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: const Text(
-              'P',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          const Text(
-            'Pakiti',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              color: AppColors.darkText,
-            ),
-          ),
-        ],
-      ),
-      actions: [
-        IconButton(
-          tooltip: 'Notifications',
-          onPressed: _comingSoon,
-          icon: const Icon(
-            Icons.notifications_none_rounded,
-            color: AppColors.darkText,
-          ),
-        ),
-        const SizedBox(width: 12),
-      ],
     );
   }
 

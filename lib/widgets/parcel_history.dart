@@ -40,6 +40,7 @@ class ParcelHistory extends StatelessWidget {
                 ? clockTime(events[i].at)
                 : dayAndTime(events[i].at),
             detail: _detail(events[i]),
+            warning: events[i].step == CustodyStep.notOffloaded,
             dot: i < events.length - 1 || stepsLeft.isEmpty ? _Dot.done : _Dot.current,
             line: i < events.length - 1
                 ? _Line.solid
@@ -64,6 +65,8 @@ class ParcelHistory extends StatelessWidget {
       CustodyStep.loaded =>
         event.vehicle == null ? 'Loaded' : 'Loaded onto ${event.vehicle}',
       CustodyStep.departed => 'Left ${booking.from}',
+      CustodyStep.notOffloaded =>
+        event.vehicle == null ? 'Not offloaded' : 'Not offloaded from ${event.vehicle}',
       CustodyStep.arrived => 'Arrived at ${event.office ?? details.toOffice}',
       CustodyStep.collected => 'Collected by ${booking.receiverName}',
     };
@@ -75,6 +78,7 @@ class ParcelHistory extends StatelessWidget {
       CustodyStep.booked => event.hasPhoto ? '$who. Photo taken.' : who,
       CustodyStep.departed =>
         event.vehicle == null ? who : 'On ${event.vehicle} with ${event.by}',
+      CustodyStep.notOffloaded => 'Still on board when ${event.by} ended the trip',
       CustodyStep.collected => 'Handed over by $who',
       _ => who,
     };
@@ -89,6 +93,7 @@ class ParcelHistory extends StatelessWidget {
       CustodyStep.booked => 'Booked',
       CustodyStep.loaded => 'Loaded onto a vehicle',
       CustodyStep.departed => 'Leaves ${booking.from}',
+      CustodyStep.notOffloaded => 'Not offloaded',
       CustodyStep.arrived => 'Arrives at ${details.toOffice}',
       CustodyStep.collected => 'Collected by ${booking.receiverName}',
     };
@@ -116,6 +121,7 @@ class _Step extends StatelessWidget {
     required this.title,
     this.time,
     this.detail,
+    this.warning = false,
     required this.dot,
     required this.line,
   });
@@ -123,6 +129,9 @@ class _Step extends StatelessWidget {
   final String title;
   final String? time;
   final String? detail;
+
+  // a hand-off that went wrong, like a parcel left on the vehicle
+  final bool warning;
   final _Dot dot;
   final _Line line;
 
@@ -172,7 +181,9 @@ class _Step extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: upcoming ? FontWeight.w500 : FontWeight.w600,
-                              color: upcoming ? AppColors.grey : AppColors.darkText,
+                              color: upcoming
+                                  ? AppColors.grey
+                                  : (warning ? AppColors.error : AppColors.darkText),
                             ),
                           ),
                         ),

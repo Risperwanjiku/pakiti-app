@@ -7,9 +7,9 @@ import '../services/parcel_service.dart';
 import '../theme/app_colors.dart';
 import '../utils/call.dart';
 import '../utils/format.dart';
-import '../widgets/dashed_line.dart';
 import '../widgets/parcel_history.dart';
 import '../widgets/status_tag.dart';
+import '../widgets/trip_line.dart';
 import 'login.dart';
 import 'parcel_photo.dart';
 
@@ -283,72 +283,14 @@ class _ParcelDetailsScreenState extends State<ParcelDetailsScreen> {
 
   Widget _buildTrip(ParcelDetails details) {
     final booking = details.booking;
-    final arrived = details.status == ParcelStatus.arrived ||
-        details.status == ParcelStatus.collected;
 
-    return Column(
-      children: [
-        SizedBox(
-          height: 16,
-          child: Row(
-            children: [
-              _buildTripDot(filled: true),
-              const SizedBox(width: 6),
-              Expanded(
-                child: arrived
-                    ? Container(height: 2, color: AppColors.navy)
-                    : const DashedLine(color: AppColors.divider),
-              ),
-              const SizedBox(width: 6),
-              _buildTripDot(filled: arrived),
-            ],
-          ),
-        ),
-        const SizedBox(height: 8),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: _buildTripEnd(booking.from, _leftNote(details))),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _buildTripEnd(booking.to, _rightNote(details), atEnd: true),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTripDot({required bool filled}) {
-    return Container(
-      width: 12,
-      height: 12,
-      decoration: BoxDecoration(
-        color: filled ? AppColors.navy : Colors.white,
-        shape: BoxShape.circle,
-        border: Border.all(color: AppColors.navy, width: 2),
-      ),
-    );
-  }
-
-  Widget _buildTripEnd(String town, String note, {bool atEnd = false}) {
-    return Column(
-      crossAxisAlignment: atEnd ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-      children: [
-        Text(
-          town,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: AppColors.darkText,
-          ),
-        ),
-        Text(
-          note,
-          textAlign: atEnd ? TextAlign.right : TextAlign.left,
-          style: const TextStyle(fontSize: 13, color: AppColors.grey),
-        ),
-      ],
+    return TripLine(
+      from: booking.from,
+      fromNote: _leftNote(details),
+      to: booking.to,
+      toNote: _rightNote(details),
+      arrived: details.status == ParcelStatus.arrived ||
+          details.status == ParcelStatus.collected,
     );
   }
 
