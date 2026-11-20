@@ -2,11 +2,11 @@ import 'dart:math';
 
 import 'package:flutter/painting.dart';
 
-import '../models/booked_parcel.dart';
-import '../models/new_parcel.dart';
-import '../models/parcel_details.dart';
-import '../models/search_result.dart';
-import 'api_client.dart';
+import 'package:pakiti_app/models/booked_parcel.dart';
+import 'package:pakiti_app/models/new_parcel.dart';
+import 'package:pakiti_app/models/parcel_details.dart';
+import 'package:pakiti_app/models/search_result.dart';
+import 'package:pakiti_app/services/api_client.dart';
 
 class ParcelService {
   ParcelService({ApiClient? api}) : _api = api ?? ApiClient.instance;
@@ -41,13 +41,13 @@ class ParcelService {
     return SearchResult.fromJson(data);
   }
 
-  Future<ParcelDetails> details(String trackingNo) async {
+  Future<ParcelDetails> fetchDetails(String trackingNo) async {
     final data = await _api.get('/parcels/${Uri.encodeComponent(trackingNo)}');
     return ParcelDetails.fromJson(data);
   }
 
   // the photo taken at booking
-  ImageProvider photo(String trackingNo) {
+  ImageProvider photoOf(String trackingNo) {
     return NetworkImage(
       _api.url('/parcels/${Uri.encodeComponent(trackingNo)}/photo').toString(),
       headers: _api.authHeader,

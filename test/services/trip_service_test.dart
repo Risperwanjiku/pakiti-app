@@ -17,7 +17,7 @@ void main() {
       return http.Response('{"ok":true,"data":{"trip":null}}', 200);
     }));
 
-    final trip = await TripService(api: api).fetchCurrent();
+    final trip = await TripService(api: api).fetchCurrentTrip();
 
     expect(asked.path, endsWith('/conductor/trip'));
     expect(trip, isNull);
@@ -33,7 +33,7 @@ void main() {
       return http.Response(jsonEncode({'ok': true, 'data': {'trip': trip}}), 201);
     }));
 
-    final trip = await TripService(api: api).start(1, 1);
+    final trip = await TripService(api: api).startTrip(1, 1);
 
     expect(sent.method, 'POST');
     expect(sent.url.path, endsWith('/trips'));
@@ -48,7 +48,7 @@ void main() {
       return http.Response(realLoadReply, 200);
     }));
 
-    final result = await TripService(api: api).load(3, 'PKT-282420');
+    final result = await TripService(api: api).loadParcel(3, 'PKT-282420');
 
     expect(sent.url.path, endsWith('/trips/3/parcels'));
     expect(jsonDecode(sent.body), {'tracking_no': 'PKT-282420'});
@@ -63,8 +63,8 @@ void main() {
     }));
     final service = TripService(api: api);
 
-    await service.end(3);
-    await service.end(3, anyway: true);
+    await service.endTrip(3);
+    await service.endTrip(3, anyway: true);
 
     expect(sent.first.url.path, endsWith('/trips/3/end'));
     expect(jsonDecode(sent.first.body), {'anyway': false});

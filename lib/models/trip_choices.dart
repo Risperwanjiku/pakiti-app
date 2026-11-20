@@ -3,7 +3,7 @@ class RouteChoice {
     required this.id,
     required this.from,
     required this.to,
-    required this.minutes,
+    required this.travelMinutes,
     required this.waiting,
   });
 
@@ -12,7 +12,7 @@ class RouteChoice {
       id: json['route_id'] as int,
       from: json['from'] as String,
       to: json['to'] as String,
-      minutes: json['minutes'] as int,
+      travelMinutes: json['minutes'] as int,
       waiting: json['waiting'] as int,
     );
   }
@@ -20,7 +20,7 @@ class RouteChoice {
   final int id;
   final String from;
   final String to;
-  final int minutes;
+  final int travelMinutes;
 
   // parcels booked for this route that are not on a vehicle yet
   final int waiting;

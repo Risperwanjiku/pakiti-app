@@ -1,4 +1,4 @@
-import 'parcel_size.dart';
+import 'package:pakiti_app/models/parcel_size.dart';
 
 class BookedParcel {
   const BookedParcel({

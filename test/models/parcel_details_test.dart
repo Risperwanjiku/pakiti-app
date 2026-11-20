@@ -34,10 +34,10 @@ void main() {
     final event = readReply().events.single;
 
     expect(event.step, CustodyStep.booked);
-    expect(event.by, 'Peter Mwangi');
-    expect(event.byRole, 'clerk');
+    expect(event.staffName, 'Peter Mwangi');
+    expect(event.staffRole, 'clerk');
     expect(event.office, 'Nyeri office');
-    expect(event.at.toUtc(), DateTime.utc(2026, 11, 12, 20, 12, 37));
+    expect(event.time.toUtc(), DateTime.utc(2026, 11, 12, 20, 12, 37));
   });
 
   test('knows which hand-offs are still to come', () {

@@ -1,5 +1,5 @@
-import 'parcel_status.dart';
-import 'trip.dart';
+import 'package:pakiti_app/models/parcel_status.dart';
+import 'package:pakiti_app/models/trip.dart';
 
 // what happened to a parcel scanned while loading
 enum LoadOutcome { loaded, alreadyOnBoard, wrongRoute, otherVehicle, alreadyLeft }

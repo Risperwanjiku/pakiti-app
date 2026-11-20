@@ -18,7 +18,7 @@ void main() {
     expect(destination.routeId, 1);
     expect(destination.town, 'Nairobi');
     expect(destination.county, 'Nairobi');
-    expect(destination.minutes, 180);
+    expect(destination.travelMinutes, 180);
     expect(destination.fees, {
       ParcelSize.small: 200,
       ParcelSize.medium: 350,

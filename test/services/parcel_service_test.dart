@@ -68,7 +68,7 @@ void main() {
       return http.Response(realDetailsReply, 200);
     }))..token = 'abc123';
 
-    final details = await ParcelService(api: api).details('PKT-460048');
+    final details = await ParcelService(api: api).fetchDetails('PKT-460048');
 
     expect(asked.url.path, endsWith('/parcels/PKT-460048'));
     expect(asked.headers['Authorization'], 'Bearer abc123');
@@ -79,7 +79,7 @@ void main() {
     final api = ApiClient.withClient(MockClient((_) async => http.Response('', 404)))
       ..token = 'abc123';
 
-    final photo = ParcelService(api: api).photo('PKT-460048') as NetworkImage;
+    final photo = ParcelService(api: api).photoOf('PKT-460048') as NetworkImage;
 
     expect(photo.url, endsWith('/parcels/PKT-460048/photo'));
     expect(photo.headers, {'Authorization': 'Bearer abc123'});

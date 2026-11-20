@@ -15,6 +15,11 @@ void main() {
     });
   });
 
+  test('parcelCount says parcel for one and parcels for more', () {
+    expect(parcelCount(1), '1 parcel');
+    expect(parcelCount(3), '3 parcels');
+  });
+
   group('phone numbers', () {
     test('are shown the way people say them', () {
       expect(localPhone('+254745902117'), '0745 902 117');

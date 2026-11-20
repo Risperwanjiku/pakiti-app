@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:http/http.dart' as http;
 
-import '../config.dart';
+import 'package:pakiti_app/config.dart';
 
 class ApiException implements Exception {
   const ApiException(this.message, {this.statusCode, this.fieldErrors = const {}});

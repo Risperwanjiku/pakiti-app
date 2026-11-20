@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'screens/login.dart';
-import 'theme/app_theme.dart';
+
+import 'package:pakiti_app/screens/account/login_screen.dart';
+import 'package:pakiti_app/theme/app_theme.dart';
 
 void main() {
   runApp(const PakitiApp());

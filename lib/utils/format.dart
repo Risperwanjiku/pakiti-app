@@ -1,5 +1,8 @@
 const _months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
+// 1 -> 1 parcel, 3 -> 3 parcels
+String parcelCount(int parcels) => parcels == 1 ? '1 parcel' : '$parcels parcels';
+
 // 1800 -> KSh 1,800
 String ksh(num amount) {
   final whole = amount.round().toString();
@@ -45,10 +48,10 @@ String travelTime(int minutes) {
 
   final rounded = (minutes / 15).round() * 15;
   final hours = rounded ~/ 60;
-  final rest = rounded % 60;
-  final hrs = hours == 1 ? '1 hr' : '$hours hrs';
+  final extraMinutes = rounded % 60;
+  final hoursText = hours == 1 ? '1 hr' : '$hours hrs';
 
-  return rest == 0 ? '$hrs by road' : '$hrs $rest min by road';
+  return extraMinutes == 0 ? '$hoursText by road' : '$hoursText $extraMinutes min by road';
 }
 
 // 4:39 pm

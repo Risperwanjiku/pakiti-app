@@ -1,11 +1,11 @@
-import 'parcel_size.dart';
+import 'package:pakiti_app/models/parcel_size.dart';
 
 class Destination {
   const Destination({
     required this.routeId,
     required this.town,
     required this.county,
-    required this.minutes,
+    required this.travelMinutes,
     required this.fees,
   });
 
@@ -16,7 +16,7 @@ class Destination {
       routeId: json['route_id'] as int,
       town: json['town'] as String,
       county: json['county'] as String,
-      minutes: json['minutes'] as int,
+      travelMinutes: json['minutes'] as int,
       fees: {
         for (final size in ParcelSize.values) size: fees[size.name] as num,
       },
@@ -26,6 +26,6 @@ class Destination {
   final int routeId;
   final String town;
   final String county;
-  final int minutes;
+  final int travelMinutes;
   final Map<ParcelSize, num> fees;
 }

@@ -1,8 +1,8 @@
-import '../models/clerk_summary.dart';
-import '../models/destination.dart';
-import '../models/parcel_filter.dart';
-import '../models/parcel_page.dart';
-import 'api_client.dart';
+import 'package:pakiti_app/models/clerk_summary.dart';
+import 'package:pakiti_app/models/destination.dart';
+import 'package:pakiti_app/models/parcel_filter.dart';
+import 'package:pakiti_app/models/parcel_page.dart';
+import 'package:pakiti_app/services/api_client.dart';
 
 class ClerkService {
   ClerkService({ApiClient? api}) : _api = api ?? ApiClient.instance;

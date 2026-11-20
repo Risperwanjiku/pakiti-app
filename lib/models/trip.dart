@@ -1,4 +1,4 @@
-import 'parcel_size.dart';
+import 'package:pakiti_app/models/parcel_size.dart';
 
 enum TripStatus { loading, departed, arrived }
 
@@ -19,8 +19,8 @@ class TripParcel {
       receiverName: json['receiver_name'] as String,
       contents: json['contents'] as String,
       size: ParcelSize.values.byName(json['size'] as String),
-      loadedAt: _time(json['loaded_at']),
-      offAt: _time(json['off_at']),
+      loadedAt: _parseTime(json['loaded_at']),
+      offAt: _parseTime(json['off_at']),
     );
   }
 
@@ -75,9 +75,9 @@ class Trip {
       to: json['to'] as String,
       toOffice: json['to_office'] as String,
       vehicle: json['vehicle'] as String,
-      departedAt: _time(json['departed_at']),
-      expectedArrival: _time(json['expected_arrival']),
-      arrivedAt: _time(json['arrived_at']),
+      departedAt: _parseTime(json['departed_at']),
+      expectedArrival: _parseTime(json['expected_arrival']),
+      arrivedAt: _parseTime(json['arrived_at']),
       parcels: parcels
           .map((item) => TripParcel.fromJson(item as Map<String, dynamic>))
           .toList(),
@@ -106,7 +106,7 @@ class Trip {
   List<TripParcel> get stillOnBoard => parcels.where((parcel) => parcel.offAt == null).toList();
 
   // how long the trip should take, worked out by the API at departure
-  int? get minutes {
+  int? get expectedMinutes {
     final departedAt = this.departedAt;
     final expectedArrival = this.expectedArrival;
 
@@ -118,6 +118,6 @@ class Trip {
   }
 }
 
-DateTime? _time(Object? value) {
+DateTime? _parseTime(Object? value) {
   return value == null ? null : DateTime.parse(value as String).toLocal();
 }

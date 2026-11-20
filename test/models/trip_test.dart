@@ -28,7 +28,7 @@ void main() {
     expect(trip.status, TripStatus.loading);
     expect(trip.toOffice, 'Nairobi office');
     expect(trip.departedAt, isNull);
-    expect(trip.minutes, isNull);
+    expect(trip.expectedMinutes, isNull);
     expect(parcel.receiverName, 'Paul Kamau');
     expect(parcel.size, ParcelSize.small);
     expect(parcel.loadedAt!.toUtc(), DateTime.utc(2026, 11, 17, 19, 11, 59));
@@ -40,7 +40,7 @@ void main() {
     final trip = onTheWayTrip();
 
     expect(trip.status, TripStatus.departed);
-    expect(trip.minutes, 180);
+    expect(trip.expectedMinutes, 180);
     expect(trip.stillOnBoard, hasLength(3));
   });
 

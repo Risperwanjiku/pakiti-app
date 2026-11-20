@@ -1,5 +1,5 @@
-import 'destination.dart';
-import 'parcel_size.dart';
+import 'package:pakiti_app/models/destination.dart';
+import 'package:pakiti_app/models/parcel_size.dart';
 
 // what the clerk filled in, already checked and tidied
 class NewParcel {

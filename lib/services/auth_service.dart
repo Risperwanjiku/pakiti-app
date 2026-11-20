@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-import '../models/staff_user.dart';
-import 'api_client.dart';
+import 'package:pakiti_app/models/staff_user.dart';
+import 'package:pakiti_app/services/api_client.dart';
 
 class AuthService {
   AuthService({ApiClient? api, FlutterSecureStorage? storage})
@@ -38,8 +38,8 @@ class AuthService {
     try {
       final data = await _api.get('/auth/me');
       return StaffUser.fromJson(data['user'] as Map<String, dynamic>);
-    } on ApiException catch (e) {
-      if (e.statusCode == 401) {
+    } on ApiException catch (error) {
+      if (error.statusCode == 401) {
         await _clearToken();
         return null;
       }
@@ -58,8 +58,8 @@ class AuthService {
   Future<void> logout() async {
     try {
       await _api.post('/auth/logout');
-    } on ApiException catch (e) {
-      debugPrint('Server logout failed: ${e.message}');
+    } on ApiException catch (error) {
+      debugPrint('Server logout failed: ${error.message}');
     }
     await _clearToken();
   }

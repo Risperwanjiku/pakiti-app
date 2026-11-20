@@ -66,7 +66,7 @@ class FakeParcelService extends ParcelService {
   }
 
   @override
-  Future<ParcelDetails> details(String trackingNo) async {
+  Future<ParcelDetails> fetchDetails(String trackingNo) async {
     if (error != null) {
       throw error!;
     }
@@ -75,7 +75,7 @@ class FakeParcelService extends ParcelService {
   }
 
   @override
-  ImageProvider photo(String trackingNo) => pixel;
+  ImageProvider photoOf(String trackingNo) => pixel;
 }
 
 const peter = StaffUser(
@@ -183,7 +183,7 @@ class FakeTripService extends TripService {
   final calls = <String>[];
 
   @override
-  Future<Trip?> fetchCurrent() async {
+  Future<Trip?> fetchCurrentTrip() async {
     calls.add('current');
     _throwIfAsked();
     return current;
@@ -197,21 +197,21 @@ class FakeTripService extends TripService {
   }
 
   @override
-  Future<Trip> start(int routeId, int vehicleId) async {
+  Future<Trip> startTrip(int routeId, int vehicleId) async {
     calls.add('start $routeId $vehicleId');
     _throwIfAsked();
     return current = started!;
   }
 
   @override
-  Future<void> cancel(int tripId) async {
+  Future<void> cancelTrip(int tripId) async {
     calls.add('cancel $tripId');
     _throwIfAsked();
     current = null;
   }
 
   @override
-  Future<LoadResult> load(int tripId, String trackingNo) async {
+  Future<LoadResult> loadParcel(int tripId, String trackingNo) async {
     calls.add('load $trackingNo');
     _throwIfAsked();
 
@@ -226,14 +226,14 @@ class FakeTripService extends TripService {
   }
 
   @override
-  Future<Trip> depart(int tripId) async {
+  Future<Trip> departTrip(int tripId) async {
     calls.add('depart $tripId');
     _throwIfAsked();
     return current = departed!;
   }
 
   @override
-  Future<void> end(int tripId, {bool anyway = false}) async {
+  Future<void> endTrip(int tripId, {bool anyway = false}) async {
     calls.add(anyway ? 'end $tripId anyway' : 'end $tripId');
     _throwIfAsked();
     current = null;

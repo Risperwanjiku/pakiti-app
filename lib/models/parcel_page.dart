@@ -1,4 +1,4 @@
-import 'parcel_card.dart';
+import 'package:pakiti_app/models/parcel_card.dart';
 
 // one page of the Parcels list, 30 parcels at most
 class ParcelPage {
