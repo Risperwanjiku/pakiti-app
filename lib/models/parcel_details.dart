@@ -72,6 +72,25 @@ class Vehicle {
   final String conductorPhone;
 }
 
+// Only sent for a parcel waiting at the clerk's own office, which is when it can be handed over.
+class HandOverState {
+  const HandOverState({required this.codeSent, required this.triesLeft});
+
+  factory HandOverState.fromJson(Map<String, dynamic> json) {
+    return HandOverState(
+      codeSent: json['code_sent'] as bool,
+      triesLeft: json['tries_left'] as int,
+    );
+  }
+
+  // false for a parcel that arrived before codes were sent
+  final bool codeSent;
+  final int triesLeft;
+
+  // the code was wrong five times, so only the admin can let it go now
+  bool get isLocked => triesLeft == 0;
+}
+
 class ParcelDetails {
   const ParcelDetails({
     required this.booking,
@@ -84,6 +103,7 @@ class ParcelDetails {
     this.vehicle,
     required this.events,
     required this.recordChecked,
+    this.handOver,
   });
 
   factory ParcelDetails.fromJson(Map<String, dynamic> json) {
@@ -91,6 +111,7 @@ class ParcelDetails {
     final expectedArrival = parcel['expected_arrival'] as String?;
     final vehicle = parcel['vehicle'] as Map<String, dynamic>?;
     final events = json['events'] as List<dynamic>;
+    final handOver = json['hand_over'] as Map<String, dynamic>?;
 
     return ParcelDetails(
       booking: BookedParcel.fromJson(parcel),
@@ -105,6 +126,7 @@ class ParcelDetails {
           .map((item) => ParcelEvent.fromJson(item as Map<String, dynamic>))
           .toList(),
       recordChecked: json['record_checked'] as bool,
+      handOver: handOver == null ? null : HandOverState.fromJson(handOver),
     );
   }
 
@@ -122,7 +144,13 @@ class ParcelDetails {
   // false when the API found something in the custody record changed after it was saved
   final bool recordChecked;
 
+  // null unless the parcel is waiting here for the receiver
+  final HandOverState? handOver;
+
   bool get hasBookingPhoto => events.isNotEmpty && events.first.hasPhoto;
+
+  bool get hasHandoverPhoto =>
+      events.any((event) => event.step == CustodyStep.collected && event.hasPhoto);
 
   // the hand-offs still to come after the last one recorded
   List<CustodyStep> get stepsLeft {

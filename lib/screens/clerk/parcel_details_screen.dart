@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:pakiti_app/models/parcel_details.dart';
+import 'package:pakiti_app/screens/clerk/handover_screen.dart';
 import 'package:pakiti_app/screens/clerk/parcel_photo_screen.dart';
 import 'package:pakiti_app/services/api_client.dart';
 import 'package:pakiti_app/services/parcel_service.dart';
@@ -8,9 +9,11 @@ import 'package:pakiti_app/theme/app_colors.dart';
 import 'package:pakiti_app/utils/format.dart';
 import 'package:pakiti_app/utils/messages.dart';
 import 'package:pakiti_app/utils/phone_call.dart';
+import 'package:pakiti_app/widgets/common/bottom_button_bar.dart';
 import 'package:pakiti_app/widgets/common/load_error_card.dart';
 import 'package:pakiti_app/widgets/common/page_app_bar.dart';
 import 'package:pakiti_app/widgets/common/white_card.dart';
+import 'package:pakiti_app/widgets/parcel/locked_sheet.dart';
 import 'package:pakiti_app/widgets/parcel/parcel_facts_card.dart';
 import 'package:pakiti_app/widgets/parcel/parcel_history_card.dart';
 import 'package:pakiti_app/widgets/parcel/parcel_people_card.dart';
@@ -18,12 +21,20 @@ import 'package:pakiti_app/widgets/parcel/parcel_where_now_card.dart';
 import 'package:pakiti_app/widgets/parcel/record_changed_warning.dart';
 
 class ParcelDetailsScreen extends StatefulWidget {
-  const ParcelDetailsScreen({super.key, required this.trackingNo, this.service});
+  const ParcelDetailsScreen({
+    super.key,
+    required this.trackingNo,
+    this.service,
+    this.onChanged,
+  });
 
   final String trackingNo;
 
   // tests pass in a fake one
   final ParcelService? service;
+
+  // lets the list this was opened from load again, like after a hand-over
+  final VoidCallback? onChanged;
 
   @override
   State<ParcelDetailsScreen> createState() => _ParcelDetailsScreenState();
@@ -34,6 +45,7 @@ class _ParcelDetailsScreenState extends State<ParcelDetailsScreen> {
 
   // made once, so the small photo and the full one share one download
   late final ImageProvider _photo = _service.photoOf(widget.trackingNo);
+  late final ImageProvider _handoverPhoto = _service.handoverPhotoOf(widget.trackingNo);
 
   late Future<ParcelDetails> _details;
 
@@ -66,12 +78,31 @@ class _ParcelDetailsScreenState extends State<ParcelDetailsScreen> {
     }
   }
 
-  void _openPhoto() {
+  void _openPhoto(ImageProvider photo) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => ParcelPhotoScreen(photo: _photo, trackingNo: widget.trackingNo),
+        builder: (_) => ParcelPhotoScreen(photo: photo, trackingNo: widget.trackingNo),
       ),
     );
+  }
+
+  Future<void> _handOver(ParcelDetails details) async {
+    // a locked parcel can't be handed over, so there is no form to open
+    if (details.handOver!.isLocked) {
+      await showLockedSheet(context, widget.trackingNo);
+      return;
+    }
+
+    final changed = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => HandoverScreen(details: details, photo: _photo, service: _service),
+      ),
+    );
+
+    if (changed == true && mounted) {
+      _retry();
+      widget.onChanged?.call();
+    }
   }
 
   @override
@@ -79,21 +110,37 @@ class _ParcelDetailsScreenState extends State<ParcelDetailsScreen> {
     return Scaffold(
       backgroundColor: AppColors.page,
       appBar: PageAppBar(title: widget.trackingNo),
-      body: RefreshIndicator(
-        onRefresh: _refresh,
-        child: FutureBuilder<ParcelDetails>(
-          future: _details,
-          builder: (context, snapshot) {
-            return SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: _buildContent(snapshot),
+      body: FutureBuilder<ParcelDetails>(
+        future: _details,
+        builder: (context, snapshot) {
+          final details = snapshot.data;
+
+          return Column(
+            children: [
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: _refresh,
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: _buildContent(snapshot),
+                    ),
+                  ),
+                ),
               ),
-            );
-          },
-        ),
+              // only for a parcel waiting at this office for its receiver
+              if (details != null && details.handOver != null && !snapshot.hasError)
+                BottomButtonBar(
+                  child: FilledButton(
+                    onPressed: () => _handOver(details),
+                    child: const Text('Hand over'),
+                  ),
+                ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -135,7 +182,13 @@ class _ParcelDetailsScreenState extends State<ParcelDetailsScreen> {
       const SizedBox(height: 16),
       ParcelPeopleCard(booking: details.booking, onCall: _callPhone),
       const SizedBox(height: 16),
-      ParcelFactsCard(details: details, photo: _photo, onViewPhoto: _openPhoto),
+      ParcelFactsCard(
+        details: details,
+        photo: _photo,
+        onViewPhoto: () => _openPhoto(_photo),
+        handoverPhoto: _handoverPhoto,
+        onViewHandoverPhoto: () => _openPhoto(_handoverPhoto),
+      ),
       const SizedBox(height: 24),
       ParcelHistoryCard(details: details),
     ];

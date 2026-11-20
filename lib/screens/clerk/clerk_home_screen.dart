@@ -92,9 +92,12 @@ class _ClerkHomeScreenState extends State<ClerkHomeScreen> {
     );
   }
 
+  // a hand-over on the parcel's page changes the counts, so they load again
   void _openParcel(String trackingNo) {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => ParcelDetailsScreen(trackingNo: trackingNo)),
+      MaterialPageRoute(
+        builder: (_) => ParcelDetailsScreen(trackingNo: trackingNo, onChanged: _refresh),
+      ),
     );
   }
 

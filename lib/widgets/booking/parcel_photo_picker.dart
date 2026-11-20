@@ -14,12 +14,16 @@ class ParcelPhotoPicker extends StatelessWidget {
     required this.takenAt,
     required this.onTakePhoto,
     this.error,
+    this.hint = 'Proof of its condition at booking',
   });
 
   final String? photoPath;
   final DateTime? takenAt;
   final VoidCallback onTakePhoto;
   final String? error;
+
+  // the line under Take a photo, which says when the photo is for
+  final String hint;
 
   @override
   Widget build(BuildContext context) {
@@ -69,11 +73,11 @@ class ParcelPhotoPicker extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 14),
-                    const Column(
+                    Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           'Take a photo',
                           style: TextStyle(
                             fontSize: 15,
@@ -82,8 +86,8 @@ class ParcelPhotoPicker extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          'Proof of its condition at booking',
-                          style: TextStyle(fontSize: 12, color: AppColors.grey),
+                          hint,
+                          style: const TextStyle(fontSize: 12, color: AppColors.grey),
                         ),
                       ],
                     ),

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/painting.dart';
 
 import 'package:pakiti_app/models/booked_parcel.dart';
+import 'package:pakiti_app/models/handed_over.dart';
 import 'package:pakiti_app/models/new_parcel.dart';
 import 'package:pakiti_app/models/parcel_details.dart';
 import 'package:pakiti_app/models/search_result.dart';
@@ -52,6 +53,35 @@ class ParcelService {
       _api.url('/parcels/${Uri.encodeComponent(trackingNo)}/photo').toString(),
       headers: _api.authHeader,
     );
+  }
+
+  // the photo taken when the receiver collected it
+  ImageProvider handoverPhotoOf(String trackingNo) {
+    return NetworkImage(
+      _api.url('/parcels/${Uri.encodeComponent(trackingNo)}/handover-photo').toString(),
+      headers: _api.authHeader,
+    );
+  }
+
+  // A wrong code comes back as an ApiException with a 'code' field error, and the
+  // fifth wrong one as a 423, which means the parcel is now locked.
+  Future<HandedOver> handOver(
+    String trackingNo, {
+    required String code,
+    required String photoPath,
+  }) async {
+    final data = await _api.postForm(
+      '/parcels/${Uri.encodeComponent(trackingNo)}/collection',
+      fields: {'code': code},
+      files: {'photo': photoPath},
+    );
+
+    return HandedOver.fromJson(data);
+  }
+
+  // the old code stops working as soon as the new one is made
+  Future<void> sendNewCode(String trackingNo) async {
+    await _api.post('/parcels/${Uri.encodeComponent(trackingNo)}/code');
   }
 
   // a random version 4 UUID

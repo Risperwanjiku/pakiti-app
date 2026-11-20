@@ -79,7 +79,8 @@ class ParcelHistory extends StatelessWidget {
       CustodyStep.departed =>
         event.vehicle == null ? who : 'On ${event.vehicle} with ${event.staffName}',
       CustodyStep.notOffloaded => 'Still on board when ${event.staffName} ended the trip',
-      CustodyStep.collected => 'Handed over by $who',
+      CustodyStep.collected =>
+        event.hasPhoto ? 'Handed over by $who. Photo taken.' : 'Handed over by $who',
       _ => who,
     };
 

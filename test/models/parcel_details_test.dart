@@ -69,4 +69,26 @@ void main() {
     expect(details.timeOf(CustodyStep.departed), DateTime(2026, 11, 12, 17, 25));
     expect(details.timeOf(CustodyStep.arrived), isNull);
   });
+
+  test('a parcel waiting here says if a code went out and how many tries are left', () {
+    final details = waitingHere(triesLeft: 2);
+
+    expect(details.handOver!.codeSent, isTrue);
+    expect(details.handOver!.triesLeft, 2);
+    expect(details.handOver!.isLocked, isFalse);
+    expect(waitingHere(codeSent: false).handOver!.codeSent, isFalse);
+    expect(waitingHere(triesLeft: 0).handOver!.isLocked, isTrue);
+  });
+
+  test('only a parcel waiting at this office can be handed over', () {
+    expect(readReply().handOver, isNull);
+    expect(onTheWay().handOver, isNull);
+    expect(handedOverWithPhoto().handOver, isNull);
+  });
+
+  test('knows when there is a photo from the handover', () {
+    expect(handedOverWithPhoto().hasHandoverPhoto, isTrue);
+    expect(collectedNextDay().hasHandoverPhoto, isFalse);
+    expect(waitingHere().hasHandoverPhoto, isFalse);
+  });
 }

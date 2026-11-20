@@ -5,6 +5,7 @@ import 'package:pakiti_app/theme/app_colors.dart';
 import 'package:pakiti_app/utils/format.dart';
 import 'package:pakiti_app/widgets/common/pakiti_sheet.dart';
 import 'package:pakiti_app/widgets/common/status_tag.dart';
+import 'package:pakiti_app/widgets/parcel/parcel_thumb.dart';
 
 // For a parcel coming in to this office. Gives back true when the clerk taps
 // Mark as arrived, and false when the sheet is closed.
@@ -120,23 +121,7 @@ class _ArrivalSheet extends StatelessWidget {
       ),
       child: Row(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image(
-              image: photo,
-              width: 56,
-              height: 56,
-              fit: BoxFit.cover,
-              frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-                return frame == null && !wasSynchronouslyLoaded
-                    ? _buildPhotoBox(Icons.photo_outlined)
-                    : child;
-              },
-              errorBuilder: (context, error, stackTrace) {
-                return _buildPhotoBox(Icons.image_not_supported_outlined);
-              },
-            ),
-          ),
+          ParcelThumb(photo: photo, boxColor: Colors.white),
           const SizedBox(width: 14),
           Expanded(
             child: Column(
@@ -159,16 +144,6 @@ class _ArrivalSheet extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  // stands in for the photo while it loads, or if it fails
-  Widget _buildPhotoBox(IconData icon) {
-    return Container(
-      width: 56,
-      height: 56,
-      color: Colors.white,
-      child: Icon(icon, color: AppColors.border),
     );
   }
 }

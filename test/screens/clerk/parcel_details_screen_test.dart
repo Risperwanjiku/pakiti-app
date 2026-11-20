@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pakiti_app/models/parcel_details.dart';
+import 'package:pakiti_app/screens/clerk/handover_screen.dart';
 import 'package:pakiti_app/screens/clerk/parcel_details_screen.dart';
 import 'package:pakiti_app/services/api_client.dart';
 
@@ -116,5 +117,75 @@ void main() {
     expect(find.text('Collected'), findsOneWidget);
     expect(find.text('Arrived on 12 Nov'), findsOneWidget);
     expect(find.text('Collected by Kevin Maina'), findsNWidgets(2));
+  });
+
+  testWidgets('a parcel waiting here has Hand over, which opens the form', (tester) async {
+    await openParcel(tester, waitingHere());
+
+    expect(find.text('Ready for collection at Nairobi office'), findsOneWidget);
+
+    await tester.tap(find.widgetWithText(FilledButton, 'Hand over'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(HandoverScreen), findsOneWidget);
+    expect(find.text('Ask Kevin for the 6 numbers.'), findsOneWidget);
+  });
+
+  testWidgets('a locked parcel says why instead of opening the form', (tester) async {
+    await openParcel(tester, waitingHere(triesLeft: 0));
+
+    await tester.tap(find.widgetWithText(FilledButton, 'Hand over'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('This parcel is locked'), findsOneWidget);
+    expect(find.byType(HandoverScreen), findsNothing);
+  });
+
+  testWidgets('only a parcel waiting at this office can be handed over', (tester) async {
+    await openParcel(tester, onTheWay());
+
+    expect(find.widgetWithText(FilledButton, 'Hand over'), findsNothing);
+  });
+
+  testWidgets('a collected parcel shows the photo taken at the counter', (tester) async {
+    await openParcel(tester, handedOverWithPhoto());
+
+    expect(find.text('Photo at booking'), findsOneWidget);
+    expect(find.text('Photo at handover'), findsOneWidget);
+    expect(find.text('13 Nov, 10:42 am'), findsNWidgets(2));
+    expect(find.text('Handed over by Mercy Njoroge, clerk. Photo taken.'), findsOneWidget);
+    expect(find.widgetWithText(FilledButton, 'Hand over'), findsNothing);
+  });
+
+  testWidgets('tells the list it came from when the parcel changes', (tester) async {
+    var changed = 0;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ParcelDetailsScreen(
+          trackingNo: 'PKT-460048',
+          service: FakeParcelService(
+            parcel: waitingHere(triesLeft: 1),
+            newCodeError: const ApiException(
+              "The code was wrong 5 times, so PKT-460048 can't be handed over for now. "
+              'Ask the admin to unlock it.',
+              statusCode: 423,
+            ),
+          ),
+          onChanged: () => changed++,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.widgetWithText(FilledButton, 'Hand over'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Send a new code'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Back to the parcel'));
+    await tester.pumpAndSettle();
+
+    expect(changed, 1);
+    expect(find.byType(HandoverScreen), findsNothing);
   });
 }

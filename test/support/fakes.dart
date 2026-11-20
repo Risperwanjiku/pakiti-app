@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/painting.dart';
 import 'package:pakiti_app/models/arrival.dart';
 import 'package:pakiti_app/models/clerk_summary.dart';
+import 'package:pakiti_app/models/handed_over.dart';
 import 'package:pakiti_app/models/load_result.dart';
 import 'package:pakiti_app/models/parcel_card.dart';
 import 'package:pakiti_app/models/parcel_details.dart';
@@ -41,19 +43,38 @@ const realLoadReply =
     '"loaded_at":"2026-11-17T22:11:59+03:00","off_at":null}],"waiting":[]}}}';
 
 // a one pixel PNG, so screens with the parcel photo don't go to the network
-final pixel = MemoryImage(
-  base64Decode(
-    'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
-  ),
+final pixelBytes = base64Decode(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
 );
+final pixel = MemoryImage(pixelBytes);
+
+// the pixel saved as a file, like a photo the camera just took
+String photoFile() {
+  final folder = Directory.systemTemp.createTempSync('pakiti_test');
+
+  return (File('${folder.path}/parcel.png')..writeAsBytesSync(pixelBytes)).path;
+}
 
 class FakeParcelService extends ParcelService {
-  FakeParcelService({this.found, this.parcel, this.error});
+  FakeParcelService({
+    this.found,
+    this.parcel,
+    this.error,
+    this.handOverError,
+    this.newCodeError,
+  });
 
   final SearchResult? found;
   final ParcelDetails? parcel;
   final Object? error;
+
+  // what Hand over and Send a new code throw, instead of working
+  final Object? handOverError;
+  final Object? newCodeError;
   final searches = <String>[];
+
+  // each hand-over and new code, like 'hand over PKT-460048 481207' or 'new code PKT-460048'
+  final calls = <String>[];
 
   @override
   Future<SearchResult> search(String query) async {
@@ -77,6 +98,39 @@ class FakeParcelService extends ParcelService {
 
   @override
   ImageProvider photoOf(String trackingNo) => pixel;
+
+  @override
+  ImageProvider handoverPhotoOf(String trackingNo) => pixel;
+
+  @override
+  Future<HandedOver> handOver(
+    String trackingNo, {
+    required String code,
+    required String photoPath,
+  }) async {
+    calls.add('hand over $trackingNo $code');
+
+    if (handOverError != null) {
+      throw handOverError!;
+    }
+
+    return HandedOver(
+      trackingNo: trackingNo,
+      receiverName: 'Kevin Maina',
+      collectedAt: DateTime(2026, 11, 13, 10, 42),
+      handedOverBy: 'Mercy Njoroge',
+      office: 'Nairobi office',
+    );
+  }
+
+  @override
+  Future<void> sendNewCode(String trackingNo) async {
+    calls.add('new code $trackingNo');
+
+    if (newCodeError != null) {
+      throw newCodeError!;
+    }
+  }
 }
 
 const peter = StaffUser(
@@ -569,6 +623,44 @@ ParcelDetails collectedNextDay() {
   }));
 }
 
+// at Nairobi, waiting for Kevin, after Mercy scanned it off at 8:20 pm
+ParcelDetails waitingHere({bool codeSent = true, int triesLeft = 5}) {
+  return ParcelDetails.fromJson(_json({
+    'parcel': {
+      ..._booking,
+      'status': 'arrived',
+      'is_late': false,
+      'expected_arrival': '2026-11-12T20:30:00',
+      'vehicle': _vehicle,
+    },
+    'events': [_booked, _loaded, _departed, _arrivedNairobi],
+    'record_checked': true,
+    'hand_over': {'code_sent': codeSent, 'tries_left': triesLeft},
+  }));
+}
+
+// the same parcel after Kevin collected it the next morning, with the photo from the counter
+ParcelDetails handedOverWithPhoto() {
+  return ParcelDetails.fromJson(_json({
+    'parcel': {
+      ..._booking,
+      'status': 'collected',
+      'is_late': false,
+      'expected_arrival': '2026-11-12T20:30:00',
+      'vehicle': _vehicle,
+    },
+    'events': [
+      _booked,
+      _loaded,
+      _departed,
+      _arrivedNairobi,
+      _event('collected', '2026-11-13T10:42:00', 'Mercy Njoroge', 'clerk', office: 'Nairobi office', photo: true),
+    ],
+    'record_checked': true,
+    'hand_over': null,
+  }));
+}
+
 const _booking = {
   'tracking_no': 'PKT-460048',
   'from': 'Nyeri',
@@ -595,6 +687,7 @@ const _vehicle = {
 final _booked = _event('booked', '2026-11-12T16:41:00', 'Peter Mwangi', 'clerk', office: 'Nyeri office', photo: true);
 final _loaded = _event('loaded', '2026-11-12T17:10:00', 'John Otieno', 'conductor', vehicle: 'KDG 117T');
 final _departed = _event('departed', '2026-11-12T17:25:00', 'John Otieno', 'conductor', vehicle: 'KDG 117T');
+final _arrivedNairobi = _event('arrived', '2026-11-12T20:20:00', 'Mercy Njoroge', 'clerk', office: 'Nairobi office', vehicle: 'KDG 117T');
 
 Map<String, Object?> _event(
   String type,

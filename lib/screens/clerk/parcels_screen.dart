@@ -190,9 +190,12 @@ class _ParcelsScreenState extends State<ParcelsScreen> {
     );
   }
 
+  // a parcel handed over on its page leaves the Arrived list, so the list loads again
   void _openParcel(String trackingNo) {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => ParcelDetailsScreen(trackingNo: trackingNo)),
+      MaterialPageRoute(
+        builder: (_) => ParcelDetailsScreen(trackingNo: trackingNo, onChanged: _refresh),
+      ),
     );
   }
 
