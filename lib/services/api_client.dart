@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:http/http.dart' as http;
@@ -57,7 +58,12 @@ class ApiClient {
           ..fields.addAll(fields);
 
         for (final file in files.entries) {
-          request.files.add(await http.MultipartFile.fromPath(file.key, file.value));
+          try {
+            request.files.add(await http.MultipartFile.fromPath(file.key, file.value));
+          } on FileSystemException {
+            // the phone can clear a photo it took earlier, so the clerk is asked for a new one
+            throw const ApiException('The photo is missing. Take it again.');
+          }
         }
 
         return http.Response.fromStream(await _client.send(request));

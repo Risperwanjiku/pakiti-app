@@ -11,6 +11,7 @@ import 'package:pakiti_app/theme/app_colors.dart';
 import 'package:pakiti_app/utils/format.dart';
 import 'package:pakiti_app/utils/messages.dart';
 import 'package:pakiti_app/widgets/common/load_error_card.dart';
+import 'package:pakiti_app/widgets/common/list_heading.dart';
 import 'package:pakiti_app/widgets/common/page_app_bar.dart';
 import 'package:pakiti_app/widgets/parcel/no_parcels_card.dart';
 import 'package:pakiti_app/widgets/parcel/parcel_filter_bar.dart';
@@ -186,7 +187,7 @@ class _ParcelsScreenState extends State<ParcelsScreen> {
 
   void _openSearch() {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const SearchScreen()),
+      MaterialPageRoute(builder: (_) => SearchScreen(onChanged: _refresh)),
     );
   }
 
@@ -266,19 +267,7 @@ class _ParcelsScreenState extends State<ParcelsScreen> {
     }
 
     return [
-      Text(
-        parcelCount(_totalCount),
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-          color: AppColors.darkText,
-        ),
-      ),
-      const SizedBox(height: 2),
-      Text(
-        _listCaption(),
-        style: const TextStyle(fontSize: 13, color: AppColors.grey),
-      ),
+      ListHeading(title: parcelCount(_totalCount), caption: _listCaption()),
       const SizedBox(height: 12),
       for (final parcel in _parcels)
         ParcelTile(

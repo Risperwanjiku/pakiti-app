@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:pakiti_app/models/staff_user.dart';
 import 'package:pakiti_app/models/trip.dart';
 import 'package:pakiti_app/models/trip_choices.dart';
-import 'package:pakiti_app/services/api_client.dart';
 import 'package:pakiti_app/services/trip_service.dart';
 import 'package:pakiti_app/theme/app_colors.dart';
 import 'package:pakiti_app/utils/format.dart';
 import 'package:pakiti_app/utils/messages.dart';
+import 'package:pakiti_app/widgets/common/greeting.dart';
 import 'package:pakiti_app/widgets/common/busy_label.dart';
 import 'package:pakiti_app/widgets/common/load_error_card.dart';
 import 'package:pakiti_app/widgets/common/pakiti_app_bar.dart';
@@ -126,11 +126,11 @@ class _StartTripScreenState extends State<StartTripScreen> {
       if (!mounted) return;
 
       widget.onStarted(trip);
-    } on ApiException catch (error) {
+    } catch (error) {
       if (!mounted) return;
 
       setState(() => _starting = false);
-      showApiError(context, error);
+      showError(context, error);
 
       // the vehicle may have gone out with someone else in the meantime
       _fetchChoices();
@@ -151,14 +151,7 @@ class _StartTripScreenState extends State<StartTripScreen> {
           physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
           children: [
-            Text(
-              'Habari, ${widget.user.firstName}',
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w600,
-                color: AppColors.darkText,
-              ),
-            ),
+            Greeting(firstName: widget.user.firstName),
             const SizedBox(height: 16),
             if (error != null)
               LoadErrorCard(error: error, onRetry: _retry, onLogIn: () => goToLogin(context))

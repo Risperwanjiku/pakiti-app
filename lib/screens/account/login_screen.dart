@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:pakiti_app/models/staff_user.dart';
-import 'package:pakiti_app/screens/clerk/clerk_tabs.dart';
-import 'package:pakiti_app/screens/conductor/conductor_tabs.dart';
+import 'package:pakiti_app/screens/account/start_screen.dart';
 import 'package:pakiti_app/services/api_client.dart';
 import 'package:pakiti_app/services/auth_service.dart';
 import 'package:pakiti_app/theme/app_colors.dart';
@@ -82,19 +80,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (!mounted) return;
 
-      if (user.role == StaffRole.admin) {
+      final tabs = tabsFor(user);
+
+      if (tabs == null) {
         setState(() => _loggingIn = false);
         showMessage(context, 'The admin screens are not ready yet.');
         return;
       }
 
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (_) => user.role == StaffRole.conductor
-              ? ConductorTabs(user: user)
-              : ClerkTabs(user: user),
-        ),
-      );
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => tabs));
     } on ApiException catch (error) {
       if (!mounted) return;
 
@@ -108,6 +102,11 @@ class _LoginScreenState extends State<LoginScreen> {
       if (error.statusCode != 401) {
         showMessage(context, error.message);
       }
+    } catch (error) {
+      if (!mounted) return;
+
+      setState(() => _loggingIn = false);
+      showError(context, error);
     }
   }
 

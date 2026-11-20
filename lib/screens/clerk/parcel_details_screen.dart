@@ -130,8 +130,12 @@ class _ParcelDetailsScreenState extends State<ParcelDetailsScreen> {
                   ),
                 ),
               ),
-              // only for a parcel waiting at this office for its receiver
-              if (details != null && details.handOver != null && !snapshot.hasError)
+              // only for a parcel waiting at this office for its receiver, and hidden while it
+              // loads again, so a parcel just handed over can't be opened a second time
+              if (details != null &&
+                  details.handOver != null &&
+                  !snapshot.hasError &&
+                  snapshot.connectionState != ConnectionState.waiting)
                 BottomButtonBar(
                   child: FilledButton(
                     onPressed: () => _handOver(details),

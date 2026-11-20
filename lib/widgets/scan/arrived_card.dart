@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:pakiti_app/theme/app_colors.dart';
+import 'package:pakiti_app/widgets/common/done_tick.dart';
 
 // Shows over the bottom of the camera once a parcel is marked as arrived,
 // until the next label is scanned.
@@ -24,15 +25,9 @@ class ArrivedCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 20,
-            height: 20,
-            margin: const EdgeInsets.only(top: 1),
-            decoration: const BoxDecoration(
-              color: AppColors.statusCollected,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(Icons.check, size: 14, color: Colors.white),
+          const Padding(
+            padding: EdgeInsets.only(top: 1),
+            child: DoneTick(),
           ),
           const SizedBox(width: 12),
           Expanded(

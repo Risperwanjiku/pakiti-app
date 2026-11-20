@@ -4,6 +4,7 @@ import 'package:pakiti_app/models/parcel_details.dart';
 import 'package:pakiti_app/screens/clerk/handover_screen.dart';
 import 'package:pakiti_app/screens/clerk/parcel_details_screen.dart';
 import 'package:pakiti_app/services/api_client.dart';
+import 'package:pakiti_app/utils/format.dart';
 
 import '../../support/fakes.dart';
 
@@ -45,7 +46,7 @@ void main() {
     await openParcel(tester, onTheWay());
 
     expect(find.text('On the way'), findsOneWidget);
-    expect(find.text('Expected in Nairobi about 8:30 pm'), findsOneWidget);
+    expect(find.text('Expected in Nairobi about ${timeWithDay(DateTime(2026, 11, 12, 20, 30))}'), findsOneWidget);
     expect(find.text('Left on 12 Nov'), findsOneWidget);
     expect(find.text('3 hrs by road'), findsOneWidget);
     expect(find.text('KDG 117T, conductor John Otieno'), findsOneWidget);
@@ -108,7 +109,7 @@ void main() {
     await tester.tap(find.text('Try again'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Expected in Nairobi about 8:30 pm'), findsOneWidget);
+    expect(find.text('Expected in Nairobi about ${timeWithDay(DateTime(2026, 11, 12, 20, 30))}'), findsOneWidget);
   });
 
   testWidgets('a collected parcel says when it arrived', (tester) async {

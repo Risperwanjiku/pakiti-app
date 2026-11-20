@@ -3,9 +3,11 @@ import 'dart:io';
 
 import 'package:flutter/painting.dart';
 import 'package:pakiti_app/models/arrival.dart';
+import 'package:pakiti_app/models/booked_parcel.dart';
 import 'package:pakiti_app/models/clerk_summary.dart';
 import 'package:pakiti_app/models/handed_over.dart';
 import 'package:pakiti_app/models/load_result.dart';
+import 'package:pakiti_app/models/new_parcel.dart';
 import 'package:pakiti_app/models/parcel_card.dart';
 import 'package:pakiti_app/models/parcel_details.dart';
 import 'package:pakiti_app/models/parcel_filter.dart';
@@ -62,11 +64,15 @@ class FakeParcelService extends ParcelService {
     this.error,
     this.handOverError,
     this.newCodeError,
+    this.bookError,
   });
 
   final SearchResult? found;
   final ParcelDetails? parcel;
   final Object? error;
+
+  // what Confirm and book throws. Booking tests only cover the problems, so there is no booked parcel.
+  final Object? bookError;
 
   // what Hand over and Send a new code throw, instead of working
   final Object? handOverError;
@@ -75,6 +81,12 @@ class FakeParcelService extends ParcelService {
 
   // each hand-over and new code, like 'hand over PKT-460048 481207' or 'new code PKT-460048'
   final calls = <String>[];
+
+  @override
+  Future<BookedParcel> book(NewParcel parcel, {required String requestId}) async {
+    calls.add('book ${parcel.contents} for ${parcel.receiverName}');
+    throw bookError ?? StateError('Give the fake a bookError.');
+  }
 
   @override
   Future<SearchResult> search(String query) async {
@@ -254,9 +266,21 @@ class FakeClerkService extends ClerkService {
 
 // remembers what it was asked to do instead of calling the API
 class FakeAuthService extends AuthService {
-  FakeAuthService({this.error});
+  FakeAuthService({this.error, this.savedLoginError});
 
   final Object? error;
+
+  // what checking the saved login throws at start-up; with none, there is no saved login
+  final Object? savedLoginError;
+
+  @override
+  Future<StaffUser?> currentUser() async {
+    if (savedLoginError != null) {
+      throw savedLoginError!;
+    }
+
+    return null;
+  }
 
   // each change asked for, like 'old one -> new one'
   final changes = <String>[];

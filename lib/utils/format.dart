@@ -77,6 +77,20 @@ String dayAndTime(DateTime time) {
   return '${time.day} ${_months[time.month - 1]}, ${clockTime(time)}';
 }
 
+// 1:10 am, 1:10 am tomorrow or 1:10 am on 22 Nov, for an expected arrival,
+// since a trip that leaves late in the evening gets in after midnight
+String timeWithDay(DateTime time, {DateTime? now}) {
+  final today = now ?? DateTime.now();
+  final day = DateTime(time.year, time.month, time.day);
+  final daysAway = day.difference(DateTime(today.year, today.month, today.day)).inDays;
+
+  return switch (daysAway) {
+    0 => clockTime(time),
+    1 => '${clockTime(time)} tomorrow',
+    _ => '${clockTime(time)} on ${time.day} ${_months[time.month - 1]}',
+  };
+}
+
 // at 4:41 pm for a time today, on 12 Nov for an earlier day,
 // so a parcel booked days ago doesn't look like it was booked today
 String atTimeOrDay(DateTime time, {DateTime? now}) {

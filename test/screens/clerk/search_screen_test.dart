@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pakiti_app/screens/clerk/parcel_details_screen.dart';
 import 'package:pakiti_app/screens/clerk/search_screen.dart';
 import 'package:pakiti_app/services/api_client.dart';
+import 'package:pakiti_app/utils/format.dart';
 
 import '../../support/fakes.dart';
 
@@ -45,7 +46,7 @@ void main() {
     await openSearch(tester, service, query: 'pkt460048');
 
     expect(find.byType(ParcelDetailsScreen), findsOneWidget);
-    expect(find.text('Expected in Nairobi about 8:30 pm'), findsOneWidget);
+    expect(find.text('Expected in Nairobi about ${timeWithDay(DateTime(2026, 11, 12, 20, 30))}'), findsOneWidget);
   });
 
   testWidgets('shows the message from the API when it cannot read the search', (tester) async {

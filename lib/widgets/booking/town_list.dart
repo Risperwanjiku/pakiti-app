@@ -40,21 +40,6 @@ class TownList extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(16, 10, 12, 10),
               child: Row(
                 children: [
-                  Container(
-                    width: 36,
-                    height: 36,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: AppColors.statusBookedBg,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Icon(
-                      Icons.location_on_outlined,
-                      size: 20,
-                      color: AppColors.statusBooked,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

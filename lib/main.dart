@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:pakiti_app/screens/account/login_screen.dart';
+import 'package:pakiti_app/screens/account/start_screen.dart';
 import 'package:pakiti_app/theme/app_theme.dart';
 
 void main() {
@@ -16,7 +16,7 @@ class PakitiApp extends StatelessWidget {
       title: 'Pakiti',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
-      home: const LoginScreen(),
+      home: const StartScreen(),
     );
   }
 }

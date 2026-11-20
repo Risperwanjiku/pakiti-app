@@ -38,12 +38,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _logOut() async {
     setState(() => _loggingOut = true);
 
-    // clears the token on this phone even if the server can't be reached
-    await _authService.logout();
-
-    if (!mounted) return;
-
-    goToLogin(context);
+    // clears the token on this phone even if the server can't be reached, and goes to
+    // Log in even if the phone's storage fails, so Log out never gets stuck
+    try {
+      await _authService.logout();
+    } finally {
+      if (mounted) {
+        goToLogin(context);
+      }
+    }
   }
 
   @override
@@ -109,15 +112,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildLogOutButton() {
     return OutlinedButton.icon(
       onPressed: _loggingOut ? null : _logOut,
+      // white, since this one sits on the grey page rather than a white card
       style: OutlinedButton.styleFrom(
-        foregroundColor: AppColors.navy,
-        disabledForegroundColor: AppColors.navy,
         backgroundColor: Colors.white,
         disabledBackgroundColor: Colors.white,
-        minimumSize: const Size.fromHeight(56),
-        side: const BorderSide(color: AppColors.navy, width: 1.5),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
       ),
       icon: _loggingOut
           ? const SizedBox(

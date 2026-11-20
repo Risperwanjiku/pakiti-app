@@ -97,25 +97,11 @@ class ParcelBookedScreen extends StatelessWidget {
                     onPressed: () => _printLabel(context),
                     icon: const Icon(Icons.print_outlined, size: 22),
                     label: const Text('Print label and receipt'),
-                    style: FilledButton.styleFrom(
-                      backgroundColor: AppColors.navy,
-                      foregroundColor: Colors.white,
-                      minimumSize: const Size.fromHeight(56),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                    ),
                   ),
                   if (onBookAnother != null) ...[
                     const SizedBox(height: 8),
                     OutlinedButton(
                       onPressed: () => _bookAnother(context),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: AppColors.navy,
-                        minimumSize: const Size.fromHeight(56),
-                        side: const BorderSide(color: AppColors.navy, width: 1.5),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                      ),
                       child: Text('Book another for $firstName'),
                     ),
                   ],

@@ -68,5 +68,14 @@ void main() {
       expect(atTimeOrDay(DateTime(2026, 11, 13, 0, 10), now: now), 'on 13 Nov');
       expect(atTimeOrDay(DateTime(2025, 11, 17, 9, 0), now: now), 'on 17 Nov');
     });
+
+    test('for an arrival say the day when it is not today', () {
+      final now = DateTime(2026, 11, 17, 22, 5);
+
+      expect(timeWithDay(DateTime(2026, 11, 17, 23, 40), now: now), '11:40 pm');
+      expect(timeWithDay(DateTime(2026, 11, 18, 1, 10), now: now), '1:10 am tomorrow');
+      expect(timeWithDay(DateTime(2026, 11, 19, 9, 0), now: now), '9:00 am on 19 Nov');
+      expect(timeWithDay(DateTime(2026, 12, 1, 9, 0), now: DateTime(2026, 11, 30, 20)), '9:00 am tomorrow');
+    });
   });
 }

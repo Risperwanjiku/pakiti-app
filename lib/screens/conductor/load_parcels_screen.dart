@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:pakiti_app/models/load_result.dart';
 import 'package:pakiti_app/models/parcel_status.dart';
 import 'package:pakiti_app/models/trip.dart';
-import 'package:pakiti_app/services/api_client.dart';
 import 'package:pakiti_app/services/trip_service.dart';
 import 'package:pakiti_app/theme/app_colors.dart';
 import 'package:pakiti_app/utils/format.dart';
@@ -63,11 +62,11 @@ class _LoadParcelsScreenState extends State<LoadParcelsScreen> {
 
       widget.onChanged(result.trip);
       await _showScanResult(result);
-    } on ApiException catch (error) {
+    } catch (error) {
       if (!mounted) return;
 
       _buzzWarning();
-      showApiError(context, error);
+      showError(context, error);
     } finally {
       if (mounted) {
         setState(() => _busy = false);
@@ -183,14 +182,14 @@ class _LoadParcelsScreenState extends State<LoadParcelsScreen> {
 
       HapticFeedback.mediumImpact();
       widget.onChanged(trip);
-    } on ApiException catch (error) {
+    } catch (error) {
       if (!mounted) return;
 
       setState(() {
         _busy = false;
         _departing = false;
       });
-      showApiError(context, error);
+      showError(context, error);
     }
   }
 
@@ -204,11 +203,11 @@ class _LoadParcelsScreenState extends State<LoadParcelsScreen> {
       if (!mounted) return;
 
       widget.onChanged(null);
-    } on ApiException catch (error) {
+    } catch (error) {
       if (!mounted) return;
 
       setState(() => _busy = false);
-      showApiError(context, error);
+      showError(context, error);
     }
   }
 

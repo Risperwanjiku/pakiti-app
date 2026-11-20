@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:pakiti_app/theme/app_colors.dart';
+import 'package:pakiti_app/widgets/common/done_tick.dart';
 import 'package:pakiti_app/widgets/common/white_card.dart';
 
 // tick: on board or scanned off, ring: still to be scanned, box: on its way
@@ -78,15 +79,7 @@ class TripParcelRow extends StatelessWidget {
 
   Widget _buildMark() {
     return switch (mark) {
-      ParcelMark.tick => Container(
-          width: 20,
-          height: 20,
-          decoration: const BoxDecoration(
-            color: AppColors.statusCollected,
-            shape: BoxShape.circle,
-          ),
-          child: const Icon(Icons.check, size: 14, color: Colors.white),
-        ),
+      ParcelMark.tick => const DoneTick(),
       ParcelMark.ring => Container(
           width: 20,
           height: 20,

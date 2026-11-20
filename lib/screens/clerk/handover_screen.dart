@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
 
 import 'package:pakiti_app/models/parcel_details.dart';
 import 'package:pakiti_app/screens/clerk/handed_over_screen.dart';
@@ -10,11 +9,12 @@ import 'package:pakiti_app/services/parcel_service.dart';
 import 'package:pakiti_app/theme/app_colors.dart';
 import 'package:pakiti_app/utils/format.dart';
 import 'package:pakiti_app/utils/messages.dart';
+import 'package:pakiti_app/utils/parcel_camera.dart';
 import 'package:pakiti_app/widgets/booking/parcel_photo_picker.dart';
 import 'package:pakiti_app/widgets/common/bottom_button_bar.dart';
 import 'package:pakiti_app/widgets/common/busy_label.dart';
 import 'package:pakiti_app/widgets/common/page_app_bar.dart';
-import 'package:pakiti_app/widgets/common/section_title.dart';
+import 'package:pakiti_app/widgets/form/form_section.dart';
 import 'package:pakiti_app/widgets/parcel/collection_code_box.dart';
 import 'package:pakiti_app/widgets/parcel/locked_sheet.dart';
 import 'package:pakiti_app/widgets/parcel/parcel_check_card.dart';
@@ -74,10 +74,10 @@ class _HandoverScreenState extends State<HandoverScreen> {
     String? path;
 
     try {
-      path = await (widget.takePhoto ?? _openCamera)();
+      path = await (widget.takePhoto ?? takeParcelPhoto)();
     } on PlatformException {
       if (mounted) {
-        showMessage(context, "The camera didn't open. Check that Pakiti is allowed to use it.");
+        showMessage(context, cameraFailedMessage);
       }
       return;
     }
@@ -91,16 +91,6 @@ class _HandoverScreenState extends State<HandoverScreen> {
       _photoTakenAt = DateTime.now();
       _errors = Map.of(_errors)..remove('photo');
     });
-  }
-
-  Future<String?> _openCamera() async {
-    final photo = await ImagePicker().pickImage(
-      source: ImageSource.camera,
-      maxWidth: 1600,
-      imageQuality: 80,
-    );
-
-    return photo?.path;
   }
 
   void _viewPhoto() {
@@ -174,6 +164,11 @@ class _HandoverScreenState extends State<HandoverScreen> {
 
       setState(() => _handingOver = false);
       await _showProblem(error);
+    } catch (error) {
+      if (!mounted) return;
+
+      setState(() => _handingOver = false);
+      showError(context, error);
     }
   }
 
@@ -206,6 +201,11 @@ class _HandoverScreenState extends State<HandoverScreen> {
 
       setState(() => _sendingCode = false);
       await _showProblem(error);
+    } catch (error) {
+      if (!mounted) return;
+
+      setState(() => _sendingCode = false);
+      showError(context, error);
     }
   }
 
@@ -257,34 +257,40 @@ class _HandoverScreenState extends State<HandoverScreen> {
                 children: [
                   ReceiverIdCard(booking: widget.details.booking),
                   const SizedBox(height: 20),
-                  const SectionTitle(title: 'Collection code'),
-                  const SizedBox(height: 12),
-                  CollectionCodeBox(
-                    controller: _code,
-                    hint: _codeHint,
-                    error: _errors['code'],
-                    sendLabel: _sendingCode
-                        ? 'Sending…'
-                        : (_codeSent ? 'Send a new code' : 'Send a code'),
-                    onChanged: _onCodeChanged,
-                    onSend: busy ? null : _sendCode,
+                  FormSection(
+                    title: 'Collection code',
+                    children: [
+                      CollectionCodeBox(
+                        controller: _code,
+                        hint: _codeHint,
+                        error: _errors['code'],
+                        sendLabel: _sendingCode
+                            ? 'Sending…'
+                            : (_codeSent ? 'Send a new code' : 'Send a code'),
+                        onChanged: _onCodeChanged,
+                        onSend: busy ? null : _sendCode,
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 20),
-                  const SectionTitle(title: 'Parcel'),
-                  const SizedBox(height: 12),
-                  ParcelCheckCard(
-                    booking: widget.details.booking,
-                    photo: widget.photo,
-                    hasPhoto: widget.details.hasBookingPhoto,
-                    onViewPhoto: _viewPhoto,
-                  ),
-                  const SizedBox(height: 12),
-                  ParcelPhotoPicker(
-                    photoPath: _photoPath,
-                    takenAt: _photoTakenAt,
-                    error: _errors['photo'],
-                    onTakePhoto: _takePhoto,
-                    hint: 'Proof of its condition at handover',
+                  FormSection(
+                    title: 'Parcel',
+                    children: [
+                      ParcelCheckCard(
+                        booking: widget.details.booking,
+                        photo: widget.photo,
+                        hasPhoto: widget.details.hasBookingPhoto,
+                        onViewPhoto: _viewPhoto,
+                      ),
+                      const SizedBox(height: 12),
+                      ParcelPhotoPicker(
+                        photoPath: _photoPath,
+                        takenAt: _photoTakenAt,
+                        error: _errors['photo'],
+                        onTakePhoto: _takePhoto,
+                        hint: 'Proof of its condition at handover',
+                      ),
+                    ],
                   ),
                 ],
               ),

@@ -9,13 +9,18 @@ import 'package:pakiti_app/utils/format.dart';
 import 'package:pakiti_app/utils/messages.dart';
 import 'package:pakiti_app/widgets/common/empty_list_card.dart';
 import 'package:pakiti_app/widgets/common/load_error_card.dart';
+import 'package:pakiti_app/widgets/common/list_heading.dart';
 import 'package:pakiti_app/widgets/parcel/parcel_tile.dart';
+import 'package:pakiti_app/widgets/form/search_field.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({super.key, this.query = '', this.service});
+  const SearchScreen({super.key, this.query = '', this.service, this.onChanged});
 
   // what was typed on home, searched for as soon as the screen opens
   final String query;
+
+  // called when a parcel opened from here changes, so the screen behind can load again
+  final VoidCallback? onChanged;
 
   // tests pass in a fake one
   final ParcelService? service;
@@ -86,7 +91,11 @@ class _SearchScreenState extends State<SearchScreen> {
   void _openDetails(String trackingNo) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => ParcelDetailsScreen(trackingNo: trackingNo, service: _service),
+        builder: (_) => ParcelDetailsScreen(
+          trackingNo: trackingNo,
+          service: _service,
+          onChanged: widget.onChanged,
+        ),
       ),
     );
   }
@@ -104,7 +113,17 @@ class _SearchScreenState extends State<SearchScreen> {
         titleSpacing: 0,
         title: Padding(
           padding: const EdgeInsets.only(right: 16),
-          child: _buildSearchBox(),
+          // the clear button shows and hides as text is typed, so each change redraws it
+          child: SearchField(
+            controller: _searchController,
+            focusNode: _searchFocus,
+            autofocus: widget.query.isEmpty,
+            hint: 'Tracking or phone number',
+            onChanged: (_) => setState(() {}),
+            onSubmitted: (_) => _submitSearch(),
+            onClear: _clearSearch,
+            compact: true,
+          ),
         ),
       ),
       body: result == null
@@ -122,51 +141,6 @@ class _SearchScreenState extends State<SearchScreen> {
                 );
               },
             ),
-    );
-  }
-
-  Widget _buildSearchBox() {
-    final border = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12),
-      borderSide: BorderSide.none,
-    );
-
-    return TextField(
-      controller: _searchController,
-      focusNode: _searchFocus,
-      autofocus: widget.query.isEmpty,
-      textInputAction: TextInputAction.search,
-      onChanged: (_) => setState(() {}),
-      onSubmitted: (_) => _submitSearch(),
-      style: const TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w500,
-        color: AppColors.darkText,
-      ),
-      decoration: InputDecoration(
-        hintText: 'Tracking or phone number',
-        hintStyle: const TextStyle(
-          fontWeight: FontWeight.w400,
-          color: AppColors.grey,
-        ),
-        prefixIcon: const Icon(Icons.search, color: AppColors.grey),
-        suffixIcon: _searchController.text.isEmpty
-            ? null
-            : IconButton(
-                tooltip: 'Clear search',
-                onPressed: _clearSearch,
-                icon: const Icon(Icons.close, color: AppColors.grey),
-              ),
-        filled: true,
-        fillColor: AppColors.page,
-        isDense: true,
-        contentPadding: const EdgeInsets.symmetric(vertical: 12),
-        border: border,
-        enabledBorder: border,
-        focusedBorder: border.copyWith(
-          borderSide: const BorderSide(color: AppColors.link, width: 2),
-        ),
-      ),
     );
   }
 
@@ -200,20 +174,11 @@ class _SearchScreenState extends State<SearchScreen> {
 
     return [
       if (result.byPhone) ...[
-        Text(
-          parcelCount(result.parcels.length),
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: AppColors.darkText,
-          ),
-        ),
-        const SizedBox(height: 2),
-        Text(
-          result.name == null
+        ListHeading(
+          title: parcelCount(result.parcels.length),
+          caption: result.name == null
               ? 'Sent or received by $phone'
               : 'Sent or received by ${result.name}, $phone',
-          style: const TextStyle(fontSize: 13, color: AppColors.grey),
         ),
         const SizedBox(height: 12),
       ],

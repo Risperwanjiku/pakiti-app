@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:pakiti_app/theme/app_colors.dart';
 import 'package:pakiti_app/widgets/common/pakiti_sheet.dart';
+import 'package:pakiti_app/widgets/common/sheet_body.dart';
 import 'package:pakiti_app/widgets/common/town_comparison.dart';
 
 // The two towns that don't match, like where the parcel goes and where the vehicle goes.
@@ -56,58 +57,41 @@ class _KeepOffSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final mismatch = this.mismatch;
 
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.85),
-      child: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+    return SheetBody(
+      title: 'Keep this one off',
+      children: [
+        if (mismatch != null) ...[
+          const SizedBox(height: 16),
+          TownComparison(
+            parcelLabel: mismatch.parcelLabel,
+            parcelTown: mismatch.parcelTown,
+            otherLabel: mismatch.vehicleLabel,
+            otherTown: mismatch.vehicleTown,
+          ),
+        ],
+        const SizedBox(height: 12),
+        Text.rich(
+          TextSpan(
+            style: const TextStyle(fontSize: 16, color: AppColors.grey),
             children: [
-              const Text(
-                'Keep this one off',
-                style: TextStyle(
-                  fontSize: 20,
+              TextSpan(text: before),
+              TextSpan(
+                text: trackingNo,
+                style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   color: AppColors.darkText,
                 ),
               ),
-              if (mismatch != null) ...[
-                const SizedBox(height: 16),
-                TownComparison(
-                  parcelLabel: mismatch.parcelLabel,
-                  parcelTown: mismatch.parcelTown,
-                  otherLabel: mismatch.vehicleLabel,
-                  otherTown: mismatch.vehicleTown,
-                ),
-              ],
-              const SizedBox(height: 12),
-              Text.rich(
-                TextSpan(
-                  style: const TextStyle(fontSize: 16, color: AppColors.grey),
-                  children: [
-                    TextSpan(text: before),
-                    TextSpan(
-                      text: trackingNo,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.darkText,
-                      ),
-                    ),
-                    TextSpan(text: after),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
-              FilledButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Carry on scanning'),
-              ),
+              TextSpan(text: after),
             ],
           ),
         ),
-      ),
+        const SizedBox(height: 24),
+        FilledButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Carry on scanning'),
+        ),
+      ],
     );
   }
 }

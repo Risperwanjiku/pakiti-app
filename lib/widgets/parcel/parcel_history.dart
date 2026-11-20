@@ -109,7 +109,7 @@ class ParcelHistory extends StatelessWidget {
 
     return expectedArrival == null
         ? travelTime(details.travelMinutes)
-        : 'Expected about ${clockTime(expectedArrival)}';
+        : 'Expected about ${timeWithDay(expectedArrival)}';
   }
 
   bool _isSameDay(DateTime first, DateTime second) {

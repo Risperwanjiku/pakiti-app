@@ -18,8 +18,6 @@ class TownListPlaceholder extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 children: [
-                  const PlaceholderBar(width: 36, height: 36),
-                  const SizedBox(width: 12),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,

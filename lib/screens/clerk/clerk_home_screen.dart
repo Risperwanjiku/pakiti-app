@@ -10,11 +10,14 @@ import 'package:pakiti_app/services/clerk_service.dart';
 import 'package:pakiti_app/theme/app_colors.dart';
 import 'package:pakiti_app/utils/messages.dart';
 import 'package:pakiti_app/widgets/common/empty_list_card.dart';
+import 'package:pakiti_app/widgets/common/greeting.dart';
 import 'package:pakiti_app/widgets/common/load_error_card.dart';
 import 'package:pakiti_app/widgets/common/pakiti_app_bar.dart';
+import 'package:pakiti_app/widgets/common/section_title.dart';
 import 'package:pakiti_app/widgets/common/see_all_heading.dart';
 import 'package:pakiti_app/widgets/parcel/parcel_tile.dart';
 import 'package:pakiti_app/widgets/parcel/today_counts.dart';
+import 'package:pakiti_app/widgets/form/search_field.dart';
 
 class ClerkHomeScreen extends StatefulWidget {
   const ClerkHomeScreen({
@@ -88,7 +91,7 @@ class _ClerkHomeScreenState extends State<ClerkHomeScreen> {
 
     _searchController.clear();
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => SearchScreen(query: query)),
+      MaterialPageRoute(builder: (_) => SearchScreen(query: query, onChanged: _refresh)),
     );
   }
 
@@ -127,14 +130,7 @@ class _ClerkHomeScreenState extends State<ClerkHomeScreen> {
               physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
               children: [
-                Text(
-                  'Habari, ${widget.user.firstName}',
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.darkText,
-                  ),
-                ),
+                Greeting(firstName: widget.user.firstName),
                 const SizedBox(height: 16),
                 _buildBookButton(),
                 const SizedBox(height: 12),
@@ -169,28 +165,10 @@ class _ClerkHomeScreenState extends State<ClerkHomeScreen> {
   }
 
   Widget _buildSearch() {
-    final border = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16),
-      borderSide: BorderSide.none,
-    );
-
-    return TextField(
+    return SearchField(
       controller: _searchController,
-      textInputAction: TextInputAction.search,
+      hint: 'PKT-460048 or 0712 345 678',
       onSubmitted: _openSearch,
-      decoration: InputDecoration(
-        hintText: 'PKT-460048 or 0712 345 678',
-        hintStyle: const TextStyle(color: AppColors.grey),
-        prefixIcon: const Icon(Icons.search, color: AppColors.grey),
-        filled: true,
-        fillColor: Colors.white,
-        contentPadding: const EdgeInsets.symmetric(vertical: 16),
-        border: border,
-        enabledBorder: border,
-        focusedBorder: border.copyWith(
-          borderSide: const BorderSide(color: AppColors.link, width: 2),
-        ),
-      ),
     );
   }
 
@@ -206,7 +184,7 @@ class _ClerkHomeScreenState extends State<ClerkHomeScreen> {
     final summary = snapshot.data;
 
     return [
-      _buildSectionTitle(summary == null ? 'Today' : 'Today at ${summary.town}'),
+      SectionTitle(title: summary == null ? 'Today' : 'Today at ${summary.town}'),
       const SizedBox(height: 8),
       TodayCounts(summary: summary, onShowParcels: widget.onShowParcels),
       const SizedBox(height: 14),
@@ -230,16 +208,5 @@ class _ClerkHomeScreenState extends State<ClerkHomeScreen> {
             onTap: () => _openParcel(parcel.trackingNo),
           ),
     ];
-  }
-
-  Widget _buildSectionTitle(String text) {
-    return Text(
-      text,
-      style: const TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w600,
-        color: AppColors.darkText,
-      ),
-    );
   }
 }

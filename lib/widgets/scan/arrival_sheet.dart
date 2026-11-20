@@ -4,6 +4,7 @@ import 'package:pakiti_app/models/arrival.dart';
 import 'package:pakiti_app/theme/app_colors.dart';
 import 'package:pakiti_app/utils/format.dart';
 import 'package:pakiti_app/widgets/common/pakiti_sheet.dart';
+import 'package:pakiti_app/widgets/common/sheet_body.dart';
 import 'package:pakiti_app/widgets/common/status_tag.dart';
 import 'package:pakiti_app/widgets/parcel/parcel_thumb.dart';
 
@@ -33,81 +34,71 @@ class _ArrivalSheet extends StatelessWidget {
     final departedAt = parcel.departedAt;
     final vehicle = parcel.vehicle;
 
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.85),
-      child: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: [
-                  StatusTag(status: parcel.status),
-                  const SizedBox(width: 12),
-                  if (departedAt != null)
-                    Expanded(
-                      child: Text(
-                        'Left ${parcel.from} ${atTimeOrDay(departedAt)}',
-                        textAlign: TextAlign.end,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontSize: 13, color: AppColors.grey),
-                      ),
-                    ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Text(
-                parcel.trackingNo,
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.darkText,
+    return SheetBody(
+      children: [
+        Row(
+          children: [
+            StatusTag(status: parcel.status),
+            const SizedBox(width: 12),
+            if (departedAt != null)
+              Expanded(
+                child: Text(
+                  'Left ${parcel.from} ${atTimeOrDay(departedAt)}',
+                  textAlign: TextAlign.end,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontSize: 13, color: AppColors.grey),
                 ),
               ),
-              Text(
-                vehicle == null ? 'From ${parcel.from}' : 'From ${parcel.from} on $vehicle',
-                style: const TextStyle(fontSize: 14, color: AppColors.grey),
-              ),
-              const SizedBox(height: 16),
-              _buildContents(),
-              const SizedBox(height: 16),
-              const Text(
-                'Receiver',
-                style: TextStyle(fontSize: 13, color: AppColors.grey),
-              ),
-              Text(
-                parcel.receiverName,
-                style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.darkText,
-                ),
-              ),
-              Text(
-                localPhone(parcel.receiverPhone),
-                style: const TextStyle(fontSize: 14, color: AppColors.grey),
-              ),
-              const SizedBox(height: 24),
-              FilledButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child: const Text('Mark as arrived'),
-              ),
-              const SizedBox(height: 8),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                style: TextButton.styleFrom(
-                  foregroundColor: AppColors.link,
-                  minimumSize: const Size.fromHeight(44),
-                ),
-                child: const Text('Cancel'),
-              ),
-            ],
+          ],
+        ),
+        const SizedBox(height: 8),
+        Text(
+          parcel.trackingNo,
+          style: const TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w600,
+            color: AppColors.darkText,
           ),
         ),
-      ),
+        Text(
+          vehicle == null ? 'From ${parcel.from}' : 'From ${parcel.from} on $vehicle',
+          style: const TextStyle(fontSize: 14, color: AppColors.grey),
+        ),
+        const SizedBox(height: 16),
+        _buildContents(),
+        const SizedBox(height: 16),
+        const Text(
+          'Receiver',
+          style: TextStyle(fontSize: 13, color: AppColors.grey),
+        ),
+        Text(
+          parcel.receiverName,
+          style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+            color: AppColors.darkText,
+          ),
+        ),
+        Text(
+          localPhone(parcel.receiverPhone),
+          style: const TextStyle(fontSize: 14, color: AppColors.grey),
+        ),
+        const SizedBox(height: 24),
+        FilledButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          child: const Text('Mark as arrived'),
+        ),
+        const SizedBox(height: 8),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          style: TextButton.styleFrom(
+            foregroundColor: AppColors.link,
+            minimumSize: const Size.fromHeight(44),
+          ),
+          child: const Text('Cancel'),
+        ),
+      ],
     );
   }
 

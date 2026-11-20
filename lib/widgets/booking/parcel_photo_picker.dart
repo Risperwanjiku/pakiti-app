@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 
 import 'package:pakiti_app/theme/app_colors.dart';
 import 'package:pakiti_app/utils/format.dart';
+import 'package:pakiti_app/widgets/common/done_tick.dart';
 import 'package:pakiti_app/widgets/form/field_error.dart';
+import 'package:pakiti_app/widgets/parcel/parcel_thumb.dart';
 
 // the Take a photo button, which turns into a small preview with Retake once a photo is taken
 class ParcelPhotoPicker extends StatelessWidget {
@@ -59,19 +61,8 @@ class ParcelPhotoPicker extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
                   children: [
-                    Container(
-                      width: 44,
-                      height: 44,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: AppColors.statusBookedBg,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Icon(
-                        Icons.photo_camera_outlined,
-                        color: AppColors.navy,
-                      ),
-                    ),
+                    // a plain camera, not a tile, so the button says what it does at a glance
+                    const Icon(Icons.photo_camera_outlined, color: AppColors.navy),
                     const SizedBox(width: 14),
                     Column(
                       mainAxisSize: MainAxisSize.min,
@@ -110,16 +101,7 @@ class ParcelPhotoPicker extends StatelessWidget {
       decoration: ShapeDecoration(color: Colors.white, shape: shape),
       child: Row(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.file(
-              File(path),
-              width: 56,
-              height: 56,
-              cacheWidth: 168,
-              fit: BoxFit.cover,
-            ),
-          ),
+          ParcelThumb(photo: ResizeImage(FileImage(File(path)), width: 168)),
           const SizedBox(width: 14),
           Expanded(
             child: Column(
@@ -127,11 +109,7 @@ class ParcelPhotoPicker extends StatelessWidget {
               children: [
                 const Row(
                   children: [
-                    Icon(
-                      Icons.check_circle,
-                      size: 18,
-                      color: AppColors.statusCollected,
-                    ),
+                    DoneTick(),
                     SizedBox(width: 6),
                     Text(
                       'Photo added',

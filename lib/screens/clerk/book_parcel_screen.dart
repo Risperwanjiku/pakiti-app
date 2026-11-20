@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
 
 import 'package:pakiti_app/models/booked_parcel.dart';
 import 'package:pakiti_app/models/destination.dart';
@@ -14,7 +13,9 @@ import 'package:pakiti_app/utils/booking_checks.dart';
 import 'package:pakiti_app/utils/format.dart';
 import 'package:pakiti_app/utils/input_formatters.dart';
 import 'package:pakiti_app/utils/messages.dart';
+import 'package:pakiti_app/utils/parcel_camera.dart';
 import 'package:pakiti_app/utils/phone.dart';
+import 'package:pakiti_app/widgets/booking/add_email_button.dart';
 import 'package:pakiti_app/widgets/booking/booking_fee_bar.dart';
 import 'package:pakiti_app/widgets/booking/booking_field.dart';
 import 'package:pakiti_app/widgets/booking/check_details_sheet.dart';
@@ -22,6 +23,8 @@ import 'package:pakiti_app/widgets/booking/destination_card.dart';
 import 'package:pakiti_app/widgets/booking/parcel_photo_picker.dart';
 import 'package:pakiti_app/widgets/booking/size_picker.dart';
 import 'package:pakiti_app/widgets/common/page_app_bar.dart';
+import 'package:pakiti_app/widgets/common/pakiti_sheet.dart';
+import 'package:pakiti_app/widgets/form/form_section.dart';
 
 class BookParcelScreen extends StatefulWidget {
   const BookParcelScreen({
@@ -29,9 +32,17 @@ class BookParcelScreen extends StatefulWidget {
     required this.destination,
     this.sameSenderAs,
     this.onBookAnother,
+    this.takePhoto,
+    this.service,
   });
 
   final Destination destination;
+
+  // tests pass in a fake one
+  final ParcelService? service;
+
+  // tests pass one that gives back a file, since there is no camera in a test
+  final Future<String?> Function()? takePhoto;
 
   // a parcel booked just before this one, whose sender fills in the sender fields
   final BookedParcel? sameSenderAs;
@@ -70,7 +81,7 @@ class _BookParcelScreenState extends State<BookParcelScreen> {
 
   late Destination _destination = widget.destination;
   ParcelSize? _size;
-  XFile? _photo;
+  String? _photoPath;
   DateTime? _photoTakenAt;
   bool _showEmail = false;
   Map<String, String> _errors = {};
@@ -153,30 +164,24 @@ class _BookParcelScreenState extends State<BookParcelScreen> {
   }
 
   Future<void> _takePhoto() async {
-    XFile? photo;
+    String? path;
 
     try {
-      photo = await ImagePicker().pickImage(
-        source: ImageSource.camera,
-        maxWidth: 1600,
-        imageQuality: 80,
-      );
+      path = await (widget.takePhoto ?? takeParcelPhoto)();
     } on PlatformException {
       if (mounted) {
-        showMessage(context, 
-          "The camera didn't open. Check that Pakiti is allowed to use it.",
-        );
+        showMessage(context, cameraFailedMessage);
       }
       return;
     }
 
-    if (photo == null || !mounted) {
+    if (path == null || !mounted) {
       return;
     }
 
     _requestId = null;
     setState(() {
-      _photo = photo;
+      _photoPath = path;
       _photoTakenAt = DateTime.now();
       _errors.remove('photo');
     });
@@ -186,8 +191,9 @@ class _BookParcelScreenState extends State<BookParcelScreen> {
   String get _email => _showEmail ? _senderEmail.text.trim() : '';
 
   void _showErrors(Map<String, String> errors) {
+    // a copy, since the map can be the API's own and the fields remove from it as they change
     setState(() {
-      _errors = errors;
+      _errors = Map.of(errors);
     });
 
     // after the messages are drawn, scroll to the first one
@@ -220,7 +226,7 @@ class _BookParcelScreenState extends State<BookParcelScreen> {
       senderEmail: _email,
       receiverName: _receiverName.text,
       receiverPhone: _receiverPhone.text,
-      hasPhoto: _photo != null,
+      hasPhoto: _photoPath != null,
     );
 
     if (errors.isNotEmpty) {
@@ -238,23 +244,17 @@ class _BookParcelScreenState extends State<BookParcelScreen> {
       senderEmail: _email.isEmpty ? null : _email,
       receiverName: tidySpaces(_receiverName.text),
       receiverPhone: normalizePhone(_receiverPhone.text)!,
-      photoPath: _photo!.path,
+      photoPath: _photoPath!,
     );
     final requestId = _requestId ??= ParcelService.newRequestId();
 
-    final booked = await showModalBottomSheet<BookedParcel>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.white,
-      elevation: 0,
-      barrierColor: const Color(0x800F1B2D),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
+    final booked = await showPakitiSheet<BookedParcel>(
+      context,
       builder: (_) => CheckDetailsSheet(
         parcel: parcel,
         requestId: requestId,
         onFieldErrors: _showErrors,
+        service: widget.service,
       ),
     );
 
@@ -292,14 +292,17 @@ class _BookParcelScreenState extends State<BookParcelScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _buildSection('Going to', [
-                    DestinationCard(
-                      key: _fieldKeys['route_id'],
-                      destination: _destination,
-                      error: _errors['route_id'],
-                      onChange: _changeTown,
-                    ),
-                  ]),
+                  FormSection(
+                    title: 'Going to',
+                    children: [
+                      DestinationCard(
+                        key: _fieldKeys['route_id'],
+                        destination: _destination,
+                        error: _errors['route_id'],
+                        onChange: _changeTown,
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 28),
                   _buildParcelSection(),
                   const SizedBox(height: 28),
@@ -307,15 +310,18 @@ class _BookParcelScreenState extends State<BookParcelScreen> {
                   const SizedBox(height: 28),
                   _buildReceiverSection(),
                   const SizedBox(height: 28),
-                  _buildSection('Photo', [
-                    ParcelPhotoPicker(
-                      key: _fieldKeys['photo'],
-                      photoPath: _photo?.path,
-                      takenAt: _photoTakenAt,
-                      error: _errors['photo'],
-                      onTakePhoto: _takePhoto,
-                    ),
-                  ]),
+                  FormSection(
+                    title: 'Photo',
+                    children: [
+                      ParcelPhotoPicker(
+                        key: _fieldKeys['photo'],
+                        photoPath: _photoPath,
+                        takenAt: _photoTakenAt,
+                        error: _errors['photo'],
+                        onTakePhoto: _takePhoto,
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -330,7 +336,7 @@ class _BookParcelScreenState extends State<BookParcelScreen> {
   }
 
   Widget _buildParcelSection() {
-    return _buildSection('Parcel', [
+    return FormSection(title: 'Parcel', children: [
       SizePicker(
         key: _fieldKeys['size'],
         fees: _destination.fees,
@@ -364,7 +370,7 @@ class _BookParcelScreenState extends State<BookParcelScreen> {
   }
 
   Widget _buildSenderSection() {
-    return _buildSection('Sender', [
+    return FormSection(title: 'Sender', children: [
       BookingField(
         key: _fieldKeys['sender_name'],
         error: _errors['sender_name'],
@@ -401,12 +407,12 @@ class _BookParcelScreenState extends State<BookParcelScreen> {
           focusNode: _emailFocus,
         )
       else
-        _buildAddEmailButton(),
+        AddEmailButton(onPressed: _addEmail),
     ]);
   }
 
   Widget _buildReceiverSection() {
-    return _buildSection('Receiver', [
+    return FormSection(title: 'Receiver', children: [
       BookingField(
         key: _fieldKeys['receiver_name'],
         error: _errors['receiver_name'],
@@ -434,38 +440,4 @@ class _BookParcelScreenState extends State<BookParcelScreen> {
     ]);
   }
 
-  Widget _buildSection(String title, List<Widget> children) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: AppColors.darkText,
-          ),
-        ),
-        const SizedBox(height: 12),
-        ...children,
-      ],
-    );
-  }
-
-  Widget _buildAddEmailButton() {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: TextButton.icon(
-        onPressed: _addEmail,
-        icon: const Icon(Icons.add, size: 20),
-        label: const Text('Add email for a receipt'),
-        style: TextButton.styleFrom(
-          foregroundColor: AppColors.link,
-          minimumSize: const Size(0, 44),
-          padding: EdgeInsets.zero,
-          textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-        ),
-      ),
-    );
-  }
 }

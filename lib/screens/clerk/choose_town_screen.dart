@@ -11,7 +11,9 @@ import 'package:pakiti_app/widgets/booking/town_list.dart';
 import 'package:pakiti_app/widgets/booking/town_list_placeholder.dart';
 import 'package:pakiti_app/widgets/common/empty_list_card.dart';
 import 'package:pakiti_app/widgets/common/load_error_card.dart';
+import 'package:pakiti_app/widgets/common/section_title.dart';
 import 'package:pakiti_app/widgets/common/page_app_bar.dart';
+import 'package:pakiti_app/widgets/form/search_field.dart';
 
 class ChooseTownScreen extends StatefulWidget {
   const ChooseTownScreen({super.key, this.pickOnly = false});
@@ -131,37 +133,20 @@ class _ChooseTownScreenState extends State<ChooseTownScreen> {
     );
   }
 
+  // the list below filters as each letter is typed
   Widget _buildSearch() {
-    final border = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16),
-      borderSide: BorderSide.none,
-    );
-
-    return TextField(
+    return SearchField(
       controller: _searchController,
+      hint: 'Search town or county',
       onChanged: (_) => setState(() {}),
-      textInputAction: TextInputAction.search,
-      textCapitalization: TextCapitalization.words,
-      decoration: InputDecoration(
-        hintText: 'Search town or county',
-        hintStyle: const TextStyle(color: AppColors.grey),
-        prefixIcon: const Icon(Icons.search, color: AppColors.grey),
-        filled: true,
-        fillColor: Colors.white,
-        contentPadding: const EdgeInsets.symmetric(vertical: 16),
-        border: border,
-        enabledBorder: border,
-        focusedBorder: border.copyWith(
-          borderSide: const BorderSide(color: AppColors.link, width: 2),
-        ),
-      ),
+      capitalization: TextCapitalization.words,
     );
   }
 
   List<Widget> _buildTowns(AsyncSnapshot<List<Destination>> snapshot) {
     if (snapshot.connectionState == ConnectionState.waiting) {
       return [
-        _buildHeading('All towns'),
+        const SectionTitle(title: 'All towns'),
         const SizedBox(height: 12),
         const TownListPlaceholder(),
       ];
@@ -211,23 +196,12 @@ class _ChooseTownScreenState extends State<ChooseTownScreen> {
     }
 
     return [
-      _buildHeading(query.isEmpty ? 'All towns' : 'Matching towns'),
+      SectionTitle(title: query.isEmpty ? 'All towns' : 'Matching towns'),
       const SizedBox(height: 12),
       TownList(towns: towns, onChoose: _chooseTown),
       const SizedBox(height: 24),
       const MissingTownNote(),
     ];
-  }
-
-  Widget _buildHeading(String text) {
-    return Text(
-      text,
-      style: const TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w600,
-        color: AppColors.darkText,
-      ),
-    );
   }
 
 }

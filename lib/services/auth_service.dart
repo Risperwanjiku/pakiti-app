@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -55,12 +57,15 @@ class AuthService {
     });
   }
 
+  // The server is told without waiting for it, so Log out is quick even with no signal.
+  // The request already has the token, so clearing it straight after is fine.
   Future<void> logout() async {
-    try {
-      await _api.post('/auth/logout');
-    } on ApiException catch (error) {
-      debugPrint('Server logout failed: ${error.message}');
-    }
+    unawaited(
+      _api.post('/auth/logout').then<void>(
+        (_) {},
+        onError: (Object error) => debugPrint('Server logout failed: $error'),
+      ),
+    );
     await _clearToken();
   }
 

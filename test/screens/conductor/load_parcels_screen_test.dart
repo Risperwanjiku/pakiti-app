@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pakiti_app/screens/conductor/conductor_tabs.dart';
+import 'package:pakiti_app/utils/format.dart';
 
 import '../../support/fakes.dart';
 
@@ -172,6 +173,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(service.calls, contains('depart 7'));
-    expect(find.text('Expected in Nairobi about 5:15 pm'), findsOneWidget);
+    expect(find.text('Expected in Nairobi about ${timeWithDay(DateTime(2026, 11, 17, 17, 15))}'), findsOneWidget);
   });
 }

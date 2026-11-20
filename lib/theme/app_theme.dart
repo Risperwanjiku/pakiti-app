@@ -33,6 +33,22 @@ class AppTheme {
           ),
         ),
       ),
+      // the second choice under a filled button, like Edit details or Log out
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.navy,
+          disabledForegroundColor: AppColors.navy,
+          minimumSize: const Size.fromHeight(56),
+          side: const BorderSide(color: AppColors.navy, width: 1.5),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          textStyle: GoogleFonts.poppins(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
     );
   }
 

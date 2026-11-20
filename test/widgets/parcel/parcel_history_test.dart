@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pakiti_app/models/parcel_details.dart';
 import 'package:pakiti_app/theme/app_colors.dart';
 import 'package:pakiti_app/widgets/parcel/parcel_history.dart';
+import 'package:pakiti_app/utils/format.dart';
 
 import '../../support/fakes.dart';
 
@@ -34,7 +35,7 @@ void main() {
     await showHistory(tester, onTheWay());
 
     expect(find.text('Arrives at Nairobi office'), findsOneWidget);
-    expect(find.text('Expected about 8:30 pm'), findsOneWidget);
+    expect(find.text('Expected about ${timeWithDay(DateTime(2026, 11, 12, 20, 30))}'), findsOneWidget);
     expect(find.text('Collected by Kevin Maina'), findsOneWidget);
   });
 

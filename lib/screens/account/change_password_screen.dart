@@ -110,13 +110,18 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
       setState(() {
         _saving = false;
-        _serverErrors = error.fieldErrors;
+        _serverErrors = Map.of(error.fieldErrors);
       });
 
       // a field error already shows under its field
       if (error.fieldErrors.isEmpty) {
         showApiError(context, error);
       }
+    } catch (error) {
+      if (!mounted) return;
+
+      setState(() => _saving = false);
+      showError(context, error);
     }
   }
 

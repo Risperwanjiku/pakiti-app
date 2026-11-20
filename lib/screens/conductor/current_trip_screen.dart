@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:pakiti_app/models/trip.dart';
-import 'package:pakiti_app/services/api_client.dart';
 import 'package:pakiti_app/services/trip_service.dart';
 import 'package:pakiti_app/theme/app_colors.dart';
 import 'package:pakiti_app/utils/format.dart';
@@ -47,10 +46,10 @@ class _CurrentTripScreenState extends State<CurrentTripScreen> {
       if (!mounted) return;
 
       widget.onChanged(trip);
-    } on ApiException catch (error) {
+    } catch (error) {
       if (!mounted) return;
 
-      showApiError(context, error);
+      showError(context, error);
     }
   }
 
@@ -89,11 +88,11 @@ class _CurrentTripScreenState extends State<CurrentTripScreen> {
 
       showMessage(context, 'Trip ended.');
       widget.onChanged(null);
-    } on ApiException catch (error) {
+    } catch (error) {
       if (!mounted) return;
 
       setState(() => _ending = false);
-      showApiError(context, error);
+      showError(context, error);
     }
   }
 

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:pakiti_app/models/arrival.dart';
-import 'package:pakiti_app/services/api_client.dart';
 import 'package:pakiti_app/services/clerk_service.dart';
 import 'package:pakiti_app/services/parcel_service.dart';
 import 'package:pakiti_app/theme/app_colors.dart';
@@ -79,11 +78,11 @@ class _ScanScreenState extends State<ScanScreen> {
       if (!mounted) return;
 
       await _showCheck(check);
-    } on ApiException catch (error) {
+    } catch (error) {
       if (!mounted) return;
 
       _buzzWarning();
-      showApiError(context, error);
+      showError(context, error);
     } finally {
       if (mounted) {
         setState(() => _busy = false);
@@ -135,11 +134,11 @@ class _ScanScreenState extends State<ScanScreen> {
         _lastArrival = result;
         _arrivals = Future.value(result.arrivals);
       });
-    } on ApiException catch (error) {
+    } catch (error) {
       if (!mounted) return;
 
       _buzzWarning();
-      showApiError(context, error);
+      showError(context, error);
     }
   }
 

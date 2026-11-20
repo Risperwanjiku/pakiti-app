@@ -20,7 +20,7 @@ class ParcelCard {
       isOutgoing: json['direction'] == 'outgoing',
       otherName: json['other_name'] as String,
       otherTown: json['other_town'] as String,
-      lastActivity: DateTime.parse(json['last_activity'] as String),
+      lastActivity: DateTime.parse(json['last_activity'] as String).toLocal(),
     );
   }
 

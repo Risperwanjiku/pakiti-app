@@ -26,6 +26,16 @@ void showApiError(BuildContext context, ApiException error) {
     );
 }
 
+// For a catch that has to reset a busy button whatever went wrong. Anything that isn't
+// from the API, like a reply the app couldn't read, gets a plain message.
+void showError(BuildContext context, Object error) {
+  if (error is ApiException) {
+    showApiError(context, error);
+  } else {
+    showMessage(context, 'Something went wrong. Please try again.');
+  }
+}
+
 // clears every screen first, so Back can't return to the old session
 void goToLogin(BuildContext context) {
   Navigator.of(context).pushAndRemoveUntil(

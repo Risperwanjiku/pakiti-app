@@ -81,12 +81,9 @@ class TripProgressCard extends StatelessWidget {
           const SizedBox(height: 14),
           OutlinedButton(
             onPressed: ending ? null : onEndTrip,
+            // a little smaller than the theme's, since it sits inside the trip card
             style: OutlinedButton.styleFrom(
-              foregroundColor: AppColors.navy,
-              disabledForegroundColor: AppColors.navy,
               minimumSize: const Size.fromHeight(48),
-              side: const BorderSide(color: AppColors.navy, width: 1.5),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
             ),
             child: Text(ending ? 'Ending…' : 'End trip'),
@@ -111,7 +108,7 @@ class TripProgressCard extends StatelessWidget {
     }
 
     if (expectedAt != null) {
-      return 'Expected in ${trip.to} about ${clockTime(expectedAt)}';
+      return 'Expected in ${trip.to} about ${timeWithDay(expectedAt)}';
     }
 
     return 'On the way to ${trip.to}';

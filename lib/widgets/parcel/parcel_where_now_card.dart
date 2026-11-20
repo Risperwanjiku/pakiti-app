@@ -98,7 +98,7 @@ class ParcelWhereNowCard extends StatelessWidget {
           ? 'On the way to ${booking.to}'
           : details.isLate
               ? 'Was expected in ${booking.to} ${atTimeOrDay(expected)}'
-              : 'Expected in ${booking.to} about ${clockTime(expected)}',
+              : 'Expected in ${booking.to} about ${timeWithDay(expected)}',
       ParcelStatus.arrived => 'Ready for collection at ${details.toOffice}',
       ParcelStatus.collected => 'Collected by ${booking.receiverName}',
     };

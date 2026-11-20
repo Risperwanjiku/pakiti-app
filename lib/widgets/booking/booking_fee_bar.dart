@@ -50,18 +50,6 @@ class BookingFeeBar extends StatelessWidget {
               Expanded(
                 child: FilledButton(
                   onPressed: onBook,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.navy,
-                    foregroundColor: Colors.white,
-                    minimumSize: const Size.fromHeight(56),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    textStyle: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
                   child: const Text('Book parcel'),
                 ),
               ),

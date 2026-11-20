@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pakiti_app/screens/conductor/conductor_tabs.dart';
+import 'package:pakiti_app/utils/format.dart';
 
 import '../../support/fakes.dart';
 
@@ -16,7 +17,7 @@ void main() {
     await openTrip(tester, FakeTripService(current: onTheWayTrip()));
 
     expect(find.text('On the way'), findsOneWidget);
-    expect(find.text('Expected in Nairobi about 5:15 pm'), findsOneWidget);
+    expect(find.text('Expected in Nairobi about ${timeWithDay(DateTime(2026, 11, 17, 17, 15))}'), findsOneWidget);
     expect(find.text('Left at 2:15 pm'), findsOneWidget);
     expect(find.text('About 3 hrs by road'), findsOneWidget);
     expect(find.text('KDG 117T, 3 parcels on board'), findsOneWidget);
