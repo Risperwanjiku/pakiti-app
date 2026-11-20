@@ -19,8 +19,7 @@ class TownList extends StatelessWidget {
       child: Column(
         children: [
           for (var i = 0; i < towns.length; i++) ...[
-            if (i > 0)
-              const Divider(height: 1, thickness: 1, color: AppColors.page),
+            if (i > 0) const Divider(height: 1, thickness: 1, color: AppColors.page),
             _buildRow(towns[i]),
           ],
         ],
@@ -54,19 +53,12 @@ class TownList extends StatelessWidget {
                         ),
                         Text(
                           '${destination.county} County',
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: AppColors.grey,
-                          ),
+                          style: const TextStyle(fontSize: 13, color: AppColors.grey),
                         ),
                       ],
                     ),
                   ),
-                  const Icon(
-                    Icons.chevron_right,
-                    size: 20,
-                    color: AppColors.border,
-                  ),
+                  const Icon(Icons.chevron_right, size: 20, color: AppColors.border),
                 ],
               ),
             ),

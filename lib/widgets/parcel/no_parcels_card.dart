@@ -19,22 +19,19 @@ class NoParcelsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (title, message) = switch (filter) {
-      ParcelFilter.all => (
-          'No parcels yet',
-          'Parcels sent from or to $officeName will show here.',
-        ),
+      ParcelFilter.all => ('No parcels yet', 'Parcels sent from or to $officeName will show here.'),
       ParcelFilter.booked => (
-          'Nothing waiting to be loaded',
-          'Parcels booked at $officeName show here until they are loaded onto a vehicle.',
-        ),
+        'Nothing waiting to be loaded',
+        'Parcels booked at $officeName show here until they are loaded onto a vehicle.',
+      ),
       ParcelFilter.onTheWay => (
-          'Nothing on the way',
-          'Parcels coming to $officeName show here once they leave.',
-        ),
+        'Nothing on the way',
+        'Parcels coming to $officeName show here once they leave.',
+      ),
       ParcelFilter.arrived => (
-          'Nothing waiting for collection',
-          'Parcels that arrive at $officeName show here until they are collected.',
-        ),
+        'Nothing waiting for collection',
+        'Parcels that arrive at $officeName show here until they are collected.',
+      ),
     };
 
     return EmptyListCard(

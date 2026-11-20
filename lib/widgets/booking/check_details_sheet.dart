@@ -43,10 +43,7 @@ class _CheckDetailsSheetState extends State<CheckDetailsSheet> {
     });
 
     try {
-      final booked = await _parcelService.book(
-        widget.parcel,
-        requestId: widget.requestId,
-      );
+      final booked = await _parcelService.book(widget.parcel, requestId: widget.requestId);
 
       if (mounted) {
         Navigator.of(context).pop(booked);
@@ -125,7 +122,10 @@ class _CheckDetailsSheetState extends State<CheckDetailsSheet> {
           ),
         ),
         const SizedBox(height: 14),
-        DetailRow(label: 'Sender', value: '${parcel.senderName}, ${localPhone(parcel.senderPhone)}'),
+        DetailRow(
+          label: 'Sender',
+          value: '${parcel.senderName}, ${localPhone(parcel.senderPhone)}',
+        ),
         if (parcel.senderEmail != null) DetailRow(label: 'Email', value: parcel.senderEmail!),
         DetailRow(label: "What's inside", value: parcel.contents),
         DetailRow(label: 'Value', value: ksh(parcel.value)),
@@ -134,10 +134,7 @@ class _CheckDetailsSheetState extends State<CheckDetailsSheet> {
           const SizedBox(height: 6),
           Semantics(
             liveRegion: true,
-            child: Text(
-              _error!,
-              style: const TextStyle(fontSize: 13, color: AppColors.error),
-            ),
+            child: Text(_error!, style: const TextStyle(fontSize: 13, color: AppColors.error)),
           ),
         ],
         const SizedBox(height: 16),

@@ -13,12 +13,7 @@ import 'package:pakiti_app/widgets/trip/trip_progress_card.dart';
 
 // A trip on the way, then at the other end while the clerk scans the parcels off.
 class CurrentTripScreen extends StatefulWidget {
-  const CurrentTripScreen({
-    super.key,
-    required this.trip,
-    required this.onChanged,
-    this.service,
-  });
+  const CurrentTripScreen({super.key, required this.trip, required this.onChanged, this.service});
 
   // departed or arrived, since a trip that is loading has its own screen
   final Trip trip;
@@ -116,13 +111,13 @@ class _CurrentTripScreenState extends State<CurrentTripScreen> {
             SectionTitle(
               title: arrived ? 'Parcels' : 'On board',
               note: arrived
-                  ? (stillOnBoard.isEmpty ? 'All scanned off' : '${stillOnBoard.length} still on board')
+                  ? (stillOnBoard.isEmpty
+                        ? 'All scanned off'
+                        : '${stillOnBoard.length} still on board')
                   : parcelCount(trip.parcels.length),
             ),
             const SizedBox(height: 8),
-            TripParcelCard(
-              rows: arrived ? _buildArrivedRows(trip) : _buildOnTheWayRows(trip),
-            ),
+            TripParcelCard(rows: arrived ? _buildArrivedRows(trip) : _buildOnTheWayRows(trip)),
           ],
         ),
       ),

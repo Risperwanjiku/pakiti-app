@@ -35,7 +35,10 @@ void main() {
     await showHistory(tester, onTheWay());
 
     expect(find.text('Arrives at Nairobi office'), findsOneWidget);
-    expect(find.text('Expected about ${timeWithDay(DateTime(2026, 11, 12, 20, 30))}'), findsOneWidget);
+    expect(
+      find.text('Expected about ${timeWithDay(DateTime(2026, 11, 12, 20, 30))}'),
+      findsOneWidget,
+    );
     expect(find.text('Collected by Kevin Maina'), findsOneWidget);
   });
 

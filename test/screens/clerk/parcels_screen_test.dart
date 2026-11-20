@@ -23,15 +23,17 @@ Future<void> openParcels(
 
 // the filter, not a status tag with the same word on one of the parcels
 Finder filterNamed(String label) {
-  return find.descendant(
-    of: find.byType(SingleChildScrollView),
-    matching: find.text(label),
-  );
+  return find.descendant(of: find.byType(SingleChildScrollView), matching: find.text(label));
 }
 
 // the first try fails as if the network dropped, the next one works
 class _FailsOnce extends FakeClerkService {
-  _FailsOnce() : super(lists: {ParcelFilter.all: [listed('PKT-512270')]});
+  _FailsOnce()
+    : super(
+        lists: {
+          ParcelFilter.all: [listed('PKT-512270')],
+        },
+      );
 
   var _tries = 0;
 
@@ -51,12 +53,14 @@ void main() {
   testWidgets('shows the parcels waiting for collection and how many there are', (tester) async {
     await openParcels(
       tester,
-      FakeClerkService(lists: {
-        ParcelFilter.arrived: [
-          listed('PKT-512270'),
-          listed('PKT-498815', name: 'Faith Njeri', town: 'Meru', ago: const Duration(hours: 3)),
-        ],
-      }),
+      FakeClerkService(
+        lists: {
+          ParcelFilter.arrived: [
+            listed('PKT-512270'),
+            listed('PKT-498815', name: 'Faith Njeri', town: 'Meru', ago: const Duration(hours: 3)),
+          ],
+        },
+      ),
       filter: ParcelFilter.arrived,
     );
 
@@ -67,14 +71,28 @@ void main() {
   });
 
   testWidgets('choosing a filter loads its own list', (tester) async {
-    final service = FakeClerkService(lists: {
-      ParcelFilter.all: [
-        listed('PKT-460048', status: ParcelStatus.inTransit, outgoing: true, name: 'Kevin Maina', town: 'Nairobi'),
-      ],
-      ParcelFilter.booked: [
-        listed('PKT-509134', status: ParcelStatus.booked, outgoing: true, name: 'Mary Achieng', town: 'Karatina'),
-      ],
-    });
+    final service = FakeClerkService(
+      lists: {
+        ParcelFilter.all: [
+          listed(
+            'PKT-460048',
+            status: ParcelStatus.inTransit,
+            outgoing: true,
+            name: 'Kevin Maina',
+            town: 'Nairobi',
+          ),
+        ],
+        ParcelFilter.booked: [
+          listed(
+            'PKT-509134',
+            status: ParcelStatus.booked,
+            outgoing: true,
+            name: 'Mary Achieng',
+            town: 'Karatina',
+          ),
+        ],
+      },
+    );
 
     await openParcels(tester, service);
     await tester.tap(filterNamed('Booked'));
@@ -94,11 +112,13 @@ void main() {
   });
 
   testWidgets('loads the next 30 when the list is scrolled to the end', (tester) async {
-    final service = FakeClerkService(lists: {
-      ParcelFilter.all: [
-        for (var i = 0; i < 35; i++) listed('PKT-${500100 + i}', ago: Duration(minutes: i + 1)),
-      ],
-    });
+    final service = FakeClerkService(
+      lists: {
+        ParcelFilter.all: [
+          for (var i = 0; i < 35; i++) listed('PKT-${500100 + i}', ago: Duration(minutes: i + 1)),
+        ],
+      },
+    );
 
     await openParcels(tester, service);
 
@@ -117,7 +137,10 @@ void main() {
   testWidgets('Try again loads the list after a failed try', (tester) async {
     await openParcels(tester, _FailsOnce());
 
-    expect(find.text("Can't reach the server. Check your connection and try again."), findsOneWidget);
+    expect(
+      find.text("Can't reach the server. Check your connection and try again."),
+      findsOneWidget,
+    );
 
     await tester.tap(find.text('Try again'));
     await tester.pumpAndSettle();

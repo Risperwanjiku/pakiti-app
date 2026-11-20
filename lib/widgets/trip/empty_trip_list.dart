@@ -13,10 +13,7 @@ class EmptyTripList extends StatelessWidget {
   Widget build(BuildContext context) {
     return WhiteCard(
       padding: const EdgeInsets.all(16),
-      child: Text(
-        text,
-        style: const TextStyle(fontSize: 14, color: AppColors.grey),
-      ),
+      child: Text(text, style: const TextStyle(fontSize: 14, color: AppColors.grey)),
     );
   }
 }

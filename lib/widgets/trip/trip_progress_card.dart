@@ -62,11 +62,7 @@ class TripProgressCard extends StatelessWidget {
           const SizedBox(height: 12),
           Row(
             children: [
-              const Icon(
-                Icons.directions_bus_outlined,
-                size: 20,
-                color: AppColors.statusBooked,
-              ),
+              const Icon(Icons.directions_bus_outlined, size: 20, color: AppColors.statusBooked),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(

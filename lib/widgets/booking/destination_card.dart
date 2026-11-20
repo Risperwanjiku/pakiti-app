@@ -7,12 +7,7 @@ import 'package:pakiti_app/widgets/form/field_error.dart';
 
 // the town a parcel is going to, at the top of the booking form
 class DestinationCard extends StatelessWidget {
-  const DestinationCard({
-    super.key,
-    required this.destination,
-    required this.onChange,
-    this.error,
-  });
+  const DestinationCard({super.key, required this.destination, required this.onChange, this.error});
 
   final Destination destination;
   final VoidCallback onChange;
@@ -28,9 +23,7 @@ class DestinationCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
-            border: error != null
-                ? Border.all(color: AppColors.error, width: 1.5)
-                : null,
+            border: error != null ? Border.all(color: AppColors.error, width: 1.5) : null,
           ),
           child: Row(
             children: [
@@ -48,17 +41,11 @@ class DestinationCard extends StatelessWidget {
                     ),
                     Text(
                       '${destination.county} County',
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: AppColors.grey,
-                      ),
+                      style: const TextStyle(fontSize: 13, color: AppColors.grey),
                     ),
                     Text(
                       travelTime(destination.travelMinutes),
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: AppColors.grey,
-                      ),
+                      style: const TextStyle(fontSize: 13, color: AppColors.grey),
                     ),
                   ],
                 ),
@@ -69,10 +56,7 @@ class DestinationCard extends StatelessWidget {
                   foregroundColor: AppColors.link,
                   minimumSize: const Size(0, 44),
                   padding: const EdgeInsets.symmetric(horizontal: 8),
-                  textStyle: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                 ),
                 child: const Text('Change'),
               ),

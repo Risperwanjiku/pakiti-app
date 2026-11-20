@@ -3,10 +3,7 @@ import 'package:flutter/services.dart';
 // the field already shows +254, so a leading 0 is dropped and the rest reads 722 418 305
 class PhoneInputFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
     var digits = newValue.text.replaceAll(RegExp(r'\D'), '');
 
     if (digits.startsWith('254') && digits.length > 9) {
@@ -34,10 +31,7 @@ class PhoneInputFormatter extends TextInputFormatter {
 // whole shillings with commas, like 1,800
 class AmountInputFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
     var digits = newValue.text.replaceAll(RegExp(r'\D'), '');
 
     if (digits.length > 8) {

@@ -3,9 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pakiti_app/utils/input_formatters.dart';
 
 String typeInto(TextInputFormatter formatter, String typed) {
-  return formatter
-      .formatEditUpdate(TextEditingValue.empty, TextEditingValue(text: typed))
-      .text;
+  return formatter.formatEditUpdate(TextEditingValue.empty, TextEditingValue(text: typed)).text;
 }
 
 void main() {

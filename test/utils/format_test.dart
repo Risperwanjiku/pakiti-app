@@ -75,7 +75,10 @@ void main() {
       expect(timeWithDay(DateTime(2026, 11, 17, 23, 40), now: now), '11:40 pm');
       expect(timeWithDay(DateTime(2026, 11, 18, 1, 10), now: now), '1:10 am tomorrow');
       expect(timeWithDay(DateTime(2026, 11, 19, 9, 0), now: now), '9:00 am on 19 Nov');
-      expect(timeWithDay(DateTime(2026, 12, 1, 9, 0), now: DateTime(2026, 11, 30, 20)), '9:00 am tomorrow');
+      expect(
+        timeWithDay(DateTime(2026, 12, 1, 9, 0), now: DateTime(2026, 11, 30, 20)),
+        '9:00 am tomorrow',
+      );
     });
   });
 }

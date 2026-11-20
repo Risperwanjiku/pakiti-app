@@ -31,12 +31,8 @@ Future<void> showKeepOffSheet(
 }) {
   return showPakitiSheet<void>(
     context,
-    builder: (_) => _KeepOffSheet(
-      trackingNo: trackingNo,
-      before: before,
-      after: after,
-      mismatch: mismatch,
-    ),
+    builder: (_) =>
+        _KeepOffSheet(trackingNo: trackingNo, before: before, after: after, mismatch: mismatch),
   );
 }
 
@@ -77,10 +73,7 @@ class _KeepOffSheet extends StatelessWidget {
               TextSpan(text: before),
               TextSpan(
                 text: trackingNo,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.darkText,
-                ),
+                style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.darkText),
               ),
               TextSpan(text: after),
             ],

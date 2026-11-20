@@ -78,12 +78,8 @@ class Trip {
       departedAt: _parseTime(json['departed_at']),
       expectedArrival: _parseTime(json['expected_arrival']),
       arrivedAt: _parseTime(json['arrived_at']),
-      parcels: parcels
-          .map((item) => TripParcel.fromJson(item as Map<String, dynamic>))
-          .toList(),
-      waiting: waiting
-          .map((item) => WaitingParcel.fromJson(item as Map<String, dynamic>))
-          .toList(),
+      parcels: parcels.map((item) => TripParcel.fromJson(item as Map<String, dynamic>)).toList(),
+      waiting: waiting.map((item) => WaitingParcel.fromJson(item as Map<String, dynamic>)).toList(),
     );
   }
 

@@ -32,10 +32,7 @@ class ParcelPhotoPicker extends StatelessWidget {
     final photoPath = this.photoPath;
     final shape = RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(12),
-      side: BorderSide(
-        color: error != null ? AppColors.error : AppColors.border,
-        width: 1.5,
-      ),
+      side: BorderSide(color: error != null ? AppColors.error : AppColors.border, width: 1.5),
     );
 
     if (photoPath == null) {
@@ -76,10 +73,7 @@ class ParcelPhotoPicker extends StatelessWidget {
                             color: AppColors.navy,
                           ),
                         ),
-                        Text(
-                          hint,
-                          style: const TextStyle(fontSize: 12, color: AppColors.grey),
-                        ),
+                        Text(hint, style: const TextStyle(fontSize: 12, color: AppColors.grey)),
                       ],
                     ),
                   ],
@@ -135,10 +129,7 @@ class ParcelPhotoPicker extends StatelessWidget {
               foregroundColor: AppColors.link,
               minimumSize: const Size(0, 44),
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              textStyle: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
+              textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
             ),
             child: const Text('Retake'),
           ),

@@ -12,11 +12,7 @@ class Greeting extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       'Habari, $firstName',
-      style: const TextStyle(
-        fontSize: 22,
-        fontWeight: FontWeight.w600,
-        color: AppColors.darkText,
-      ),
+      style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: AppColors.darkText),
     );
   }
 }

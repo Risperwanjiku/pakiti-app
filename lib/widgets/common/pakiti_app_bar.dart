@@ -31,21 +31,13 @@ class PakitiAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
             child: const Text(
               'P',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),
             ),
           ),
           const SizedBox(width: 12),
           const Text(
             'Pakiti',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              color: AppColors.darkText,
-            ),
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: AppColors.darkText),
           ),
         ],
       ),

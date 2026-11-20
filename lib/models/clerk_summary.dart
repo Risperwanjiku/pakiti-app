@@ -19,9 +19,7 @@ class ClerkSummary {
       booked: counts['booked'] as int,
       onTheWay: counts['on_the_way'] as int,
       arrived: counts['arrived'] as int,
-      recent: recent
-          .map((item) => ParcelCard.fromJson(item as Map<String, dynamic>))
-          .toList(),
+      recent: recent.map((item) => ParcelCard.fromJson(item as Map<String, dynamic>)).toList(),
     );
   }
 

@@ -7,13 +7,11 @@ import 'package:pakiti_app/utils/format.dart';
 
 import '../../support/fakes.dart';
 
-Future<void> openSearch(
-  WidgetTester tester,
-  FakeParcelService service, {
-  String query = '',
-}) async {
+Future<void> openSearch(WidgetTester tester, FakeParcelService service, {String query = ''}) async {
   await tester.pumpWidget(
-    MaterialApp(home: SearchScreen(query: query, service: service)),
+    MaterialApp(
+      home: SearchScreen(query: query, service: service),
+    ),
   );
   await tester.pumpAndSettle();
 }
@@ -46,7 +44,10 @@ void main() {
     await openSearch(tester, service, query: 'pkt460048');
 
     expect(find.byType(ParcelDetailsScreen), findsOneWidget);
-    expect(find.text('Expected in Nairobi about ${timeWithDay(DateTime(2026, 11, 12, 20, 30))}'), findsOneWidget);
+    expect(
+      find.text('Expected in Nairobi about ${timeWithDay(DateTime(2026, 11, 12, 20, 30))}'),
+      findsOneWidget,
+    );
   });
 
   testWidgets('shows the message from the API when it cannot read the search', (tester) async {

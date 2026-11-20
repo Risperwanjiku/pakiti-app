@@ -16,9 +16,7 @@ class SearchResult {
       byPhone: byPhone,
       searchedFor: (byPhone ? json['phone'] : json['tracking_no']) as String,
       name: json['name'] as String?,
-      parcels: parcels
-          .map((item) => ParcelCard.fromJson(item as Map<String, dynamic>))
-          .toList(),
+      parcels: parcels.map((item) => ParcelCard.fromJson(item as Map<String, dynamic>)).toList(),
     );
   }
 

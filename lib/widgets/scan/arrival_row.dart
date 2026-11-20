@@ -40,10 +40,7 @@ class ArrivalRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
-          Text(
-            clockTime(parcel.at),
-            style: const TextStyle(fontSize: 13, color: AppColors.grey),
-          ),
+          Text(clockTime(parcel.at), style: const TextStyle(fontSize: 13, color: AppColors.grey)),
         ],
       ),
     );

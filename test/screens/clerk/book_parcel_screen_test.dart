@@ -24,11 +24,7 @@ Future<void> openForm(WidgetTester tester, {FakeParcelService? service}) {
 
   return tester.pumpWidget(
     MaterialApp(
-      home: BookParcelScreen(
-        destination: nairobi,
-        service: service,
-        takePhoto: () async => photo,
-      ),
+      home: BookParcelScreen(destination: nairobi, service: service, takePhoto: () async => photo),
     ),
   );
 }
@@ -105,7 +101,9 @@ void main() {
     expect(find.text("Enter the receiver's name."), findsOneWidget);
   });
 
-  testWidgets('a detail the API turns back shows under its field, and typing clears it', (tester) async {
+  testWidgets('a detail the API turns back shows under its field, and typing clears it', (
+    tester,
+  ) async {
     final service = FakeParcelService(
       bookError: const ApiException(
         'Some details need checking.',
@@ -139,7 +137,10 @@ void main() {
     await tester.tap(find.text('Confirm and book'));
     await tester.pumpAndSettle();
 
-    expect(find.text("Can't reach the server. Check your connection and try again."), findsOneWidget);
+    expect(
+      find.text("Can't reach the server. Check your connection and try again."),
+      findsOneWidget,
+    );
     expect(find.text('Try again'), findsOneWidget);
   });
 }

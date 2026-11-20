@@ -31,10 +31,7 @@ class ParcelCheckCard extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(hasPhoto ? 12 : 16, 12, hasPhoto ? 8 : 16, 12),
       child: Row(
         children: [
-          if (hasPhoto) ...[
-            ParcelThumb(photo: photo),
-            const SizedBox(width: 14),
-          ],
+          if (hasPhoto) ...[ParcelThumb(photo: photo), const SizedBox(width: 14)],
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

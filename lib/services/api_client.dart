@@ -36,13 +36,8 @@ class ApiClient {
     return _send(() => _client.get(url(path), headers: _headers()));
   }
 
-  Future<Map<String, dynamic>> post(
-    String path, [
-    Map<String, dynamic> body = const {},
-  ]) {
-    return _send(
-      () => _client.post(url(path), headers: _headers(), body: jsonEncode(body)),
-    );
+  Future<Map<String, dynamic>> post(String path, [Map<String, dynamic> body = const {}]) {
+    return _send(() => _client.post(url(path), headers: _headers(), body: jsonEncode(body)));
   }
 
   // for requests with a file, like the parcel photo
@@ -51,25 +46,22 @@ class ApiClient {
     required Map<String, String> fields,
     Map<String, String> files = const {},
   }) {
-    return _send(
-      () async {
-        final request = http.MultipartRequest('POST', url(path))
-          ..headers.addAll(_headers(json: false))
-          ..fields.addAll(fields);
+    return _send(() async {
+      final request = http.MultipartRequest('POST', url(path))
+        ..headers.addAll(_headers(json: false))
+        ..fields.addAll(fields);
 
-        for (final file in files.entries) {
-          try {
-            request.files.add(await http.MultipartFile.fromPath(file.key, file.value));
-          } on FileSystemException {
-            // the phone can clear a photo it took earlier, so the clerk is asked for a new one
-            throw const ApiException('The photo is missing. Take it again.');
-          }
+      for (final file in files.entries) {
+        try {
+          request.files.add(await http.MultipartFile.fromPath(file.key, file.value));
+        } on FileSystemException {
+          // the phone can clear a photo it took earlier, so the clerk is asked for a new one
+          throw const ApiException('The photo is missing. Take it again.');
         }
+      }
 
-        return http.Response.fromStream(await _client.send(request));
-      },
-      timeout: const Duration(seconds: 60),
-    );
+      return http.Response.fromStream(await _client.send(request));
+    }, timeout: const Duration(seconds: 60));
   }
 
   // Images load through their own requests, so they need the address and the token from here.

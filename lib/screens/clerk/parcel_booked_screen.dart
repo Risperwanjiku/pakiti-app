@@ -63,11 +63,7 @@ class ParcelBookedScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(4),
                       boxShadow: const [
-                        BoxShadow(
-                          color: Color(0x290F1B2D),
-                          blurRadius: 8,
-                          offset: Offset(0, 2),
-                        ),
+                        BoxShadow(color: Color(0x290F1B2D), blurRadius: 8, offset: Offset(0, 2)),
                       ],
                     ),
                     child: ClipRRect(

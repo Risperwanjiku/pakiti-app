@@ -15,17 +15,10 @@ class StatusTag extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-      decoration: BoxDecoration(
-        color: background,
-        borderRadius: BorderRadius.circular(8),
-      ),
+      decoration: BoxDecoration(color: background, borderRadius: BorderRadius.circular(8)),
       child: Text(
         label,
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-          color: textColor,
-        ),
+        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: textColor),
       ),
     );
   }
@@ -36,31 +29,19 @@ class StatusTag extends StatelessWidget {
     }
 
     return switch (status) {
-      ParcelStatus.booked => (
-          'Booked',
-          AppColors.statusBooked,
-          AppColors.statusBookedBg,
-        ),
-      ParcelStatus.loaded => (
-          'Loaded',
-          AppColors.statusBooked,
-          AppColors.statusBookedBg,
-        ),
+      ParcelStatus.booked => ('Booked', AppColors.statusBooked, AppColors.statusBookedBg),
+      ParcelStatus.loaded => ('Loaded', AppColors.statusBooked, AppColors.statusBookedBg),
       ParcelStatus.inTransit => (
-          'On the way',
-          AppColors.statusOnTheWay,
-          AppColors.statusOnTheWayBg,
-        ),
-      ParcelStatus.arrived => (
-          'Arrived',
-          AppColors.statusArrived,
-          AppColors.statusArrivedBg,
-        ),
+        'On the way',
+        AppColors.statusOnTheWay,
+        AppColors.statusOnTheWayBg,
+      ),
+      ParcelStatus.arrived => ('Arrived', AppColors.statusArrived, AppColors.statusArrivedBg),
       ParcelStatus.collected => (
-          'Collected',
-          AppColors.statusCollected,
-          AppColors.statusCollectedBg,
-        ),
+        'Collected',
+        AppColors.statusCollected,
+        AppColors.statusCollectedBg,
+      ),
     };
   }
 }

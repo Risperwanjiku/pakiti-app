@@ -17,12 +17,7 @@ import 'package:pakiti_app/widgets/trip/trip_choice_row.dart';
 import 'package:pakiti_app/widgets/trip/vehicle_sheet.dart';
 
 class StartTripScreen extends StatefulWidget {
-  const StartTripScreen({
-    super.key,
-    required this.user,
-    required this.onStarted,
-    this.service,
-  });
+  const StartTripScreen({super.key, required this.user, required this.onStarted, this.service});
 
   final StaffUser user;
 
@@ -62,9 +57,11 @@ class _StartTripScreenState extends State<StartTripScreen> {
         _error = null;
 
         // a refresh keeps what the conductor picked, unless the vehicle has been taken since
-        _chosenRoute = choices.routes.where((route) => route.id == _chosenRoute?.id).firstOrNull ??
+        _chosenRoute =
+            choices.routes.where((route) => route.id == _chosenRoute?.id).firstOrNull ??
             choices.suggestedRoute;
-        _chosenVehicle = choices.vehicles
+        _chosenVehicle =
+            choices.vehicles
                 .where((vehicle) => vehicle.id == _chosenVehicle?.id && !vehicle.busy)
                 .firstOrNull ??
             choices.suggestedVehicle;
@@ -90,7 +87,11 @@ class _StartTripScreenState extends State<StartTripScreen> {
   }
 
   Future<void> _chooseVehicle(TripChoices choices) async {
-    final vehicle = await showVehicleSheet(context, vehicles: choices.vehicles, chosen: _chosenVehicle);
+    final vehicle = await showVehicleSheet(
+      context,
+      vehicles: choices.vehicles,
+      chosen: _chosenVehicle,
+    );
 
     if (vehicle != null && mounted) {
       setState(() => _chosenVehicle = vehicle);

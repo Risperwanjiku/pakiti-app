@@ -16,10 +16,7 @@ class DetailRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            label,
-            style: const TextStyle(fontSize: 14, color: AppColors.grey),
-          ),
+          Text(label, style: const TextStyle(fontSize: 14, color: AppColors.grey)),
           const SizedBox(width: 16),
           Expanded(
             child: Text(

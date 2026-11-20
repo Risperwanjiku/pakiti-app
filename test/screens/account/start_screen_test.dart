@@ -16,7 +16,9 @@ void main() {
 
   testWidgets('with no signal, Log in opens instead of waiting', (tester) async {
     final auth = FakeAuthService(
-      savedLoginError: const ApiException("Can't reach the server. Check your connection and try again."),
+      savedLoginError: const ApiException(
+        "Can't reach the server. Check your connection and try again.",
+      ),
     );
     await tester.pumpWidget(MaterialApp(home: StartScreen(auth: auth)));
     await tester.pumpAndSettle();

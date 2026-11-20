@@ -27,11 +27,7 @@ class SectionTitle extends StatelessWidget {
             ),
           ),
         ),
-        if (note != null)
-          Text(
-            note,
-            style: const TextStyle(fontSize: 13, color: AppColors.grey),
-          ),
+        if (note != null) Text(note, style: const TextStyle(fontSize: 13, color: AppColors.grey)),
       ],
     );
   }

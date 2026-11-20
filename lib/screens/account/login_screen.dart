@@ -225,10 +225,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   TextSpan(
                     text: 'New staff? ',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.darkText,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.darkText),
                   ),
                   TextSpan(text: 'Ask your admin for an account.'),
                 ],

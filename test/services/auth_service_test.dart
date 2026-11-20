@@ -11,11 +11,12 @@ void main() {
 
   test('sends the current and the new password, with the token', () async {
     late http.Request sent;
-    final api = ApiClient.withClient(MockClient((request) async {
-      sent = request;
-      return http.Response('{"ok":true,"data":{}}', 200);
-    }))
-      ..token = 'a1b2c3';
+    final api = ApiClient.withClient(
+      MockClient((request) async {
+        sent = request;
+        return http.Response('{"ok":true,"data":{}}', 200);
+      }),
+    )..token = 'a1b2c3';
 
     await AuthService(api: api).changePassword('nyeri office morning', 'kahawa tamu asubuhi');
 
@@ -29,16 +30,18 @@ void main() {
   });
 
   test('a wrong current password comes back as an error on that field', () async {
-    final api = ApiClient.withClient(MockClient((request) async {
-      return http.Response(
-        jsonEncode({
-          'ok': false,
-          'error': 'Check the passwords and try again.',
-          'errors': {'current_password': "That's not your current password."},
-        }),
-        422,
-      );
-    }));
+    final api = ApiClient.withClient(
+      MockClient((request) async {
+        return http.Response(
+          jsonEncode({
+            'ok': false,
+            'error': 'Check the passwords and try again.',
+            'errors': {'current_password': "That's not your current password."},
+          }),
+          422,
+        );
+      }),
+    );
 
     await expectLater(
       AuthService(api: api).changePassword('not it', 'kahawa tamu asubuhi'),

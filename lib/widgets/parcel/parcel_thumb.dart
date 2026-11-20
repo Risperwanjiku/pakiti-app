@@ -27,9 +27,7 @@ class ParcelThumb extends StatelessWidget {
         height: size,
         fit: BoxFit.cover,
         frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-          return frame == null && !wasSynchronouslyLoaded
-              ? _buildBox(Icons.photo_outlined)
-              : child;
+          return frame == null && !wasSynchronouslyLoaded ? _buildBox(Icons.photo_outlined) : child;
         },
         errorBuilder: (context, error, stackTrace) {
           return _buildBox(Icons.image_not_supported_outlined);

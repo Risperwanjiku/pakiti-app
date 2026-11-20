@@ -96,11 +96,7 @@ class _CountTile extends StatelessWidget {
                       )
                     : Text(
                         '$count',
-                        style: TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.w600,
-                          color: color,
-                        ),
+                        style: TextStyle(fontSize: 26, fontWeight: FontWeight.w600, color: color),
                       ),
               ),
               const SizedBox(height: 2),

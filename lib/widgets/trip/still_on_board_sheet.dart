@@ -9,10 +9,7 @@ import 'package:pakiti_app/widgets/common/sheet_body.dart';
 // Gives back true to end the trip anyway, false to hand them over first,
 // or null when the sheet is closed.
 Future<bool?> showStillOnBoardSheet(BuildContext context, Trip trip) {
-  return showPakitiSheet<bool>(
-    context,
-    builder: (_) => _StillOnBoardSheet(trip: trip),
-  );
+  return showPakitiSheet<bool>(context, builder: (_) => _StillOnBoardSheet(trip: trip));
 }
 
 class _StillOnBoardSheet extends StatelessWidget {
@@ -30,10 +27,7 @@ class _StillOnBoardSheet extends StatelessWidget {
           ? '1 parcel is still on the vehicle'
           : '${stillOnBoard.length} parcels are still on the vehicle',
       children: [
-        for (final parcel in stillOnBoard) ...[
-          const SizedBox(height: 12),
-          _buildParcel(parcel),
-        ],
+        for (final parcel in stillOnBoard) ...[const SizedBox(height: 12), _buildParcel(parcel)],
         const SizedBox(height: 12),
         Text(
           'Check the boot and under the seats, then hand ${justOne ? 'it' : 'them'} '
@@ -68,10 +62,7 @@ class _StillOnBoardSheet extends StatelessWidget {
   Widget _buildParcel(TripParcel parcel) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: AppColors.page,
-        borderRadius: BorderRadius.circular(12),
-      ),
+      decoration: BoxDecoration(color: AppColors.page, borderRadius: BorderRadius.circular(12)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -26,11 +26,7 @@ class ParcelHistory extends StatelessWidget {
       children: [
         Text(
           longDate(firstDay),
-          style: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
-            color: AppColors.grey,
-          ),
+          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.grey),
         ),
         const SizedBox(height: 12),
         for (var i = 0; i < events.length; i++)
@@ -62,8 +58,7 @@ class ParcelHistory extends StatelessWidget {
 
     return switch (event.step) {
       CustodyStep.booked => 'Booked at ${event.office ?? details.fromOffice}',
-      CustodyStep.loaded =>
-        event.vehicle == null ? 'Loaded' : 'Loaded onto ${event.vehicle}',
+      CustodyStep.loaded => event.vehicle == null ? 'Loaded' : 'Loaded onto ${event.vehicle}',
       CustodyStep.departed => 'Left ${booking.from}',
       CustodyStep.notOffloaded =>
         event.vehicle == null ? 'Not offloaded' : 'Not offloaded from ${event.vehicle}',
@@ -194,10 +189,7 @@ class _Step extends StatelessWidget {
                             padding: const EdgeInsets.only(top: 2),
                             child: Text(
                               time,
-                              style: const TextStyle(
-                                fontSize: 13,
-                                color: AppColors.grey,
-                              ),
+                              style: const TextStyle(fontSize: 13, color: AppColors.grey),
                             ),
                           ),
                         ],
@@ -205,10 +197,7 @@ class _Step extends StatelessWidget {
                     ),
                     if (detail != null) ...[
                       const SizedBox(height: 2),
-                      Text(
-                        detail,
-                        style: const TextStyle(fontSize: 13, color: AppColors.grey),
-                      ),
+                      Text(detail, style: const TextStyle(fontSize: 13, color: AppColors.grey)),
                     ],
                   ],
                 ),
@@ -223,34 +212,29 @@ class _Step extends StatelessWidget {
   Widget _buildDot() {
     return switch (dot) {
       _Dot.done => Container(
-          width: 12,
-          height: 12,
-          decoration: const BoxDecoration(
-            color: AppColors.navy,
-            shape: BoxShape.circle,
-          ),
-        ),
+        width: 12,
+        height: 12,
+        decoration: const BoxDecoration(color: AppColors.navy, shape: BoxShape.circle),
+      ),
       _Dot.current => Container(
-          width: 14,
-          height: 14,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.circle,
-            border: Border.all(color: AppColors.navy, width: 3),
-            boxShadow: const [
-              BoxShadow(color: AppColors.navTint, spreadRadius: 4),
-            ],
-          ),
+        width: 14,
+        height: 14,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.circle,
+          border: Border.all(color: AppColors.navy, width: 3),
+          boxShadow: const [BoxShadow(color: AppColors.navTint, spreadRadius: 4)],
         ),
+      ),
       _Dot.upcoming => Container(
-          width: 12,
-          height: 12,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.circle,
-            border: Border.all(color: AppColors.border, width: 2),
-          ),
+        width: 12,
+        height: 12,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.circle,
+          border: Border.all(color: AppColors.border, width: 2),
         ),
+      ),
     };
   }
 }

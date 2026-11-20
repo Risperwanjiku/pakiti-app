@@ -47,7 +47,8 @@ class ParcelWhereNowCard extends StatelessWidget {
                   fromNote: _departureNote(),
                   to: details.booking.to,
                   toNote: _arrivalNote(),
-                  arrived: details.status == ParcelStatus.arrived ||
+                  arrived:
+                      details.status == ParcelStatus.arrived ||
                       details.status == ParcelStatus.collected,
                 ),
               ],
@@ -91,14 +92,16 @@ class ParcelWhereNowCard extends StatelessWidget {
 
     return switch (details.status) {
       ParcelStatus.booked => 'Waiting at ${details.fromOffice}',
-      ParcelStatus.loaded => vehicle == null
-          ? 'Loaded, about to leave ${booking.from}'
-          : 'Loaded onto ${vehicle.regNumber}',
-      ParcelStatus.inTransit => expected == null
-          ? 'On the way to ${booking.to}'
-          : details.isLate
-              ? 'Was expected in ${booking.to} ${atTimeOrDay(expected)}'
-              : 'Expected in ${booking.to} about ${timeWithDay(expected)}',
+      ParcelStatus.loaded =>
+        vehicle == null
+            ? 'Loaded, about to leave ${booking.from}'
+            : 'Loaded onto ${vehicle.regNumber}',
+      ParcelStatus.inTransit =>
+        expected == null
+            ? 'On the way to ${booking.to}'
+            : details.isLate
+            ? 'Was expected in ${booking.to} ${atTimeOrDay(expected)}'
+            : 'Expected in ${booking.to} about ${timeWithDay(expected)}',
       ParcelStatus.arrived => 'Ready for collection at ${details.toOffice}',
       ParcelStatus.collected => 'Collected by ${booking.receiverName}',
     };

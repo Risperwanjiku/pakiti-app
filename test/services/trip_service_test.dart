@@ -12,10 +12,12 @@ import '../support/fakes.dart';
 void main() {
   test('a conductor with no trip open gets none back', () async {
     late Uri asked;
-    final api = ApiClient.withClient(MockClient((request) async {
-      asked = request.url;
-      return http.Response('{"ok":true,"data":{"trip":null}}', 200);
-    }));
+    final api = ApiClient.withClient(
+      MockClient((request) async {
+        asked = request.url;
+        return http.Response('{"ok":true,"data":{"trip":null}}', 200);
+      }),
+    );
 
     final trip = await TripService(api: api).fetchCurrentTrip();
 
@@ -25,13 +27,21 @@ void main() {
 
   test('starts a trip on the chosen route and vehicle', () async {
     late http.Request sent;
-    final api = ApiClient.withClient(MockClient((request) async {
-      sent = request;
-      final reply = jsonDecode(realLoadReply) as Map<String, dynamic>;
-      final trip = (reply['data'] as Map<String, dynamic>)['trip'];
+    final api = ApiClient.withClient(
+      MockClient((request) async {
+        sent = request;
+        final reply = jsonDecode(realLoadReply) as Map<String, dynamic>;
+        final trip = (reply['data'] as Map<String, dynamic>)['trip'];
 
-      return http.Response(jsonEncode({'ok': true, 'data': {'trip': trip}}), 201);
-    }));
+        return http.Response(
+          jsonEncode({
+            'ok': true,
+            'data': {'trip': trip},
+          }),
+          201,
+        );
+      }),
+    );
 
     final trip = await TripService(api: api).startTrip(1, 1);
 
@@ -43,10 +53,12 @@ void main() {
 
   test('scans a parcel onto the trip by its tracking number', () async {
     late http.Request sent;
-    final api = ApiClient.withClient(MockClient((request) async {
-      sent = request;
-      return http.Response(realLoadReply, 200);
-    }));
+    final api = ApiClient.withClient(
+      MockClient((request) async {
+        sent = request;
+        return http.Response(realLoadReply, 200);
+      }),
+    );
 
     final result = await TripService(api: api).loadParcel(3, 'PKT-282420');
 
@@ -57,10 +69,12 @@ void main() {
 
   test('only ends a trip with parcels on board when told to', () async {
     final sent = <http.Request>[];
-    final api = ApiClient.withClient(MockClient((request) async {
-      sent.add(request);
-      return http.Response('{"ok":true,"data":{"not_offloaded":0}}', 200);
-    }));
+    final api = ApiClient.withClient(
+      MockClient((request) async {
+        sent.add(request);
+        return http.Response('{"ok":true,"data":{"not_offloaded":0}}', 200);
+      }),
+    );
     final service = TripService(api: api);
 
     await service.endTrip(3);

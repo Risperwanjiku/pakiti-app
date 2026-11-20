@@ -42,21 +42,21 @@ class _ClerkTabsState extends State<ClerkTabs> {
     return Scaffold(
       body: switch (_tabIndex) {
         0 => ClerkHomeScreen(
-            user: widget.user,
-            onShowParcels: _showParcels,
-            service: widget.service,
-          ),
+          user: widget.user,
+          onShowParcels: _showParcels,
+          service: widget.service,
+        ),
         1 => ParcelsScreen(
-            user: widget.user,
-            filter: _parcelsFilter,
-            onFilterChanged: (filter) => _parcelsFilter = filter,
-            service: widget.service,
-          ),
+          user: widget.user,
+          filter: _parcelsFilter,
+          onFilterChanged: (filter) => _parcelsFilter = filter,
+          service: widget.service,
+        ),
         2 => ScanScreen(
-            onSeeAll: () => _showParcels(ParcelFilter.arrived),
-            service: widget.service,
-            camera: widget.camera,
-          ),
+          onSeeAll: () => _showParcels(ParcelFilter.arrived),
+          service: widget.service,
+          camera: widget.camera,
+        ),
         _ => ProfileScreen(user: widget.user),
       },
       bottomNavigationBar: NavigationBar(
@@ -76,10 +76,7 @@ class _ClerkTabsState extends State<ClerkTabs> {
             selectedIcon: Icon(Icons.inventory_2),
             label: 'Parcels',
           ),
-          NavigationDestination(
-            icon: Icon(Icons.qr_code_scanner),
-            label: 'Scan',
-          ),
+          NavigationDestination(icon: Icon(Icons.qr_code_scanner), label: 'Scan'),
           NavigationDestination(
             icon: Icon(Icons.person_outline),
             selectedIcon: Icon(Icons.person),

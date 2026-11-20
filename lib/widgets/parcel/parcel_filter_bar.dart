@@ -18,9 +18,7 @@ class ParcelFilterBar extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Row(
         spacing: 8,
-        children: [
-          for (final filter in ParcelFilter.values) _buildChip(filter),
-        ],
+        children: [for (final filter in ParcelFilter.values) _buildChip(filter)],
       ),
     );
   }

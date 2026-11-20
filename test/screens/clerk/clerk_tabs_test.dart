@@ -16,7 +16,13 @@ FakeClerkService nyeri() {
     lists: {
       ParcelFilter.all: [
         listed('PKT-512270'),
-        listed('PKT-509134', status: ParcelStatus.booked, outgoing: true, name: 'Mary Achieng', town: 'Karatina'),
+        listed(
+          'PKT-509134',
+          status: ParcelStatus.booked,
+          outgoing: true,
+          name: 'Mary Achieng',
+          town: 'Karatina',
+        ),
       ],
       ParcelFilter.arrived: [listed('PKT-512270')],
     },
@@ -25,7 +31,9 @@ FakeClerkService nyeri() {
 
 Future<void> openTabs(WidgetTester tester, FakeClerkService service) async {
   await tester.pumpWidget(
-    MaterialApp(home: ClerkTabs(user: peter, service: service, camera: false)),
+    MaterialApp(
+      home: ClerkTabs(user: peter, service: service, camera: false),
+    ),
   );
   await tester.pumpAndSettle();
 }

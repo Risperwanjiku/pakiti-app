@@ -397,19 +397,21 @@ class FakeTripService extends TripService {
 
 // what John can choose from, with Nyeri to Nairobi on KDG 117T suggested from his last trip
 TripChoices nyeriChoices({int? suggestedRouteId = 1, int? suggestedVehicleId = 1}) {
-  return TripChoices.fromJson(_json({
-    'routes': [
-      {'route_id': 2, 'from': 'Nairobi', 'to': 'Nyeri', 'minutes': 180, 'waiting': 0},
-      {'route_id': 1, 'from': 'Nyeri', 'to': 'Nairobi', 'minutes': 175, 'waiting': 2},
-      {'route_id': 5, 'from': 'Nyeri', 'to': 'Nakuru', 'minutes': 150, 'waiting': 1},
-    ],
-    'vehicles': [
-      {'vehicle_id': 2, 'reg_number': 'KDA 482M', 'fleet_number': '112', 'busy': true},
-      {'vehicle_id': 3, 'reg_number': 'KCX 903P', 'fleet_number': '078', 'busy': false},
-      {'vehicle_id': 1, 'reg_number': 'KDG 117T', 'fleet_number': '045', 'busy': false},
-    ],
-    'suggested': {'route_id': suggestedRouteId, 'vehicle_id': suggestedVehicleId},
-  }));
+  return TripChoices.fromJson(
+    _json({
+      'routes': [
+        {'route_id': 2, 'from': 'Nairobi', 'to': 'Nyeri', 'minutes': 180, 'waiting': 0},
+        {'route_id': 1, 'from': 'Nyeri', 'to': 'Nairobi', 'minutes': 175, 'waiting': 2},
+        {'route_id': 5, 'from': 'Nyeri', 'to': 'Nakuru', 'minutes': 150, 'waiting': 1},
+      ],
+      'vehicles': [
+        {'vehicle_id': 2, 'reg_number': 'KDA 482M', 'fleet_number': '112', 'busy': true},
+        {'vehicle_id': 3, 'reg_number': 'KCX 903P', 'fleet_number': '078', 'busy': false},
+        {'vehicle_id': 1, 'reg_number': 'KDG 117T', 'fleet_number': '045', 'busy': false},
+      ],
+      'suggested': {'route_id': suggestedRouteId, 'vehicle_id': suggestedVehicleId},
+    }),
+  );
 }
 
 // trip 7 from Nyeri to Nairobi on KDG 117T, still loading
@@ -417,61 +419,67 @@ Trip loadingTrip({
   List<String> onBoard = const [],
   List<String> waiting = const ['PKT-461388', 'PKT-461390'],
 }) {
-  return Trip.fromJson(_json({
-    ..._trip,
-    'status': 'loading',
-    'departed_at': null,
-    'expected_arrival': null,
-    'arrived_at': null,
-    'parcels': [
-      for (final trackingNo in onBoard)
-        _tripParcel(
-          trackingNo,
-          loadedAt: DateTime.now().subtract(const Duration(seconds: 20)).toIso8601String(),
-        ),
-    ],
-    'waiting': [
-      for (final trackingNo in waiting)
-        {'tracking_no': trackingNo, 'receiver_name': _receivers[trackingNo] ?? 'Dennis Mwangi'},
-    ],
-  }));
+  return Trip.fromJson(
+    _json({
+      ..._trip,
+      'status': 'loading',
+      'departed_at': null,
+      'expected_arrival': null,
+      'arrived_at': null,
+      'parcels': [
+        for (final trackingNo in onBoard)
+          _tripParcel(
+            trackingNo,
+            loadedAt: DateTime.now().subtract(const Duration(seconds: 20)).toIso8601String(),
+          ),
+      ],
+      'waiting': [
+        for (final trackingNo in waiting)
+          {'tracking_no': trackingNo, 'receiver_name': _receivers[trackingNo] ?? 'Dennis Mwangi'},
+      ],
+    }),
+  );
 }
 
 Trip onTheWayTrip() {
-  return Trip.fromJson(_json({
-    ..._trip,
-    'status': 'departed',
-    'departed_at': '2026-11-17T14:15:00',
-    'expected_arrival': '2026-11-17T17:15:00',
-    'arrived_at': null,
-    'parcels': [
-      _tripParcel('PKT-460048', loadedAt: '2026-11-17T14:01:00'),
-      _tripParcel('PKT-461215', loadedAt: '2026-11-17T14:04:00'),
-      _tripParcel('PKT-461302', loadedAt: '2026-11-17T14:10:00'),
-    ],
-    'waiting': <Object>[],
-  }));
+  return Trip.fromJson(
+    _json({
+      ..._trip,
+      'status': 'departed',
+      'departed_at': '2026-11-17T14:15:00',
+      'expected_arrival': '2026-11-17T17:15:00',
+      'arrived_at': null,
+      'parcels': [
+        _tripParcel('PKT-460048', loadedAt: '2026-11-17T14:01:00'),
+        _tripParcel('PKT-461215', loadedAt: '2026-11-17T14:04:00'),
+        _tripParcel('PKT-461302', loadedAt: '2026-11-17T14:10:00'),
+      ],
+      'waiting': <Object>[],
+    }),
+  );
 }
 
 // at Nairobi, with PKT-461215 still on board
 Trip inNairobiTrip({bool allOff = false}) {
-  return Trip.fromJson(_json({
-    ..._trip,
-    'status': 'arrived',
-    'departed_at': '2026-11-17T14:15:00',
-    'expected_arrival': '2026-11-17T17:15:00',
-    'arrived_at': '2026-11-17T17:10:00',
-    'parcels': [
-      _tripParcel('PKT-460048', loadedAt: '2026-11-17T14:01:00', offAt: '2026-11-17T17:12:00'),
-      _tripParcel(
-        'PKT-461215',
-        loadedAt: '2026-11-17T14:04:00',
-        offAt: allOff ? '2026-11-17T17:20:00' : null,
-      ),
-      _tripParcel('PKT-461302', loadedAt: '2026-11-17T14:10:00', offAt: '2026-11-17T17:13:00'),
-    ],
-    'waiting': <Object>[],
-  }));
+  return Trip.fromJson(
+    _json({
+      ..._trip,
+      'status': 'arrived',
+      'departed_at': '2026-11-17T14:15:00',
+      'expected_arrival': '2026-11-17T17:15:00',
+      'arrived_at': '2026-11-17T17:10:00',
+      'parcels': [
+        _tripParcel('PKT-460048', loadedAt: '2026-11-17T14:01:00', offAt: '2026-11-17T17:12:00'),
+        _tripParcel(
+          'PKT-461215',
+          loadedAt: '2026-11-17T14:04:00',
+          offAt: allOff ? '2026-11-17T17:20:00' : null,
+        ),
+        _tripParcel('PKT-461302', loadedAt: '2026-11-17T14:10:00', offAt: '2026-11-17T17:13:00'),
+      ],
+      'waiting': <Object>[],
+    }),
+  );
 }
 
 // what the API says after a scan, with the trip as it is afterwards
@@ -486,13 +494,15 @@ LoadResult scanResult(
 }) {
   return LoadResult(
     outcome: loadOutcomeFromApi(result),
-    parcel: ScannedParcel.fromJson(_json({
-      'tracking_no': trackingNo,
-      'status': status,
-      'from': from,
-      'to': to,
-      'vehicle': vehicle,
-    })),
+    parcel: ScannedParcel.fromJson(
+      _json({
+        'tracking_no': trackingNo,
+        'status': status,
+        'from': from,
+        'to': to,
+        'vehicle': vehicle,
+      }),
+    ),
     trip: trip,
   );
 }
@@ -548,141 +558,179 @@ ParcelCard listed(
 // time zone the tests run in, here or on GitHub.
 
 SearchResult estherParcels() {
-  return SearchResult.fromJson(_json({
-    'type': 'phone',
-    'phone': '+254722418305',
-    'name': 'Esther Wambui',
-    'parcels': [
-      _card('PKT-460048', 'in_transit', 'outgoing', 'Kevin Maina', 'Nairobi'),
-      _card('PKT-191127', 'booked', 'outgoing', 'John Kariuki', 'Embu'),
-      _card('PKT-388204', 'collected', 'incoming', 'Dennis Mwangi', 'Nakuru'),
-    ],
-  }));
+  return SearchResult.fromJson(
+    _json({
+      'type': 'phone',
+      'phone': '+254722418305',
+      'name': 'Esther Wambui',
+      'parcels': [
+        _card('PKT-460048', 'in_transit', 'outgoing', 'Kevin Maina', 'Nairobi'),
+        _card('PKT-191127', 'booked', 'outgoing', 'John Kariuki', 'Embu'),
+        _card('PKT-388204', 'collected', 'incoming', 'Dennis Mwangi', 'Nakuru'),
+      ],
+    }),
+  );
 }
 
 SearchResult nothingFor(String phone) {
-  return SearchResult.fromJson(_json({
-    'type': 'phone',
-    'phone': phone,
-    'name': null,
-    'parcels': <Object>[],
-  }));
+  return SearchResult.fromJson(
+    _json({'type': 'phone', 'phone': phone, 'name': null, 'parcels': <Object>[]}),
+  );
 }
 
 SearchResult trackingNumberFound() {
-  return SearchResult.fromJson(_json({
-    'type': 'tracking_no',
-    'tracking_no': 'PKT-460048',
-    'parcels': [
-      _card('PKT-460048', 'in_transit', 'outgoing', 'Kevin Maina', 'Nairobi'),
-    ],
-  }));
+  return SearchResult.fromJson(
+    _json({
+      'type': 'tracking_no',
+      'tracking_no': 'PKT-460048',
+      'parcels': [_card('PKT-460048', 'in_transit', 'outgoing', 'Kevin Maina', 'Nairobi')],
+    }),
+  );
 }
 
 ParcelDetails justBooked() {
-  return ParcelDetails.fromJson(_json({
-    'parcel': {
-      ..._booking,
-      'status': 'booked',
-      'is_late': false,
-      'expected_arrival': null,
-      'vehicle': null,
-    },
-    'events': [_booked],
-    'record_checked': true,
-  }));
+  return ParcelDetails.fromJson(
+    _json({
+      'parcel': {
+        ..._booking,
+        'status': 'booked',
+        'is_late': false,
+        'expected_arrival': null,
+        'vehicle': null,
+      },
+      'events': [_booked],
+      'record_checked': true,
+    }),
+  );
 }
 
 ParcelDetails onTheWay({bool recordChecked = true}) {
-  return ParcelDetails.fromJson(_json({
-    'parcel': {
-      ..._booking,
-      'status': 'in_transit',
-      'is_late': false,
-      'expected_arrival': '2026-11-12T20:30:00',
-      'vehicle': _vehicle,
-    },
-    'events': [_booked, _loaded, _departed],
-    'record_checked': recordChecked,
-  }));
+  return ParcelDetails.fromJson(
+    _json({
+      'parcel': {
+        ..._booking,
+        'status': 'in_transit',
+        'is_late': false,
+        'expected_arrival': '2026-11-12T20:30:00',
+        'vehicle': _vehicle,
+      },
+      'events': [_booked, _loaded, _departed],
+      'record_checked': recordChecked,
+    }),
+  );
 }
 
 // the conductor ended the trip at Nairobi with this parcel still on the vehicle
 ParcelDetails leftOnBoard() {
-  return ParcelDetails.fromJson(_json({
-    'parcel': {
-      ..._booking,
-      'status': 'in_transit',
-      'is_late': true,
-      'expected_arrival': '2026-11-12T20:30:00',
-      'vehicle': _vehicle,
-    },
-    'events': [
-      _booked,
-      _loaded,
-      _departed,
-      _event('not_offloaded', '2026-11-12T20:45:00', 'John Otieno', 'conductor', office: 'Nairobi office', vehicle: 'KDG 117T'),
-    ],
-    'record_checked': true,
-  }));
+  return ParcelDetails.fromJson(
+    _json({
+      'parcel': {
+        ..._booking,
+        'status': 'in_transit',
+        'is_late': true,
+        'expected_arrival': '2026-11-12T20:30:00',
+        'vehicle': _vehicle,
+      },
+      'events': [
+        _booked,
+        _loaded,
+        _departed,
+        _event(
+          'not_offloaded',
+          '2026-11-12T20:45:00',
+          'John Otieno',
+          'conductor',
+          office: 'Nairobi office',
+          vehicle: 'KDG 117T',
+        ),
+      ],
+      'record_checked': true,
+    }),
+  );
 }
 
 ParcelDetails collectedNextDay() {
-  return ParcelDetails.fromJson(_json({
-    'parcel': {
-      ..._booking,
-      'status': 'collected',
-      'is_late': false,
-      'expected_arrival': '2026-11-12T20:25:00',
-      'vehicle': _vehicle,
-    },
-    'events': [
-      _booked,
-      _loaded,
-      _departed,
-      _event('arrived', '2026-11-12T20:20:00', 'Samuel Kiprop', 'clerk', office: 'Nairobi office', vehicle: 'KDG 117T'),
-      _event('collected', '2026-11-13T09:05:00', 'Samuel Kiprop', 'clerk', office: 'Nairobi office'),
-    ],
-    'record_checked': true,
-  }));
+  return ParcelDetails.fromJson(
+    _json({
+      'parcel': {
+        ..._booking,
+        'status': 'collected',
+        'is_late': false,
+        'expected_arrival': '2026-11-12T20:25:00',
+        'vehicle': _vehicle,
+      },
+      'events': [
+        _booked,
+        _loaded,
+        _departed,
+        _event(
+          'arrived',
+          '2026-11-12T20:20:00',
+          'Samuel Kiprop',
+          'clerk',
+          office: 'Nairobi office',
+          vehicle: 'KDG 117T',
+        ),
+        _event(
+          'collected',
+          '2026-11-13T09:05:00',
+          'Samuel Kiprop',
+          'clerk',
+          office: 'Nairobi office',
+        ),
+      ],
+      'record_checked': true,
+    }),
+  );
 }
 
 // at Nairobi, waiting for Kevin, after Mercy scanned it off at 8:20 pm
 ParcelDetails waitingHere({bool codeSent = true, int triesLeft = 5}) {
-  return ParcelDetails.fromJson(_json({
-    'parcel': {
-      ..._booking,
-      'status': 'arrived',
-      'is_late': false,
-      'expected_arrival': '2026-11-12T20:30:00',
-      'vehicle': _vehicle,
-    },
-    'events': [_booked, _loaded, _departed, _arrivedNairobi],
-    'record_checked': true,
-    'hand_over': {'code_sent': codeSent, 'tries_left': triesLeft},
-  }));
+  return ParcelDetails.fromJson(
+    _json({
+      'parcel': {
+        ..._booking,
+        'status': 'arrived',
+        'is_late': false,
+        'expected_arrival': '2026-11-12T20:30:00',
+        'vehicle': _vehicle,
+      },
+      'events': [_booked, _loaded, _departed, _arrivedNairobi],
+      'record_checked': true,
+      'hand_over': {'code_sent': codeSent, 'tries_left': triesLeft},
+    }),
+  );
 }
 
 // the same parcel after Kevin collected it the next morning, with the photo from the counter
 ParcelDetails handedOverWithPhoto() {
-  return ParcelDetails.fromJson(_json({
-    'parcel': {
-      ..._booking,
-      'status': 'collected',
-      'is_late': false,
-      'expected_arrival': '2026-11-12T20:30:00',
-      'vehicle': _vehicle,
-    },
-    'events': [
-      _booked,
-      _loaded,
-      _departed,
-      _arrivedNairobi,
-      _event('collected', '2026-11-13T10:42:00', 'Mercy Njoroge', 'clerk', office: 'Nairobi office', photo: true),
-    ],
-    'record_checked': true,
-    'hand_over': null,
-  }));
+  return ParcelDetails.fromJson(
+    _json({
+      'parcel': {
+        ..._booking,
+        'status': 'collected',
+        'is_late': false,
+        'expected_arrival': '2026-11-12T20:30:00',
+        'vehicle': _vehicle,
+      },
+      'events': [
+        _booked,
+        _loaded,
+        _departed,
+        _arrivedNairobi,
+        _event(
+          'collected',
+          '2026-11-13T10:42:00',
+          'Mercy Njoroge',
+          'clerk',
+          office: 'Nairobi office',
+          photo: true,
+        ),
+      ],
+      'record_checked': true,
+      'hand_over': null,
+    }),
+  );
 }
 
 const _booking = {
@@ -708,10 +756,36 @@ const _vehicle = {
   'conductor_phone': '+254723456789',
 };
 
-final _booked = _event('booked', '2026-11-12T16:41:00', 'Peter Mwangi', 'clerk', office: 'Nyeri office', photo: true);
-final _loaded = _event('loaded', '2026-11-12T17:10:00', 'John Otieno', 'conductor', vehicle: 'KDG 117T');
-final _departed = _event('departed', '2026-11-12T17:25:00', 'John Otieno', 'conductor', vehicle: 'KDG 117T');
-final _arrivedNairobi = _event('arrived', '2026-11-12T20:20:00', 'Mercy Njoroge', 'clerk', office: 'Nairobi office', vehicle: 'KDG 117T');
+final _booked = _event(
+  'booked',
+  '2026-11-12T16:41:00',
+  'Peter Mwangi',
+  'clerk',
+  office: 'Nyeri office',
+  photo: true,
+);
+final _loaded = _event(
+  'loaded',
+  '2026-11-12T17:10:00',
+  'John Otieno',
+  'conductor',
+  vehicle: 'KDG 117T',
+);
+final _departed = _event(
+  'departed',
+  '2026-11-12T17:25:00',
+  'John Otieno',
+  'conductor',
+  vehicle: 'KDG 117T',
+);
+final _arrivedNairobi = _event(
+  'arrived',
+  '2026-11-12T20:20:00',
+  'Mercy Njoroge',
+  'clerk',
+  office: 'Nairobi office',
+  vehicle: 'KDG 117T',
+);
 
 Map<String, Object?> _event(
   String type,
@@ -734,7 +808,13 @@ Map<String, Object?> _event(
   };
 }
 
-Map<String, Object?> _card(String trackingNo, String status, String direction, String name, String town) {
+Map<String, Object?> _card(
+  String trackingNo,
+  String status,
+  String direction,
+  String name,
+  String town,
+) {
   return {
     'tracking_no': trackingNo,
     'status': status,
@@ -750,32 +830,36 @@ Map<String, Object?> _card(String trackingNo, String status, String direction, S
 ArrivalCheck comingIn({String verdict = 'arriving', String status = 'in_transit'}) {
   final now = DateTime.now();
 
-  return ArrivalCheck.fromJson(_json({
-    'verdict': verdict,
-    'here': 'Nairobi',
-    'parcel': {
-      'tracking_no': 'PKT-460048',
-      'status': status,
-      'from': 'Nyeri',
-      'to': 'Nairobi',
-      'contents': 'Maize flour and beans',
-      'size': 'medium',
-      'receiver': {'name': 'Kevin Maina', 'phone': '+254745902117'},
-      'vehicle': 'KDG 117T',
-      'departed_at': DateTime(now.year, now.month, now.day, 14, 15).toIso8601String(),
-      'arrived_at': null,
-      'collected_at': null,
-    },
-  }));
+  return ArrivalCheck.fromJson(
+    _json({
+      'verdict': verdict,
+      'here': 'Nairobi',
+      'parcel': {
+        'tracking_no': 'PKT-460048',
+        'status': status,
+        'from': 'Nyeri',
+        'to': 'Nairobi',
+        'contents': 'Maize flour and beans',
+        'size': 'medium',
+        'receiver': {'name': 'Kevin Maina', 'phone': '+254745902117'},
+        'vehicle': 'KDG 117T',
+        'departed_at': DateTime(now.year, now.month, now.day, 14, 15).toIso8601String(),
+        'arrived_at': null,
+        'collected_at': null,
+      },
+    }),
+  );
 }
 
 // a parcel for Nakuru scanned at Nairobi, which only comes with where it is going
 ArrivalCheck forNakuru() {
-  return ArrivalCheck.fromJson(_json({
-    'verdict': 'not_here',
-    'here': 'Nairobi',
-    'parcel': {'tracking_no': 'PKT-461144', 'to': 'Nakuru'},
-  }));
+  return ArrivalCheck.fromJson(
+    _json({
+      'verdict': 'not_here',
+      'here': 'Nairobi',
+      'parcel': {'tracking_no': 'PKT-461144', 'to': 'Nakuru'},
+    }),
+  );
 }
 
 // what was already scanned off at Nairobi today, newest first

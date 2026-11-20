@@ -53,11 +53,7 @@ class ParcelEvent {
 }
 
 class Vehicle {
-  const Vehicle({
-    required this.regNumber,
-    required this.conductor,
-    required this.conductorPhone,
-  });
+  const Vehicle({required this.regNumber, required this.conductor, required this.conductorPhone});
 
   factory Vehicle.fromJson(Map<String, dynamic> json) {
     return Vehicle(
@@ -77,10 +73,7 @@ class HandOverState {
   const HandOverState({required this.codeSent, required this.triesLeft});
 
   factory HandOverState.fromJson(Map<String, dynamic> json) {
-    return HandOverState(
-      codeSent: json['code_sent'] as bool,
-      triesLeft: json['tries_left'] as int,
-    );
+    return HandOverState(codeSent: json['code_sent'] as bool, triesLeft: json['tries_left'] as int);
   }
 
   // false for a parcel that arrived before codes were sent
@@ -122,9 +115,7 @@ class ParcelDetails {
       travelMinutes: parcel['travel_minutes'] as int,
       expectedArrival: expectedArrival == null ? null : DateTime.parse(expectedArrival).toLocal(),
       vehicle: vehicle == null ? null : Vehicle.fromJson(vehicle),
-      events: events
-          .map((item) => ParcelEvent.fromJson(item as Map<String, dynamic>))
-          .toList(),
+      events: events.map((item) => ParcelEvent.fromJson(item as Map<String, dynamic>)).toList(),
       recordChecked: json['record_checked'] as bool,
       handOver: handOver == null ? null : HandOverState.fromJson(handOver),
     );

@@ -14,10 +14,7 @@ class PlaceholderBar extends StatelessWidget {
     return Container(
       width: width,
       height: height,
-      decoration: BoxDecoration(
-        color: AppColors.page,
-        borderRadius: BorderRadius.circular(6),
-      ),
+      decoration: BoxDecoration(color: AppColors.page, borderRadius: BorderRadius.circular(6)),
     );
   }
 }

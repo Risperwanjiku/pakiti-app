@@ -26,11 +26,7 @@ class FieldPrefix extends StatelessWidget {
           const SizedBox(width: 12),
           const SizedBox(
             height: 24,
-            child: VerticalDivider(
-              width: 1,
-              thickness: 1.5,
-              color: AppColors.divider,
-            ),
+            child: VerticalDivider(width: 1, thickness: 1.5, color: AppColors.divider),
           ),
         ],
       ),

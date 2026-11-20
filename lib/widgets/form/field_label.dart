@@ -12,11 +12,7 @@ class FieldLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: const TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w500,
-        color: AppColors.darkText,
-      ),
+      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.darkText),
     );
   }
 }

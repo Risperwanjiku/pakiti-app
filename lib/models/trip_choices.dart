@@ -68,9 +68,7 @@ class TripChoices {
     final suggested = json['suggested'] as Map<String, dynamic>;
 
     return TripChoices(
-      routes: routes
-          .map((item) => RouteChoice.fromJson(item as Map<String, dynamic>))
-          .toList(),
+      routes: routes.map((item) => RouteChoice.fromJson(item as Map<String, dynamic>)).toList(),
       vehicles: vehicles
           .map((item) => VehicleChoice.fromJson(item as Map<String, dynamic>))
           .toList(),
@@ -86,7 +84,9 @@ class TripChoices {
   final int? suggestedRouteId;
   final int? suggestedVehicleId;
 
-  RouteChoice? get suggestedRoute => routes.where((route) => route.id == suggestedRouteId).firstOrNull;
+  RouteChoice? get suggestedRoute =>
+      routes.where((route) => route.id == suggestedRouteId).firstOrNull;
 
-  VehicleChoice? get suggestedVehicle => vehicles.where((vehicle) => vehicle.id == suggestedVehicleId).firstOrNull;
+  VehicleChoice? get suggestedVehicle =>
+      vehicles.where((vehicle) => vehicle.id == suggestedVehicleId).firstOrNull;
 }

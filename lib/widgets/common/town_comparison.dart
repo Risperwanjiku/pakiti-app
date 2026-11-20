@@ -48,10 +48,7 @@ class TownComparison extends StatelessWidget {
         children: [
           Text(
             label,
-            style: TextStyle(
-              fontSize: 13,
-              color: wrong ? AppColors.error : AppColors.grey,
-            ),
+            style: TextStyle(fontSize: 13, color: wrong ? AppColors.error : AppColors.grey),
           ),
           Text(
             town,

@@ -10,10 +10,7 @@ import 'package:pakiti_app/widgets/form/field_prefix.dart';
 // For a label the camera can't read. Gives back the tracking number, like PKT-460048,
 // or null when the sheet is closed.
 Future<String?> showTypeNumberSheet(BuildContext context, {required String action}) {
-  return showPakitiSheet<String>(
-    context,
-    builder: (_) => _TypeNumberSheet(action: action),
-  );
+  return showPakitiSheet<String>(context, builder: (_) => _TypeNumberSheet(action: action));
 }
 
 class _TypeNumberSheet extends StatefulWidget {
@@ -96,10 +93,7 @@ class _TypeNumberSheetState extends State<_TypeNumberSheet> {
                 ),
               ),
               const SizedBox(height: 24),
-              FilledButton(
-                onPressed: _submit,
-                child: Text(widget.action),
-              ),
+              FilledButton(onPressed: _submit, child: Text(widget.action)),
               const SizedBox(height: 8),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),

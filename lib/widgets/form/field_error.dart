@@ -20,10 +20,7 @@ class FieldError extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 6, 16, 0),
       child: Semantics(
         liveRegion: true,
-        child: Text(
-          message,
-          style: const TextStyle(fontSize: 12, color: AppColors.error),
-        ),
+        child: Text(message, style: const TextStyle(fontSize: 12, color: AppColors.error)),
       ),
     );
   }

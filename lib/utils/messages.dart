@@ -38,8 +38,7 @@ void showError(BuildContext context, Object error) {
 
 // clears every screen first, so Back can't return to the old session
 void goToLogin(BuildContext context) {
-  Navigator.of(context).pushAndRemoveUntil(
-    MaterialPageRoute(builder: (_) => const LoginScreen()),
-    (_) => false,
-  );
+  Navigator.of(
+    context,
+  ).pushAndRemoveUntil(MaterialPageRoute(builder: (_) => const LoginScreen()), (_) => false);
 }

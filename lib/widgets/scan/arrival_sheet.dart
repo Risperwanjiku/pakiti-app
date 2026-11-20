@@ -68,10 +68,7 @@ class _ArrivalSheet extends StatelessWidget {
         const SizedBox(height: 16),
         _buildContents(),
         const SizedBox(height: 16),
-        const Text(
-          'Receiver',
-          style: TextStyle(fontSize: 13, color: AppColors.grey),
-        ),
+        const Text('Receiver', style: TextStyle(fontSize: 13, color: AppColors.grey)),
         Text(
           parcel.receiverName,
           style: const TextStyle(
@@ -106,10 +103,7 @@ class _ArrivalSheet extends StatelessWidget {
   Widget _buildContents() {
     return Container(
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.page,
-        borderRadius: BorderRadius.circular(12),
-      ),
+      decoration: BoxDecoration(color: AppColors.page, borderRadius: BorderRadius.circular(12)),
       child: Row(
         children: [
           ParcelThumb(photo: photo, boxColor: Colors.white),

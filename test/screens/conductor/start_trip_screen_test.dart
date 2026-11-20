@@ -13,11 +13,7 @@ Future<void> openStart(
 }) async {
   await tester.pumpWidget(
     MaterialApp(
-      home: StartTripScreen(
-        user: john,
-        service: service,
-        onStarted: onStarted ?? (_) {},
-      ),
+      home: StartTripScreen(user: john, service: service, onStarted: onStarted ?? (_) {}),
     ),
   );
   await tester.pumpAndSettle();
@@ -105,7 +101,9 @@ void main() {
     expect(started!.status, TripStatus.loading);
   });
 
-  testWidgets('before a first trip, Start loading asks for the route and then the vehicle', (tester) async {
+  testWidgets('before a first trip, Start loading asks for the route and then the vehicle', (
+    tester,
+  ) async {
     final service = nyeri(choices: nyeriChoices(suggestedRouteId: null, suggestedVehicleId: null));
     await openStart(tester, service);
 

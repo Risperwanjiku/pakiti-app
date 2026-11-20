@@ -6,7 +6,8 @@ import 'package:pakiti_app/models/parcel_size.dart';
 import 'package:pakiti_app/models/parcel_status.dart';
 
 // the way GET /parcels/{trackingNo}/arrival answers for a parcel coming in
-const comingInReply = '{"verdict":"arriving","here":"Nairobi","parcel":{"tracking_no":"PKT-460048",'
+const comingInReply =
+    '{"verdict":"arriving","here":"Nairobi","parcel":{"tracking_no":"PKT-460048",'
     '"status":"in_transit","from":"Nyeri","to":"Nairobi","contents":"Maize flour and beans",'
     '"size":"medium","receiver":{"name":"Kevin Maina","phone":"+254745902117"},"vehicle":"KDG 117T",'
     '"departed_at":"2026-11-19T14:15:00+03:00","arrived_at":null,"collected_at":null}}';
@@ -29,9 +30,11 @@ void main() {
   });
 
   test('a parcel for another office only says where it is going', () {
-    final check = ArrivalCheck.fromJson(read(
-      '{"verdict":"not_here","here":"Nairobi","parcel":{"tracking_no":"PKT-461144","to":"Nakuru"}}',
-    ));
+    final check = ArrivalCheck.fromJson(
+      read(
+        '{"verdict":"not_here","here":"Nairobi","parcel":{"tracking_no":"PKT-461144","to":"Nakuru"}}',
+      ),
+    );
 
     expect(check.verdict, ArrivalVerdict.notHere);
     expect(check.to, 'Nakuru');
@@ -39,11 +42,13 @@ void main() {
   });
 
   test('marking a parcel gives back the list with it at the top', () {
-    final result = ArrivalResult.fromJson(read(
-      '{"parcel":{"tracking_no":"PKT-460048","receiver_name":"Kevin Maina"},"arrivals":['
-      '{"tracking_no":"PKT-460048","from":"Nyeri","vehicle":"KDG 117T","at":"2026-11-19T17:12:00+03:00"},'
-      '{"tracking_no":"PKT-458871","from":"Nakuru","vehicle":null,"at":"2026-11-19T11:40:00+03:00"}]}',
-    ));
+    final result = ArrivalResult.fromJson(
+      read(
+        '{"parcel":{"tracking_no":"PKT-460048","receiver_name":"Kevin Maina"},"arrivals":['
+        '{"tracking_no":"PKT-460048","from":"Nyeri","vehicle":"KDG 117T","at":"2026-11-19T17:12:00+03:00"},'
+        '{"tracking_no":"PKT-458871","from":"Nakuru","vehicle":null,"at":"2026-11-19T11:40:00+03:00"}]}',
+      ),
+    );
 
     expect(result.receiverName, 'Kevin Maina');
     expect(result.arrivals.map((parcel) => parcel.trackingNo), ['PKT-460048', 'PKT-458871']);

@@ -13,12 +13,7 @@ Future<void> openScreen(WidgetTester tester, FakeAuthService auth) async {
   await tester.pumpAndSettle();
 }
 
-Future<void> fillInAndSave(
-  WidgetTester tester,
-  String current,
-  String chosen,
-  String again,
-) async {
+Future<void> fillInAndSave(WidgetTester tester, String current, String chosen, String again) async {
   await tester.enterText(box(0), current);
   await tester.enterText(box(1), chosen);
   await tester.enterText(box(2), again);
@@ -104,9 +99,9 @@ void main() {
         home: Builder(
           builder: (context) => TextButton(
             onPressed: () async {
-              saved = await Navigator.of(context).push<bool>(
-                MaterialPageRoute(builder: (_) => ChangePasswordScreen(auth: auth)),
-              );
+              saved = await Navigator.of(
+                context,
+              ).push<bool>(MaterialPageRoute(builder: (_) => ChangePasswordScreen(auth: auth)));
             },
             child: const Text('Open'),
           ),
@@ -116,7 +111,12 @@ void main() {
     await tester.tap(find.text('Open'));
     await tester.pumpAndSettle();
 
-    await fillInAndSave(tester, 'nyeri office morning', 'kahawa tamu asubuhi', 'kahawa tamu asubuhi');
+    await fillInAndSave(
+      tester,
+      'nyeri office morning',
+      'kahawa tamu asubuhi',
+      'kahawa tamu asubuhi',
+    );
 
     expect(auth.changes, ['nyeri office morning -> kahawa tamu asubuhi']);
     expect(saved, isTrue);
@@ -125,14 +125,16 @@ void main() {
 
   testWidgets('offers to log in again when the session has ended', (tester) async {
     final auth = FakeAuthService(
-      error: const ApiException(
-        'Your session has ended. Please log in again.',
-        statusCode: 401,
-      ),
+      error: const ApiException('Your session has ended. Please log in again.', statusCode: 401),
     );
     await openScreen(tester, auth);
 
-    await fillInAndSave(tester, 'nyeri office morning', 'kahawa tamu asubuhi', 'kahawa tamu asubuhi');
+    await fillInAndSave(
+      tester,
+      'nyeri office morning',
+      'kahawa tamu asubuhi',
+      'kahawa tamu asubuhi',
+    );
 
     expect(find.text('Your session has ended. Please log in again.'), findsOneWidget);
     expect(find.text('Log in again'), findsOneWidget);

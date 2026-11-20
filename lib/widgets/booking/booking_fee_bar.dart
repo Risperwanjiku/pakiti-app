@@ -31,10 +31,7 @@ class BookingFeeBar extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Fee',
-                      style: TextStyle(fontSize: 12, color: AppColors.grey),
-                    ),
+                    const Text('Fee', style: TextStyle(fontSize: 12, color: AppColors.grey)),
                     Text(
                       ksh(fee),
                       style: const TextStyle(
@@ -48,10 +45,7 @@ class BookingFeeBar extends StatelessWidget {
                 const SizedBox(width: 20),
               ],
               Expanded(
-                child: FilledButton(
-                  onPressed: onBook,
-                  child: const Text('Book parcel'),
-                ),
+                child: FilledButton(onPressed: onBook, child: const Text('Book parcel')),
               ),
             ],
           ),

@@ -16,12 +16,7 @@ import 'package:pakiti_app/widgets/common/pakiti_app_bar.dart';
 // While that trip is loading, the loading screen takes the whole screen. Otherwise
 // there are two tabs: the trip, and Profile.
 class ConductorTabs extends StatefulWidget {
-  const ConductorTabs({
-    super.key,
-    required this.user,
-    this.service,
-    this.camera = true,
-  });
+  const ConductorTabs({super.key, required this.user, this.service, this.camera = true});
 
   final StaffUser user;
 
@@ -140,17 +135,9 @@ class _ConductorTabsState extends State<ConductorTabs> {
     }
 
     if (trip == null) {
-      return StartTripScreen(
-        user: widget.user,
-        onStarted: _updateTrip,
-        service: _tripService,
-      );
+      return StartTripScreen(user: widget.user, onStarted: _updateTrip, service: _tripService);
     }
 
-    return CurrentTripScreen(
-      trip: trip,
-      onChanged: _updateTrip,
-      service: _tripService,
-    );
+    return CurrentTripScreen(trip: trip, onChanged: _updateTrip, service: _tripService);
   }
 }

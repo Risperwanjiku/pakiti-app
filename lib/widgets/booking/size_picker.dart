@@ -82,10 +82,7 @@ class SizePicker extends StatelessWidget {
                       color: AppColors.darkText,
                     ),
                   ),
-                  Text(
-                    size.hint,
-                    style: const TextStyle(fontSize: 12, color: AppColors.grey),
-                  ),
+                  Text(size.hint, style: const TextStyle(fontSize: 12, color: AppColors.grey)),
                   const Spacer(),
                   const SizedBox(height: 6),
                   Text(

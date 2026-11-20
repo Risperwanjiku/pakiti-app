@@ -21,12 +21,7 @@ import 'package:pakiti_app/widgets/parcel/parcel_where_now_card.dart';
 import 'package:pakiti_app/widgets/parcel/record_changed_warning.dart';
 
 class ParcelDetailsScreen extends StatefulWidget {
-  const ParcelDetailsScreen({
-    super.key,
-    required this.trackingNo,
-    this.service,
-    this.onChanged,
-  });
+  const ParcelDetailsScreen({super.key, required this.trackingNo, this.service, this.onChanged});
 
   final String trackingNo;
 
@@ -178,10 +173,7 @@ class _ParcelDetailsScreenState extends State<ParcelDetailsScreen> {
 
     return [
       // a changed record matters more than anything else on the page
-      if (!details.recordChecked) ...[
-        const RecordChangedWarning(),
-        const SizedBox(height: 16),
-      ],
+      if (!details.recordChecked) ...[const RecordChangedWarning(), const SizedBox(height: 16)],
       ParcelWhereNowCard(details: details, onCall: _callPhone),
       const SizedBox(height: 16),
       ParcelPeopleCard(booking: details.booking, onCall: _callPhone),
@@ -199,6 +191,9 @@ class _ParcelDetailsScreenState extends State<ParcelDetailsScreen> {
   }
 
   Widget _buildPlaceholder(double height) {
-    return SizedBox(height: height, child: const WhiteCard(child: SizedBox.expand()));
+    return SizedBox(
+      height: height,
+      child: const WhiteCard(child: SizedBox.expand()),
+    );
   }
 }

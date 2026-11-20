@@ -46,10 +46,7 @@ class _NotHereSheet extends StatelessWidget {
               const TextSpan(text: 'Give '),
               TextSpan(
                 text: trackingNo,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.darkText,
-                ),
+                style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.darkText),
               ),
               TextSpan(text: ' back to the conductor so it carries on to $to.'),
             ],

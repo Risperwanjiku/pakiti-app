@@ -17,9 +17,7 @@ class Destination {
       town: json['town'] as String,
       county: json['county'] as String,
       travelMinutes: json['minutes'] as int,
-      fees: {
-        for (final size in ParcelSize.values) size: fees[size.name] as num,
-      },
+      fees: {for (final size in ParcelSize.values) size: fees[size.name] as num},
     );
   }
 

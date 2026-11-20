@@ -19,10 +19,7 @@ Future<void> showForgotPasswordSheet(BuildContext context) {
             style: TextStyle(fontSize: 16, color: AppColors.grey),
           ),
           const SizedBox(height: 24),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Got it'),
-          ),
+          FilledButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Got it')),
         ],
       );
     },

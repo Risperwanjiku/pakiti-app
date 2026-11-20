@@ -8,7 +8,9 @@ import '../../support/fakes.dart';
 
 Future<void> openTabs(WidgetTester tester, FakeTripService service) async {
   await tester.pumpWidget(
-    MaterialApp(home: ConductorTabs(user: john, service: service, camera: false)),
+    MaterialApp(
+      home: ConductorTabs(user: john, service: service, camera: false),
+    ),
   );
   await tester.pumpAndSettle();
 }
@@ -30,10 +32,7 @@ void main() {
   });
 
   testWidgets('Start loading opens the loading screen', (tester) async {
-    await openTabs(
-      tester,
-      FakeTripService(choices: nyeriChoices(), started: loadingTrip()),
-    );
+    await openTabs(tester, FakeTripService(choices: nyeriChoices(), started: loadingTrip()));
 
     await tester.tap(find.text('Start loading'));
     await tester.pumpAndSettle();
@@ -57,7 +56,10 @@ void main() {
     );
     await openTabs(tester, service);
 
-    expect(find.text("Can't reach the server. Check your connection and try again."), findsOneWidget);
+    expect(
+      find.text("Can't reach the server. Check your connection and try again."),
+      findsOneWidget,
+    );
 
     await tester.tap(find.text('Try again'));
     await tester.pumpAndSettle();

@@ -43,11 +43,7 @@ class ArrivalsToday extends StatelessWidget {
 
     if (snapshot.hasError && snapshot.connectionState != ConnectionState.waiting) {
       return [
-        LoadErrorCard(
-          error: snapshot.error,
-          onRetry: onRetry,
-          onLogIn: () => goToLogin(context),
-        ),
+        LoadErrorCard(error: snapshot.error, onRetry: onRetry, onLogIn: () => goToLogin(context)),
       ];
     }
 
@@ -61,9 +57,7 @@ class ArrivalsToday extends StatelessWidget {
     }
 
     return [
-      TripParcelCard(
-        rows: [for (final parcel in arrivals) ArrivalRow(parcel: parcel)],
-      ),
+      TripParcelCard(rows: [for (final parcel in arrivals) ArrivalRow(parcel: parcel)]),
     ];
   }
 }

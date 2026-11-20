@@ -120,7 +120,8 @@ class _LoadParcelsScreenState extends State<LoadParcelsScreen> {
         await showKeepOffSheet(
           context,
           trackingNo: parcel.trackingNo,
-          after: ' was scanned onto ${parcel.vehicle} first. Hand it to the conductor of that vehicle.',
+          after:
+              ' was scanned onto ${parcel.vehicle} first. Hand it to the conductor of that vehicle.',
         );
       case LoadOutcome.alreadyLeft:
         _buzzWarning();
@@ -243,13 +244,12 @@ class _LoadParcelsScreenState extends State<LoadParcelsScreen> {
               padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
               children: [
                 // no count when a list is empty, since the note under it already says so
-                SectionTitle(
-                  title: 'On board',
-                  note: onBoard == 0 ? null : parcelCount(onBoard),
-                ),
+                SectionTitle(title: 'On board', note: onBoard == 0 ? null : parcelCount(onBoard)),
                 const SizedBox(height: 8),
                 if (trip.parcels.isEmpty)
-                  const EmptyTripList(text: 'Nothing on board yet. Scan a label to load the parcel.')
+                  const EmptyTripList(
+                    text: 'Nothing on board yet. Scan a label to load the parcel.',
+                  )
                 else
                   TripParcelCard(
                     rows: [
@@ -296,8 +296,8 @@ class _LoadParcelsScreenState extends State<LoadParcelsScreen> {
 
   Widget _buildOnBoardRow(TripParcel parcel) {
     final loadedAt = parcel.loadedAt;
-    final justNow = loadedAt != null &&
-        DateTime.now().difference(loadedAt) < const Duration(minutes: 1);
+    final justNow =
+        loadedAt != null && DateTime.now().difference(loadedAt) < const Duration(minutes: 1);
 
     return TripParcelRow(
       mark: ParcelMark.tick,

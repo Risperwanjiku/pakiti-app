@@ -33,9 +33,7 @@ class DepartBar extends StatelessWidget {
         top: false,
         child: FilledButton(
           onPressed: onDepart,
-          child: departing
-              ? const BusyLabel('Departing…')
-              : Text(label),
+          child: departing ? const BusyLabel('Departing…') : Text(label),
         ),
       ),
     );

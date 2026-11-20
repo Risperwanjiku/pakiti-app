@@ -8,8 +8,8 @@ import 'package:pakiti_app/services/api_client.dart';
 
 class AuthService {
   AuthService({ApiClient? api, FlutterSecureStorage? storage})
-      : _api = api ?? ApiClient.instance,
-        _storage = storage ?? FlutterSecureStorage();
+    : _api = api ?? ApiClient.instance,
+      _storage = storage ?? FlutterSecureStorage();
 
   static const _tokenKey = 'auth_token';
 
@@ -17,10 +17,7 @@ class AuthService {
   final FlutterSecureStorage _storage;
 
   Future<StaffUser> login(String phone, String password) async {
-    final data = await _api.post('/auth/login', {
-      'phone': phone,
-      'password': password,
-    });
+    final data = await _api.post('/auth/login', {'phone': phone, 'password': password});
 
     final token = data['token'] as String;
     await _storage.write(key: _tokenKey, value: token);
@@ -61,10 +58,12 @@ class AuthService {
   // The request already has the token, so clearing it straight after is fine.
   Future<void> logout() async {
     unawaited(
-      _api.post('/auth/logout').then<void>(
-        (_) {},
-        onError: (Object error) => debugPrint('Server logout failed: $error'),
-      ),
+      _api
+          .post('/auth/logout')
+          .then<void>(
+            (_) {},
+            onError: (Object error) => debugPrint('Server logout failed: $error'),
+          ),
     );
     await _clearToken();
   }

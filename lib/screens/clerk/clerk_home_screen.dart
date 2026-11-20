@@ -20,12 +20,7 @@ import 'package:pakiti_app/widgets/parcel/today_counts.dart';
 import 'package:pakiti_app/widgets/form/search_field.dart';
 
 class ClerkHomeScreen extends StatefulWidget {
-  const ClerkHomeScreen({
-    super.key,
-    required this.user,
-    required this.onShowParcels,
-    this.service,
-  });
+  const ClerkHomeScreen({super.key, required this.user, required this.onShowParcels, this.service});
 
   final StaffUser user;
 
@@ -72,9 +67,7 @@ class _ClerkHomeScreenState extends State<ClerkHomeScreen> {
   }
 
   Future<void> _openBooking() async {
-    await Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const ChooseTownScreen()),
-    );
+    await Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ChooseTownScreen()));
 
     // the counts and recent parcels change after a booking
     if (mounted) {
@@ -91,7 +84,9 @@ class _ClerkHomeScreenState extends State<ClerkHomeScreen> {
 
     _searchController.clear();
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => SearchScreen(query: query, onChanged: _refresh)),
+      MaterialPageRoute(
+        builder: (_) => SearchScreen(query: query, onChanged: _refresh),
+      ),
     );
   }
 
@@ -113,10 +108,7 @@ class _ClerkHomeScreenState extends State<ClerkHomeScreen> {
           IconButton(
             tooltip: 'Notifications',
             onPressed: () => showMessage(context, 'This part is coming next.'),
-            icon: const Icon(
-              Icons.notifications_none_rounded,
-              color: AppColors.darkText,
-            ),
+            icon: const Icon(Icons.notifications_none_rounded, color: AppColors.darkText),
           ),
           const SizedBox(width: 12),
         ],
@@ -203,10 +195,7 @@ class _ClerkHomeScreenState extends State<ClerkHomeScreen> {
         )
       else
         for (final parcel in summary.recent)
-          ParcelTile(
-            parcel: parcel,
-            onTap: () => _openParcel(parcel.trackingNo),
-          ),
+          ParcelTile(parcel: parcel, onTap: () => _openParcel(parcel.trackingNo)),
     ];
   }
 }

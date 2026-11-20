@@ -9,11 +9,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
-          body: LabelScanner(
-            camera: false,
-            onScanned: (_) {},
-            onTypeNumber: () => typing = true,
-          ),
+          body: LabelScanner(camera: false, onScanned: (_) {}, onTypeNumber: () => typing = true),
         ),
       ),
     );

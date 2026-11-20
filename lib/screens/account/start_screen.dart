@@ -67,9 +67,7 @@ class _StartScreenState extends State<StartScreen> {
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
         backgroundColor: AppColors.navy,
-        body: Center(
-          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5),
-        ),
+        body: Center(child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5)),
       ),
     );
   }

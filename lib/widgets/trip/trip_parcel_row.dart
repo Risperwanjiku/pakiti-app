@@ -65,11 +65,7 @@ class TripParcelRow extends StatelessWidget {
             const SizedBox(width: 12),
             Text(
               note,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
-                color: noteColor,
-              ),
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: noteColor),
             ),
           ],
         ],
@@ -81,18 +77,14 @@ class TripParcelRow extends StatelessWidget {
     return switch (mark) {
       ParcelMark.tick => const DoneTick(),
       ParcelMark.ring => Container(
-          width: 20,
-          height: 20,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: AppColors.divider, width: 2),
-          ),
+        width: 20,
+        height: 20,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: AppColors.divider, width: 2),
         ),
-      ParcelMark.box => const Icon(
-          Icons.inventory_2_outlined,
-          size: 20,
-          color: AppColors.grey,
-        ),
+      ),
+      ParcelMark.box => const Icon(Icons.inventory_2_outlined, size: 20, color: AppColors.grey),
     };
   }
 }

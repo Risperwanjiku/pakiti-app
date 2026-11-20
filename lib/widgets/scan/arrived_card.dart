@@ -25,10 +25,7 @@ class ArrivedCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.only(top: 1),
-            child: DoneTick(),
-          ),
+          const Padding(padding: EdgeInsets.only(top: 1), child: DoneTick()),
           const SizedBox(width: 12),
           Expanded(
             child: Column(

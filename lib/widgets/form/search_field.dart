@@ -46,11 +46,7 @@ class SearchField extends StatelessWidget {
       textCapitalization: capitalization,
       onChanged: onChanged,
       onSubmitted: onSubmitted,
-      style: const TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w500,
-        color: AppColors.darkText,
-      ),
+      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.darkText),
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: const TextStyle(fontWeight: FontWeight.w400, color: AppColors.grey),

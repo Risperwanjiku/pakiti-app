@@ -7,7 +7,9 @@ import '../../support/fakes.dart';
 
 Future<void> openTrip(WidgetTester tester, FakeTripService service) async {
   await tester.pumpWidget(
-    MaterialApp(home: ConductorTabs(user: john, service: service, camera: false)),
+    MaterialApp(
+      home: ConductorTabs(user: john, service: service, camera: false),
+    ),
   );
   await tester.pumpAndSettle();
 }
@@ -17,7 +19,10 @@ void main() {
     await openTrip(tester, FakeTripService(current: onTheWayTrip()));
 
     expect(find.text('On the way'), findsOneWidget);
-    expect(find.text('Expected in Nairobi about ${timeWithDay(DateTime(2026, 11, 17, 17, 15))}'), findsOneWidget);
+    expect(
+      find.text('Expected in Nairobi about ${timeWithDay(DateTime(2026, 11, 17, 17, 15))}'),
+      findsOneWidget,
+    );
     expect(find.text('Left at 2:15 pm'), findsOneWidget);
     expect(find.text('About 3 hrs by road'), findsOneWidget);
     expect(find.text('KDG 117T, 3 parcels on board'), findsOneWidget);

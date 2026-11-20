@@ -7,13 +7,11 @@ import 'package:pakiti_app/screens/account/profile_screen.dart';
 
 import '../../support/fakes.dart';
 
-Future<void> openProfile(
-  WidgetTester tester, {
-  StaffUser user = peter,
-  FakeAuthService? auth,
-}) {
+Future<void> openProfile(WidgetTester tester, {StaffUser user = peter, FakeAuthService? auth}) {
   return tester.pumpWidget(
-    MaterialApp(home: ProfileScreen(user: user, auth: auth ?? FakeAuthService())),
+    MaterialApp(
+      home: ProfileScreen(user: user, auth: auth ?? FakeAuthService()),
+    ),
   );
 }
 

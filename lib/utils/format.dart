@@ -1,4 +1,17 @@
-const _months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const _months = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
 
 // 1 -> 1 parcel, 3 -> 3 parcels
 String parcelCount(int parcels) => parcels == 1 ? '1 parcel' : '$parcels parcels';

@@ -24,7 +24,9 @@ ParcelCard card({
 Future<void> showTile(WidgetTester tester, ParcelCard parcel, {VoidCallback? onTap}) {
   return tester.pumpWidget(
     MaterialApp(
-      home: Scaffold(body: ParcelTile(parcel: parcel, onTap: onTap ?? () {})),
+      home: Scaffold(
+        body: ParcelTile(parcel: parcel, onTap: onTap ?? () {}),
+      ),
     ),
   );
 }
@@ -73,13 +75,19 @@ void main() {
   });
 
   testWidgets('nor does one waiting at the other office', (tester) async {
-    await showTile(tester, card(status: ParcelStatus.arrived, ago: const Duration(days: 3, hours: 2)));
+    await showTile(
+      tester,
+      card(status: ParcelStatus.arrived, ago: const Duration(days: 3, hours: 2)),
+    );
 
     expect(find.text('3 days ago'), findsOneWidget);
   });
 
   testWidgets('a parcel booked here and not loaded for 2 days or more says so too', (tester) async {
-    await showTile(tester, card(status: ParcelStatus.booked, ago: const Duration(days: 4, hours: 1)));
+    await showTile(
+      tester,
+      card(status: ParcelStatus.booked, ago: const Duration(days: 4, hours: 1)),
+    );
 
     expect(find.text('Waiting 4 days'), findsOneWidget);
   });

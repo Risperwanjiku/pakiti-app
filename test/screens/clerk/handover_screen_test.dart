@@ -165,7 +165,10 @@ void main() {
     await tester.tap(find.text('Send a new code'));
     await tester.pumpAndSettle();
 
-    expect(find.text('A code was sent less than a minute ago. Give it a moment to arrive.'), findsOneWidget);
+    expect(
+      find.text('A code was sent less than a minute ago. Give it a moment to arrive.'),
+      findsOneWidget,
+    );
     expect(find.text('Ask Kevin for the 6 numbers.'), findsOneWidget);
   });
 
@@ -201,7 +204,9 @@ void main() {
     expect(find.text('Kevin Maina collected PKT-460048 at 10:42 am.'), findsOneWidget);
     expect(find.text('Photo at handover'), findsOneWidget);
     expect(
-      find.text("Handed over by Mercy Njoroge at Nairobi office. It's now in the parcel's history."),
+      find.text(
+        "Handed over by Mercy Njoroge at Nairobi office. It's now in the parcel's history.",
+      ),
       findsOneWidget,
     );
 

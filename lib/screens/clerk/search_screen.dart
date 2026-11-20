@@ -127,10 +127,7 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
       ),
       body: result == null
-          ? ListView(
-              padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
-              children: [_buildHelp()],
-            )
+          ? ListView(padding: const EdgeInsets.fromLTRB(24, 20, 24, 24), children: [_buildHelp()])
           : FutureBuilder<SearchResult>(
               future: result,
               builder: (context, snapshot) {
@@ -183,10 +180,7 @@ class _SearchScreenState extends State<SearchScreen> {
         const SizedBox(height: 12),
       ],
       for (final parcel in result.parcels)
-        ParcelTile(
-          parcel: parcel,
-          onTap: () => _openDetails(parcel.trackingNo),
-        ),
+        ParcelTile(parcel: parcel, onTap: () => _openDetails(parcel.trackingNo)),
     ];
   }
 

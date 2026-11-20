@@ -53,26 +53,27 @@ class _PasswordFieldState extends State<PasswordField> {
       validator: widget.validator,
       onChanged: widget.onChanged,
       onFieldSubmitted: widget.onSubmitted,
-      decoration: AppTheme.fieldDecoration(
-        hint: widget.hint,
-        error: widget.error,
-        // left out of Next, so the keyboard's Next key goes to the next box and not to the eye
-        suffix: ExcludeFocusTraversal(
-          child: IconButton(
-            tooltip: _hidden ? 'Show password' : 'Hide password',
-            onPressed: widget.enabled ? () => setState(() => _hidden = !_hidden) : null,
-            icon: Icon(
-              _hidden ? Icons.visibility_outlined : Icons.visibility_off_outlined,
-              color: AppColors.grey,
+      decoration:
+          AppTheme.fieldDecoration(
+            hint: widget.hint,
+            error: widget.error,
+            // left out of Next, so the keyboard's Next key goes to the next box and not to the eye
+            suffix: ExcludeFocusTraversal(
+              child: IconButton(
+                tooltip: _hidden ? 'Show password' : 'Hide password',
+                onPressed: widget.enabled ? () => setState(() => _hidden = !_hidden) : null,
+                icon: Icon(
+                  _hidden ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                  color: AppColors.grey,
+                ),
+              ),
             ),
+          ).copyWith(
+            helperText: widget.helper,
+            helperMaxLines: 2,
+            helperStyle: const TextStyle(fontSize: 12, color: AppColors.grey),
+            errorMaxLines: 2,
           ),
-        ),
-      ).copyWith(
-        helperText: widget.helper,
-        helperMaxLines: 2,
-        helperStyle: const TextStyle(fontSize: 12, color: AppColors.grey),
-        errorMaxLines: 2,
-      ),
     );
   }
 }

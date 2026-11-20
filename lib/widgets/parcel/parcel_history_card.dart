@@ -18,11 +18,7 @@ class ParcelHistoryCard extends StatelessWidget {
       children: [
         const Text(
           'History',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: AppColors.darkText,
-          ),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.darkText),
         ),
         const SizedBox(height: 12),
         WhiteCard(
@@ -56,11 +52,7 @@ class _RecordCheckedNote extends StatelessWidget {
     return const Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(
-          Icons.verified_user_outlined,
-          size: 18,
-          color: AppColors.statusCollected,
-        ),
+        Icon(Icons.verified_user_outlined, size: 18, color: AppColors.statusCollected),
         SizedBox(width: 10),
         Expanded(
           child: Text.rich(
@@ -68,14 +60,9 @@ class _RecordCheckedNote extends StatelessWidget {
               children: [
                 TextSpan(
                   text: 'Custody record checked. ',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.statusCollected,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.statusCollected),
                 ),
-                TextSpan(
-                  text: 'Nothing has changed since each hand-off was recorded.',
-                ),
+                TextSpan(text: 'Nothing has changed since each hand-off was recorded.'),
               ],
             ),
             style: TextStyle(fontSize: 13, color: AppColors.grey),

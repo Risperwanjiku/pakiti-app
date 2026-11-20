@@ -126,9 +126,7 @@ class _BookParcelScreenState extends State<BookParcelScreen> {
 
   void _addEmail() {
     setState(() => _showEmail = true);
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => _emailFocus.requestFocus(),
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) => _emailFocus.requestFocus());
   }
 
   void _onFieldChanged(String field) {
@@ -150,9 +148,9 @@ class _BookParcelScreenState extends State<BookParcelScreen> {
   }
 
   Future<void> _changeTown() async {
-    final picked = await Navigator.of(context).push<Destination>(
-      MaterialPageRoute(builder: (_) => const ChooseTownScreen(pickOnly: true)),
-    );
+    final picked = await Navigator.of(
+      context,
+    ).push<Destination>(MaterialPageRoute(builder: (_) => const ChooseTownScreen(pickOnly: true)));
 
     if (picked != null && mounted) {
       _requestId = null;
@@ -199,9 +197,7 @@ class _BookParcelScreenState extends State<BookParcelScreen> {
     // after the messages are drawn, scroll to the first one
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final firstField = _fieldOrder.where(errors.containsKey).firstOrNull;
-      final target = firstField == null
-          ? null
-          : _fieldKeys[firstField]!.currentContext;
+      final target = firstField == null ? null : _fieldKeys[firstField]!.currentContext;
 
       if (target != null) {
         Scrollable.ensureVisible(
@@ -267,10 +263,7 @@ class _BookParcelScreenState extends State<BookParcelScreen> {
   void _showParcelBooked(BookedParcel parcel) {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (_) => ParcelBookedScreen(
-          parcel: parcel,
-          onBookAnother: widget.onBookAnother,
-        ),
+        builder: (_) => ParcelBookedScreen(parcel: parcel, onBookAnother: widget.onBookAnother),
       ),
       result: parcel,
     );
@@ -326,118 +319,123 @@ class _BookParcelScreenState extends State<BookParcelScreen> {
               ),
             ),
           ),
-          BookingFeeBar(
-            fee: size == null ? null : _destination.fees[size],
-            onBook: _checkDetails,
-          ),
+          BookingFeeBar(fee: size == null ? null : _destination.fees[size], onBook: _checkDetails),
         ],
       ),
     );
   }
 
   Widget _buildParcelSection() {
-    return FormSection(title: 'Parcel', children: [
-      SizePicker(
-        key: _fieldKeys['size'],
-        fees: _destination.fees,
-        selected: _size,
-        error: _errors['size'],
-        onPick: _pickSize,
-      ),
-      const SizedBox(height: 16),
-      BookingField(
-        key: _fieldKeys['contents'],
-        error: _errors['contents'],
-        onChanged: () => _onFieldChanged('contents'),
-        label: "What's inside",
-        controller: _contents,
-        capitalization: TextCapitalization.sentences,
-        formatters: [LengthLimitingTextInputFormatter(255)],
-      ),
-      const SizedBox(height: 16),
-      BookingField(
-        key: _fieldKeys['declared_value'],
-        error: _errors['declared_value'],
-        onChanged: () => _onFieldChanged('declared_value'),
-        label: 'Value',
-        controller: _declaredValue,
-        prefix: 'KSh',
-        helper: "Used for claims if it's lost or damaged.",
-        keyboardType: TextInputType.number,
-        formatters: [AmountInputFormatter()],
-      ),
-    ]);
+    return FormSection(
+      title: 'Parcel',
+      children: [
+        SizePicker(
+          key: _fieldKeys['size'],
+          fees: _destination.fees,
+          selected: _size,
+          error: _errors['size'],
+          onPick: _pickSize,
+        ),
+        const SizedBox(height: 16),
+        BookingField(
+          key: _fieldKeys['contents'],
+          error: _errors['contents'],
+          onChanged: () => _onFieldChanged('contents'),
+          label: "What's inside",
+          controller: _contents,
+          capitalization: TextCapitalization.sentences,
+          formatters: [LengthLimitingTextInputFormatter(255)],
+        ),
+        const SizedBox(height: 16),
+        BookingField(
+          key: _fieldKeys['declared_value'],
+          error: _errors['declared_value'],
+          onChanged: () => _onFieldChanged('declared_value'),
+          label: 'Value',
+          controller: _declaredValue,
+          prefix: 'KSh',
+          helper: "Used for claims if it's lost or damaged.",
+          keyboardType: TextInputType.number,
+          formatters: [AmountInputFormatter()],
+        ),
+      ],
+    );
   }
 
   Widget _buildSenderSection() {
-    return FormSection(title: 'Sender', children: [
-      BookingField(
-        key: _fieldKeys['sender_name'],
-        error: _errors['sender_name'],
-        onChanged: () => _onFieldChanged('sender_name'),
-        label: "Sender's name",
-        controller: _senderName,
-        keyboardType: TextInputType.name,
-        capitalization: TextCapitalization.words,
-        formatters: [LengthLimitingTextInputFormatter(100)],
-      ),
-      const SizedBox(height: 16),
-      BookingField(
-        key: _fieldKeys['sender_phone'],
-        error: _errors['sender_phone'],
-        onChanged: () => _onFieldChanged('sender_phone'),
-        label: "Sender's phone number",
-        controller: _senderPhone,
-        prefix: '+254',
-        hint: '712 345 678',
-        keyboardType: TextInputType.phone,
-        formatters: [PhoneInputFormatter()],
-      ),
-      const SizedBox(height: 8),
-      if (_showEmail)
+    return FormSection(
+      title: 'Sender',
+      children: [
         BookingField(
-          key: _fieldKeys['sender_email'],
-          error: _errors['sender_email'],
-          onChanged: () => _onFieldChanged('sender_email'),
-          label: "Sender's email",
-          controller: _senderEmail,
-          helper: 'For the booking receipt.',
-          keyboardType: TextInputType.emailAddress,
-          formatters: [LengthLimitingTextInputFormatter(254)],
-          focusNode: _emailFocus,
-        )
-      else
-        AddEmailButton(onPressed: _addEmail),
-    ]);
+          key: _fieldKeys['sender_name'],
+          error: _errors['sender_name'],
+          onChanged: () => _onFieldChanged('sender_name'),
+          label: "Sender's name",
+          controller: _senderName,
+          keyboardType: TextInputType.name,
+          capitalization: TextCapitalization.words,
+          formatters: [LengthLimitingTextInputFormatter(100)],
+        ),
+        const SizedBox(height: 16),
+        BookingField(
+          key: _fieldKeys['sender_phone'],
+          error: _errors['sender_phone'],
+          onChanged: () => _onFieldChanged('sender_phone'),
+          label: "Sender's phone number",
+          controller: _senderPhone,
+          prefix: '+254',
+          hint: '712 345 678',
+          keyboardType: TextInputType.phone,
+          formatters: [PhoneInputFormatter()],
+        ),
+        const SizedBox(height: 8),
+        if (_showEmail)
+          BookingField(
+            key: _fieldKeys['sender_email'],
+            error: _errors['sender_email'],
+            onChanged: () => _onFieldChanged('sender_email'),
+            label: "Sender's email",
+            controller: _senderEmail,
+            helper: 'For the booking receipt.',
+            keyboardType: TextInputType.emailAddress,
+            formatters: [LengthLimitingTextInputFormatter(254)],
+            focusNode: _emailFocus,
+          )
+        else
+          AddEmailButton(onPressed: _addEmail),
+      ],
+    );
   }
 
   Widget _buildReceiverSection() {
-    return FormSection(title: 'Receiver', children: [
-      BookingField(
-        key: _fieldKeys['receiver_name'],
-        error: _errors['receiver_name'],
-        onChanged: () => _onFieldChanged('receiver_name'),
-        label: "Receiver's name",
-        controller: _receiverName,
-        keyboardType: TextInputType.name,
-        capitalization: TextCapitalization.words,
-        formatters: [LengthLimitingTextInputFormatter(100)],
-      ),
-      const SizedBox(height: 16),
-      BookingField(
-        key: _fieldKeys['receiver_phone'],
-        error: _errors['receiver_phone'],
-        onChanged: () => _onFieldChanged('receiver_phone'),
-        label: "Receiver's phone number",
-        controller: _receiverPhone,
-        prefix: '+254',
-        hint: '712 345 678',
-        helper: 'The collection code goes to this number.',
-        keyboardType: TextInputType.phone,
-        formatters: [PhoneInputFormatter()],
-        action: TextInputAction.done,
-      ),
-    ]);
+    return FormSection(
+      title: 'Receiver',
+      children: [
+        BookingField(
+          key: _fieldKeys['receiver_name'],
+          error: _errors['receiver_name'],
+          onChanged: () => _onFieldChanged('receiver_name'),
+          label: "Receiver's name",
+          controller: _receiverName,
+          keyboardType: TextInputType.name,
+          capitalization: TextCapitalization.words,
+          formatters: [LengthLimitingTextInputFormatter(100)],
+        ),
+        const SizedBox(height: 16),
+        BookingField(
+          key: _fieldKeys['receiver_phone'],
+          error: _errors['receiver_phone'],
+          onChanged: () => _onFieldChanged('receiver_phone'),
+          label: "Receiver's phone number",
+          controller: _receiverPhone,
+          prefix: '+254',
+          hint: '712 345 678',
+          helper: 'The collection code goes to this number.',
+          keyboardType: TextInputType.phone,
+          formatters: [PhoneInputFormatter()],
+          action: TextInputAction.done,
+        ),
+      ],
+    );
   }
-
 }

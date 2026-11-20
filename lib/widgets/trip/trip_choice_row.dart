@@ -34,10 +34,7 @@ class TripChoiceRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  label,
-                  style: const TextStyle(fontSize: 13, color: AppColors.grey),
-                ),
+                Text(label, style: const TextStyle(fontSize: 13, color: AppColors.grey)),
                 Text(
                   value ?? 'Not chosen yet',
                   style: TextStyle(
@@ -47,10 +44,7 @@ class TripChoiceRow extends StatelessWidget {
                   ),
                 ),
                 if (note != null)
-                  Text(
-                    note,
-                    style: const TextStyle(fontSize: 13, color: AppColors.grey),
-                  ),
+                  Text(note, style: const TextStyle(fontSize: 13, color: AppColors.grey)),
               ],
             ),
           ),

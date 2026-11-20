@@ -100,10 +100,7 @@ class _ChooseTownScreenState extends State<ChooseTownScreen> {
             style: TextButton.styleFrom(
               foregroundColor: AppColors.link,
               minimumSize: const Size(0, 44),
-              textStyle: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
+              textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
             ),
           ),
           const SizedBox(width: 12),
@@ -111,18 +108,14 @@ class _ChooseTownScreenState extends State<ChooseTownScreen> {
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
-            child: _buildSearch(),
-          ),
+          Padding(padding: const EdgeInsets.fromLTRB(24, 16, 24, 0), child: _buildSearch()),
           Expanded(
             child: FutureBuilder<List<Destination>>(
               future: _destinations,
               builder: (context, snapshot) {
                 return ListView(
                   padding: const EdgeInsets.all(24),
-                  keyboardDismissBehavior:
-                      ScrollViewKeyboardDismissBehavior.onDrag,
+                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                   children: _buildTowns(snapshot),
                 );
               },
@@ -203,5 +196,4 @@ class _ChooseTownScreenState extends State<ChooseTownScreen> {
       const MissingTownNote(),
     ];
   }
-
 }

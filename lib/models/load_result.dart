@@ -45,11 +45,7 @@ class ScannedParcel {
 }
 
 class LoadResult {
-  const LoadResult({
-    required this.outcome,
-    required this.parcel,
-    required this.trip,
-  });
+  const LoadResult({required this.outcome, required this.parcel, required this.trip});
 
   factory LoadResult.fromJson(Map<String, dynamic> json) {
     return LoadResult(

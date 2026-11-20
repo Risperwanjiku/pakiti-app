@@ -26,10 +26,7 @@ class ListHeading extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 2),
-        Text(
-          caption,
-          style: const TextStyle(fontSize: 13, color: AppColors.grey),
-        ),
+        Text(caption, style: const TextStyle(fontSize: 13, color: AppColors.grey)),
       ],
     );
   }

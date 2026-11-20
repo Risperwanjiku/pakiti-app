@@ -65,10 +65,7 @@ class ParcelTile extends StatelessWidget {
                         place,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: AppColors.grey,
-                        ),
+                        style: const TextStyle(fontSize: 14, color: AppColors.grey),
                       ),
                     ),
                     const SizedBox(width: 12),

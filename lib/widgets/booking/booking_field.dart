@@ -67,17 +67,11 @@ class BookingField extends StatelessWidget {
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.white,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 16,
-            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             hintText: hint,
             hintStyle: const TextStyle(color: AppColors.grey),
             prefixIcon: prefix == null ? null : _buildPrefix(prefix),
-            prefixIconConstraints: const BoxConstraints(
-              minWidth: 0,
-              minHeight: 0,
-            ),
+            prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
             helperText: helper,
             helperMaxLines: 2,
             helperStyle: const TextStyle(fontSize: 12, color: AppColors.grey),

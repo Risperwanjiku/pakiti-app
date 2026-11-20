@@ -5,12 +5,15 @@ import 'package:pakiti_app/models/clerk_summary.dart';
 
 void main() {
   test('reads the three counts on home and the recent parcels', () {
-    final summary = ClerkSummary.fromJson(jsonDecode(
-      '{"office":{"office_id":2,"office_name":"Nyeri office","town":"Nyeri"},'
-      '"counts":{"booked":3,"on_the_way":2,"arrived":8},"recent":['
-      '{"tracking_no":"PKT-282420","status":"booked","is_late":false,"direction":"outgoing",'
-      '"other_name":"Paul Kamau","other_town":"Nairobi","last_activity":"2026-11-15T20:24:26+03:00"}]}',
-    ) as Map<String, dynamic>);
+    final summary = ClerkSummary.fromJson(
+      jsonDecode(
+            '{"office":{"office_id":2,"office_name":"Nyeri office","town":"Nyeri"},'
+            '"counts":{"booked":3,"on_the_way":2,"arrived":8},"recent":['
+            '{"tracking_no":"PKT-282420","status":"booked","is_late":false,"direction":"outgoing",'
+            '"other_name":"Paul Kamau","other_town":"Nairobi","last_activity":"2026-11-15T20:24:26+03:00"}]}',
+          )
+          as Map<String, dynamic>,
+    );
 
     expect(summary.town, 'Nyeri');
     expect(summary.booked, 3);

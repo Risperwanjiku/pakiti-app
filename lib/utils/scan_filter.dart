@@ -8,14 +8,18 @@ class ScanFilter {
 
   // the tracking number to act on, or null when there is nothing new
   String? read(Iterable<String?> values, {required DateTime now, bool paused = false}) {
-    final label = values.map((value) => value?.trim() ?? '').where(_labelPattern.hasMatch).firstOrNull;
+    final label = values
+        .map((value) => value?.trim() ?? '')
+        .where(_labelPattern.hasMatch)
+        .firstOrNull;
 
     if (label == null) {
       return null;
     }
 
     final lastSeen = _lastSeen;
-    final stillInView = label == _lastLabel &&
+    final stillInView =
+        label == _lastLabel &&
         lastSeen != null &&
         now.difference(lastSeen) < const Duration(seconds: 2);
 

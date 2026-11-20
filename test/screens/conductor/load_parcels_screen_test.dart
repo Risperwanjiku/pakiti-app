@@ -8,7 +8,9 @@ import '../../support/fakes.dart';
 // through the conductor's tabs, which keep the trip the loading screen shows
 Future<void> openLoading(WidgetTester tester, FakeTripService service) async {
   await tester.pumpWidget(
-    MaterialApp(home: ConductorTabs(user: john, service: service, camera: false)),
+    MaterialApp(
+      home: ConductorTabs(user: john, service: service, camera: false),
+    ),
   );
   await tester.pumpAndSettle();
 }
@@ -25,7 +27,9 @@ void main() {
   testWidgets('shows what is on board and what is still at the office', (tester) async {
     await openLoading(
       tester,
-      FakeTripService(current: loadingTrip(onBoard: ['PKT-461302'], waiting: ['PKT-461388'])),
+      FakeTripService(
+        current: loadingTrip(onBoard: ['PKT-461302'], waiting: ['PKT-461388']),
+      ),
     );
 
     expect(find.text('Loading for Nairobi'), findsOneWidget);
@@ -94,7 +98,13 @@ void main() {
       FakeTripService(
         current: loadingTrip(),
         scans: {
-          'PKT-459730': scanResult('wrong_route', 'PKT-459730', loadingTrip(), from: 'Embu', to: 'Nyeri'),
+          'PKT-459730': scanResult(
+            'wrong_route',
+            'PKT-459730',
+            loadingTrip(),
+            from: 'Embu',
+            to: 'Nyeri',
+          ),
         },
       ),
     );
@@ -151,7 +161,10 @@ void main() {
     await tester.tap(find.text('Depart'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Scan at least one parcel onto the vehicle before you depart.'), findsOneWidget);
+    expect(
+      find.text('Scan at least one parcel onto the vehicle before you depart.'),
+      findsOneWidget,
+    );
     expect(service.calls, isNot(contains('depart 7')));
   });
 
@@ -173,6 +186,9 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(service.calls, contains('depart 7'));
-    expect(find.text('Expected in Nairobi about ${timeWithDay(DateTime(2026, 11, 17, 17, 15))}'), findsOneWidget);
+    expect(
+      find.text('Expected in Nairobi about ${timeWithDay(DateTime(2026, 11, 17, 17, 15))}'),
+      findsOneWidget,
+    );
   });
 }

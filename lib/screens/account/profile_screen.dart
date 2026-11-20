@@ -26,9 +26,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool _loggingOut = false;
 
   Future<void> _changePassword() async {
-    final changed = await Navigator.of(context).push<bool>(
-      MaterialPageRoute(builder: (_) => ChangePasswordScreen(auth: _authService)),
-    );
+    final changed = await Navigator.of(
+      context,
+    ).push<bool>(MaterialPageRoute(builder: (_) => ChangePasswordScreen(auth: _authService)));
 
     if (changed == true && mounted) {
       showMessage(context, 'Password changed.');
@@ -121,10 +121,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ? const SizedBox(
               width: 20,
               height: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2.5,
-                color: AppColors.navy,
-              ),
+              child: CircularProgressIndicator(strokeWidth: 2.5, color: AppColors.navy),
             )
           : const Icon(Icons.logout, size: 22),
       label: Text(_loggingOut ? 'Logging out…' : 'Log out'),

@@ -15,10 +15,7 @@ class ParcelPhotoScreen extends StatelessWidget {
         foregroundColor: Colors.white,
         surfaceTintColor: Colors.black,
         titleSpacing: 4,
-        title: Text(
-          trackingNo,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-        ),
+        title: Text(trackingNo, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
       ),
       // pinch to look closer at the condition of the parcel
       body: InteractiveViewer(

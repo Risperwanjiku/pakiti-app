@@ -19,9 +19,7 @@ class ClerkService {
     final data = await _api.get('/clerk/destinations');
     final destinations = data['destinations'] as List<dynamic>;
 
-    return destinations
-        .map((item) => Destination.fromJson(item as Map<String, dynamic>))
-        .toList();
+    return destinations.map((item) => Destination.fromJson(item as Map<String, dynamic>)).toList();
   }
 
   Future<ParcelPage> fetchParcels(ParcelFilter filter, {int offset = 0}) async {

@@ -46,13 +46,18 @@ void main() {
     await openParcel(tester, onTheWay());
 
     expect(find.text('On the way'), findsOneWidget);
-    expect(find.text('Expected in Nairobi about ${timeWithDay(DateTime(2026, 11, 12, 20, 30))}'), findsOneWidget);
+    expect(
+      find.text('Expected in Nairobi about ${timeWithDay(DateTime(2026, 11, 12, 20, 30))}'),
+      findsOneWidget,
+    );
     expect(find.text('Left on 12 Nov'), findsOneWidget);
     expect(find.text('3 hrs by road'), findsOneWidget);
     expect(find.text('KDG 117T, conductor John Otieno'), findsOneWidget);
   });
 
-  testWidgets('shows phone numbers the way people say them, each with a call button', (tester) async {
+  testWidgets('shows phone numbers the way people say them, each with a call button', (
+    tester,
+  ) async {
     await openParcel(tester, onTheWay());
 
     expect(find.text('0722 418 305'), findsOneWidget);
@@ -104,12 +109,18 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text("Can't reach the server. Check your connection and try again."), findsOneWidget);
+    expect(
+      find.text("Can't reach the server. Check your connection and try again."),
+      findsOneWidget,
+    );
 
     await tester.tap(find.text('Try again'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Expected in Nairobi about ${timeWithDay(DateTime(2026, 11, 12, 20, 30))}'), findsOneWidget);
+    expect(
+      find.text('Expected in Nairobi about ${timeWithDay(DateTime(2026, 11, 12, 20, 30))}'),
+      findsOneWidget,
+    );
   });
 
   testWidgets('a collected parcel says when it arrived', (tester) async {

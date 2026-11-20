@@ -69,10 +69,7 @@ class AccountCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Phone number',
-                  style: TextStyle(fontSize: 13, color: AppColors.grey),
-                ),
+                const Text('Phone number', style: TextStyle(fontSize: 13, color: AppColors.grey)),
                 Text(
                   localPhone(user.phone),
                   style: const TextStyle(

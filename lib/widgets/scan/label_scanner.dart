@@ -154,15 +154,8 @@ class _LabelScannerState extends State<LabelScanner> {
       child: IconButton(
         tooltip: on ? 'Turn off the torch' : 'Turn on the torch',
         onPressed: controller.toggleTorch,
-        style: IconButton.styleFrom(
-          backgroundColor: _buttonColor,
-          fixedSize: const Size(44, 44),
-        ),
-        icon: Icon(
-          on ? Icons.flashlight_on : Icons.flashlight_off,
-          size: 22,
-          color: Colors.white,
-        ),
+        style: IconButton.styleFrom(backgroundColor: _buttonColor, fixedSize: const Size(44, 44)),
+        icon: Icon(on ? Icons.flashlight_on : Icons.flashlight_off, size: 22, color: Colors.white),
       ),
     );
   }
@@ -183,11 +176,7 @@ class _LabelScannerState extends State<LabelScanner> {
               SizedBox(width: 8),
               Text(
                 'Type the number instead',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white,
-                ),
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white),
               ),
             ],
           ),

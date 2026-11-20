@@ -11,10 +11,7 @@ class DoneTick extends StatelessWidget {
     return Container(
       width: 20,
       height: 20,
-      decoration: const BoxDecoration(
-        color: AppColors.statusCollected,
-        shape: BoxShape.circle,
-      ),
+      decoration: const BoxDecoration(color: AppColors.statusCollected, shape: BoxShape.circle),
       child: const Icon(Icons.check, size: 14, color: Colors.white),
     );
   }

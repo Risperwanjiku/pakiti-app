@@ -146,7 +146,9 @@ void main() {
   testWidgets('a parcel already marked as arrived says so', (tester) async {
     await openScan(
       tester,
-      FakeClerkService(checks: {'PKT-460048': comingIn(verdict: 'arrived', status: 'arrived')}),
+      FakeClerkService(
+        checks: {'PKT-460048': comingIn(verdict: 'arrived', status: 'arrived')},
+      ),
     );
 
     await typeNumber(tester, '460048');

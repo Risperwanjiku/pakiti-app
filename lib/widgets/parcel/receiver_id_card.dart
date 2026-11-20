@@ -18,10 +18,7 @@ class ReceiverIdCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Text(
-            'Receiver',
-            style: TextStyle(fontSize: 12, color: AppColors.grey),
-          ),
+          const Text('Receiver', style: TextStyle(fontSize: 12, color: AppColors.grey)),
           Text(
             booking.receiverName,
             style: const TextStyle(

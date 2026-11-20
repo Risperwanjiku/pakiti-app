@@ -25,7 +25,9 @@ void main() {
   Future<void> showLabel(WidgetTester tester) {
     return tester.pumpWidget(
       MaterialApp(
-        home: Scaffold(body: Center(child: ParcelLabel(parcel: parcel))),
+        home: Scaffold(
+          body: Center(child: ParcelLabel(parcel: parcel)),
+        ),
       ),
     );
   }

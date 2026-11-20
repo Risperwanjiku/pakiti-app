@@ -9,9 +9,7 @@ class ParcelPage {
 
     return ParcelPage(
       total: json['total'] as int,
-      parcels: parcels
-          .map((item) => ParcelCard.fromJson(item as Map<String, dynamic>))
-          .toList(),
+      parcels: parcels.map((item) => ParcelCard.fromJson(item as Map<String, dynamic>)).toList(),
       nextOffset: json['next_offset'] as int?,
     );
   }

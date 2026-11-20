@@ -12,11 +12,7 @@ class ParcelLabel extends StatelessWidget {
   static const width = 464.0;
   static const height = 320.0;
 
-  static const _footerStyle = TextStyle(
-    fontSize: 14,
-    height: 1.4,
-    fontWeight: FontWeight.w600,
-  );
+  static const _footerStyle = TextStyle(fontSize: 14, height: 1.4, fontWeight: FontWeight.w600);
 
   final BookedParcel parcel;
 
@@ -38,11 +34,7 @@ class ParcelLabel extends StatelessWidget {
               children: [
                 const Text(
                   'To',
-                  style: TextStyle(
-                    fontSize: 16,
-                    height: 1.25,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontSize: 16, height: 1.25, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(width: 10),
                 Flexible(
@@ -50,11 +42,7 @@ class ParcelLabel extends StatelessWidget {
                     parcel.to,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 44,
-                      height: 1.1,
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: const TextStyle(fontSize: 44, height: 1.1, fontWeight: FontWeight.w800),
                   ),
                 ),
               ],

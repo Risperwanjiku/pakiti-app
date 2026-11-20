@@ -22,10 +22,7 @@ class TripService {
   }
 
   Future<Trip> startTrip(int routeId, int vehicleId) async {
-    final data = await _api.post('/trips', {
-      'route_id': routeId,
-      'vehicle_id': vehicleId,
-    });
+    final data = await _api.post('/trips', {'route_id': routeId, 'vehicle_id': vehicleId});
 
     return Trip.fromJson(data['trip'] as Map<String, dynamic>);
   }

@@ -186,9 +186,9 @@ class _ParcelsScreenState extends State<ParcelsScreen> {
   }
 
   void _openSearch() {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => SearchScreen(onChanged: _refresh)),
-    );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => SearchScreen(onChanged: _refresh)));
   }
 
   // a parcel handed over on its page leaves the Arrived list, so the list loads again
@@ -201,9 +201,7 @@ class _ParcelsScreenState extends State<ParcelsScreen> {
   }
 
   Future<void> _openBooking() async {
-    await Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const ChooseTownScreen()),
-    );
+    await Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ChooseTownScreen()));
 
     // a new booking waits under Booked until it is loaded
     if (mounted) {
@@ -261,19 +259,14 @@ class _ParcelsScreenState extends State<ParcelsScreen> {
     }
 
     if (_parcels.isEmpty) {
-      return [
-        NoParcelsCard(filter: _filter, officeName: _officeName, onBook: _openBooking),
-      ];
+      return [NoParcelsCard(filter: _filter, officeName: _officeName, onBook: _openBooking)];
     }
 
     return [
       ListHeading(title: parcelCount(_totalCount), caption: _listCaption()),
       const SizedBox(height: 12),
       for (final parcel in _parcels)
-        ParcelTile(
-          parcel: parcel,
-          onTap: () => _openParcel(parcel.trackingNo),
-        ),
+        ParcelTile(parcel: parcel, onTap: () => _openParcel(parcel.trackingNo)),
       if (_loadingMore) const ParcelTilePlaceholder(),
       if (_loadMoreFailed) _buildLoadMoreFailed(),
     ];

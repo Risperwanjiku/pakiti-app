@@ -53,7 +53,9 @@ class _VehicleSheet extends StatelessWidget {
                       title: vehicle.regNumber,
                       note: vehicle.busy
                           ? 'On another trip'
-                          : (vehicle.fleetNumber == null ? null : 'Fleet number ${vehicle.fleetNumber}'),
+                          : (vehicle.fleetNumber == null
+                                ? null
+                                : 'Fleet number ${vehicle.fleetNumber}'),
                       chosen: vehicle.id == chosen?.id,
                       // a vehicle out on another trip can't be picked
                       onTap: vehicle.busy ? null : () => Navigator.of(context).pop(vehicle),

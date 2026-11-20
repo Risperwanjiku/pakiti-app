@@ -37,10 +37,7 @@ class ParcelPeopleCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  role,
-                  style: const TextStyle(fontSize: 12, color: AppColors.grey),
-                ),
+                Text(role, style: const TextStyle(fontSize: 12, color: AppColors.grey)),
                 Text(
                   name,
                   style: const TextStyle(
