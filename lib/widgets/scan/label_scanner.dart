@@ -12,6 +12,7 @@ class LabelScanner extends StatefulWidget {
     required this.onScanned,
     required this.onTypeNumber,
     this.paused = false,
+    this.showHint = true,
     this.height = 256,
     this.frame = 132,
     this.frameTop = 14,
@@ -24,6 +25,9 @@ class LabelScanner extends StatefulWidget {
 
   // true while the last scan is still being dealt with
   final bool paused;
+
+  // false while something else sits where the hint goes, like the card after a parcel is marked as arrived
+  final bool showHint;
 
   final double height;
   final double frame;
@@ -123,7 +127,7 @@ class _LabelScannerState extends State<LabelScanner> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (cameraWorks) ...[
+            if (cameraWorks && widget.showHint) ...[
               const Text(
                 'Fit the QR code inside the frame',
                 textAlign: TextAlign.center,

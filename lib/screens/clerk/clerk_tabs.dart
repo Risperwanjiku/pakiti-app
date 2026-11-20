@@ -5,19 +5,22 @@ import 'package:pakiti_app/models/staff_user.dart';
 import 'package:pakiti_app/screens/account/profile_screen.dart';
 import 'package:pakiti_app/screens/clerk/clerk_home_screen.dart';
 import 'package:pakiti_app/screens/clerk/parcels_screen.dart';
+import 'package:pakiti_app/screens/clerk/scan_screen.dart';
 import 'package:pakiti_app/services/clerk_service.dart';
 import 'package:pakiti_app/theme/app_colors.dart';
-import 'package:pakiti_app/utils/messages.dart';
 
 // The bottom bar and the tab it shows. A tab is built again each time it opens,
 // so the numbers on home and the Parcels list are never out of date.
 class ClerkTabs extends StatefulWidget {
-  const ClerkTabs({super.key, required this.user, this.service});
+  const ClerkTabs({super.key, required this.user, this.service, this.camera = true});
 
   final StaffUser user;
 
   // tests pass in a fake one
   final ClerkService? service;
+
+  // false in tests, where there is no camera
+  final bool camera;
 
   @override
   State<ClerkTabs> createState() => _ClerkTabsState();
@@ -32,16 +35,6 @@ class _ClerkTabsState extends State<ClerkTabs> {
       _parcelsFilter = filter;
       _tabIndex = 1;
     });
-  }
-
-  void _openTab(int tab) {
-    // Scan comes with hand-off scanning in the next sprint
-    if (tab == 2) {
-      showMessage(context, 'This part is coming next.');
-      return;
-    }
-
-    setState(() => _tabIndex = tab);
   }
 
   @override
@@ -59,6 +52,11 @@ class _ClerkTabsState extends State<ClerkTabs> {
             onFilterChanged: (filter) => _parcelsFilter = filter,
             service: widget.service,
           ),
+        2 => ScanScreen(
+            onSeeAll: () => _showParcels(ParcelFilter.arrived),
+            service: widget.service,
+            camera: widget.camera,
+          ),
         _ => ProfileScreen(user: widget.user),
       },
       bottomNavigationBar: NavigationBar(
@@ -66,7 +64,7 @@ class _ClerkTabsState extends State<ClerkTabs> {
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
         indicatorColor: AppColors.navTint,
-        onDestinationSelected: _openTab,
+        onDestinationSelected: (tab) => setState(() => _tabIndex = tab),
         destinations: const [
           NavigationDestination(
             icon: Icon(Icons.home_outlined),

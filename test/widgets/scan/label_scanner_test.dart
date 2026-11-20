@@ -30,4 +30,22 @@ void main() {
 
     expect(typing, isTrue);
   });
+
+  testWidgets('the hint can make way while Type the number instead stays', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: LabelScanner(
+            camera: false,
+            showHint: false,
+            onScanned: (_) {},
+            onTypeNumber: () {},
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('Fit the QR code inside the frame'), findsNothing);
+    expect(find.text('Type the number instead'), findsOneWidget);
+  });
 }

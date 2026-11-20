@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/painting.dart';
+import 'package:pakiti_app/models/arrival.dart';
 import 'package:pakiti_app/models/clerk_summary.dart';
 import 'package:pakiti_app/models/load_result.dart';
 import 'package:pakiti_app/models/parcel_card.dart';
@@ -89,14 +90,29 @@ const peter = StaffUser(
 
 // gives out its lists 30 at a time, the same way the API does
 class FakeClerkService extends ClerkService {
-  FakeClerkService({this.summary, this.lists = const {}, this.error});
+  FakeClerkService({
+    this.summary,
+    this.lists = const {},
+    this.checks = const {},
+    List<ArrivedParcel> arrivals = const [],
+    this.error,
+  }) : arrivals = [...arrivals];
 
   final ClerkSummary? summary;
   final Map<ParcelFilter, List<ParcelCard>> lists;
+
+  // what each tracking number gives back when it is scanned on the Scan tab
+  final Map<String, ArrivalCheck> checks;
+
+  // the Marked as arrived today list, which grows as parcels are marked
+  final List<ArrivedParcel> arrivals;
   final Object? error;
 
   // each page asked for, like 'arrived 0'
   final asked = <String>[];
+
+  // each scan and arrival, like 'check PKT-460048' or 'arrive PKT-460048'
+  final calls = <String>[];
 
   @override
   Future<ClerkSummary> fetchSummary() async {
@@ -124,6 +140,61 @@ class FakeClerkService extends ClerkService {
       parcels: page,
       nextOffset: next < all.length ? next : null,
     );
+  }
+
+  @override
+  Future<ArrivalCheck> checkArrival(String trackingNo) async {
+    calls.add('check $trackingNo');
+
+    if (error != null) {
+      throw error!;
+    }
+
+    final check = checks[trackingNo];
+
+    if (check == null) {
+      throw const ApiException('No parcel with that tracking number.', statusCode: 404);
+    }
+
+    return check;
+  }
+
+  @override
+  Future<ArrivalResult> markArrived(String trackingNo) async {
+    calls.add('arrive $trackingNo');
+
+    if (error != null) {
+      throw error!;
+    }
+
+    final parcel = checks[trackingNo]!.parcel!;
+
+    arrivals.insert(
+      0,
+      ArrivedParcel(
+        trackingNo: trackingNo,
+        from: parcel.from,
+        vehicle: parcel.vehicle,
+        at: DateTime.now(),
+      ),
+    );
+
+    return ArrivalResult(
+      trackingNo: trackingNo,
+      receiverName: parcel.receiverName,
+      arrivals: [...arrivals],
+    );
+  }
+
+  @override
+  Future<List<ArrivedParcel>> fetchArrivals() async {
+    calls.add('arrivals');
+
+    if (error != null) {
+      throw error!;
+    }
+
+    return [...arrivals];
   }
 }
 
@@ -556,6 +627,58 @@ Map<String, Object?> _card(String trackingNo, String status, String direction, S
     'other_town': town,
     'last_activity': '2026-11-12T17:25:00',
   };
+}
+
+// PKT-460048 scanned at Nairobi, on KDG 117T, which left Nyeri at 2:15 pm today
+ArrivalCheck comingIn({String verdict = 'arriving', String status = 'in_transit'}) {
+  final now = DateTime.now();
+
+  return ArrivalCheck.fromJson(_json({
+    'verdict': verdict,
+    'here': 'Nairobi',
+    'parcel': {
+      'tracking_no': 'PKT-460048',
+      'status': status,
+      'from': 'Nyeri',
+      'to': 'Nairobi',
+      'contents': 'Maize flour and beans',
+      'size': 'medium',
+      'receiver': {'name': 'Kevin Maina', 'phone': '+254745902117'},
+      'vehicle': 'KDG 117T',
+      'departed_at': DateTime(now.year, now.month, now.day, 14, 15).toIso8601String(),
+      'arrived_at': null,
+      'collected_at': null,
+    },
+  }));
+}
+
+// a parcel for Nakuru scanned at Nairobi, which only comes with where it is going
+ArrivalCheck forNakuru() {
+  return ArrivalCheck.fromJson(_json({
+    'verdict': 'not_here',
+    'here': 'Nairobi',
+    'parcel': {'tracking_no': 'PKT-461144', 'to': 'Nakuru'},
+  }));
+}
+
+// what was already scanned off at Nairobi today, newest first
+List<ArrivedParcel> arrivedToday() {
+  final now = DateTime.now();
+
+  return [
+    ArrivedParcel(
+      trackingNo: 'PKT-458871',
+      from: 'Nakuru',
+      vehicle: 'KCY 482B',
+      at: DateTime(now.year, now.month, now.day, 11, 40),
+    ),
+    ArrivedParcel(
+      trackingNo: 'PKT-457203',
+      from: 'Thika',
+      vehicle: 'KBZ 309M',
+      at: DateTime(now.year, now.month, now.day, 9, 5),
+    ),
+  ];
 }
 
 // through real JSON and back, so the types are the ones the API gives

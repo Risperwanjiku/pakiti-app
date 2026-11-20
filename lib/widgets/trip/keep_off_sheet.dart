@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:pakiti_app/theme/app_colors.dart';
 import 'package:pakiti_app/widgets/common/pakiti_sheet.dart';
+import 'package:pakiti_app/widgets/common/town_comparison.dart';
 
 // The two towns that don't match, like where the parcel goes and where the vehicle goes.
 class TownMismatch {
@@ -74,7 +75,12 @@ class _KeepOffSheet extends StatelessWidget {
               ),
               if (mismatch != null) ...[
                 const SizedBox(height: 16),
-                _buildComparison(mismatch),
+                TownComparison(
+                  parcelLabel: mismatch.parcelLabel,
+                  parcelTown: mismatch.parcelTown,
+                  otherLabel: mismatch.vehicleLabel,
+                  otherTown: mismatch.vehicleTown,
+                ),
               ],
               const SizedBox(height: 12),
               Text.rich(
@@ -101,53 +107,6 @@ class _KeepOffSheet extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  // the parcel's town in red next to the vehicle's, so the reason shows at a glance
-  Widget _buildComparison(TownMismatch mismatch) {
-    // the two boxes stay the same height when a label runs onto two lines
-    return IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(
-            child: _buildTown(mismatch.parcelLabel, mismatch.parcelTown, wrong: true),
-          ),
-          const SizedBox(width: 8),
-          Expanded(child: _buildTown(mismatch.vehicleLabel, mismatch.vehicleTown)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTown(String label, String town, {bool wrong = false}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        color: wrong ? AppColors.statusLateBg : AppColors.page,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 13,
-              color: wrong ? AppColors.error : AppColors.grey,
-            ),
-          ),
-          Text(
-            town,
-            style: const TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w600,
-              color: AppColors.darkText,
-            ),
-          ),
-        ],
       ),
     );
   }

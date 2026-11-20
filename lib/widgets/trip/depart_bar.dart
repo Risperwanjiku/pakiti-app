@@ -31,23 +31,11 @@ class DepartBar extends StatelessWidget {
       ),
       child: SafeArea(
         top: false,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            FilledButton(
-              onPressed: onDepart,
-              child: departing
-                  ? const BusyLabel('Departing…')
-                  : Text(label),
-            ),
-            const SizedBox(height: 6),
-            const Text(
-              'Each receiver gets an SMS when you depart.',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 13, color: AppColors.grey),
-            ),
-          ],
+        child: FilledButton(
+          onPressed: onDepart,
+          child: departing
+              ? const BusyLabel('Departing…')
+              : Text(label),
         ),
       ),
     );

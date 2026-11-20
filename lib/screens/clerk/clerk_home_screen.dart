@@ -12,6 +12,7 @@ import 'package:pakiti_app/utils/messages.dart';
 import 'package:pakiti_app/widgets/common/empty_list_card.dart';
 import 'package:pakiti_app/widgets/common/load_error_card.dart';
 import 'package:pakiti_app/widgets/common/pakiti_app_bar.dart';
+import 'package:pakiti_app/widgets/common/see_all_heading.dart';
 import 'package:pakiti_app/widgets/parcel/parcel_tile.dart';
 import 'package:pakiti_app/widgets/parcel/today_counts.dart';
 
@@ -206,20 +207,9 @@ class _ClerkHomeScreenState extends State<ClerkHomeScreen> {
       const SizedBox(height: 8),
       TodayCounts(summary: summary, onShowParcels: widget.onShowParcels),
       const SizedBox(height: 14),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          _buildSectionTitle('Recent parcels'),
-          TextButton(
-            onPressed: () => widget.onShowParcels(ParcelFilter.all),
-            style: TextButton.styleFrom(
-              foregroundColor: AppColors.link,
-              minimumSize: const Size(0, 44),
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-            ),
-            child: const Text('See all'),
-          ),
-        ],
+      SeeAllHeading(
+        title: 'Recent parcels',
+        onSeeAll: () => widget.onShowParcels(ParcelFilter.all),
       ),
       const SizedBox(height: 4),
       if (summary == null)

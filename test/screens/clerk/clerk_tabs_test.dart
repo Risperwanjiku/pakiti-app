@@ -6,6 +6,7 @@ import 'package:pakiti_app/models/parcel_status.dart';
 import 'package:pakiti_app/screens/account/profile_screen.dart';
 import 'package:pakiti_app/screens/clerk/clerk_tabs.dart';
 import 'package:pakiti_app/screens/clerk/parcels_screen.dart';
+import 'package:pakiti_app/screens/clerk/scan_screen.dart';
 
 import '../../support/fakes.dart';
 
@@ -24,7 +25,7 @@ FakeClerkService nyeri() {
 
 Future<void> openTabs(WidgetTester tester, FakeClerkService service) async {
   await tester.pumpWidget(
-    MaterialApp(home: ClerkTabs(user: peter, service: service)),
+    MaterialApp(home: ClerkTabs(user: peter, service: service, camera: false)),
   );
   await tester.pumpAndSettle();
 }
@@ -52,14 +53,16 @@ void main() {
     expect(find.text('Sent from or to Nyeri office, newest first'), findsOneWidget);
   });
 
-  testWidgets('Scan says it is coming next', (tester) async {
-    await openTabs(tester, nyeri());
+  testWidgets('Scan opens the scanner and what came in today', (tester) async {
+    final service = nyeri();
+    await openTabs(tester, service);
 
     await tester.tap(find.byIcon(Icons.qr_code_scanner));
-    await tester.pump();
+    await tester.pumpAndSettle();
 
-    expect(find.text('This part is coming next.'), findsOneWidget);
-    expect(find.text('Habari, Peter'), findsOneWidget);
+    expect(find.byType(ScanScreen), findsOneWidget);
+    expect(find.text('Type the number instead'), findsOneWidget);
+    expect(service.calls, ['arrivals']);
   });
 
   testWidgets('Profile shows who is logged in', (tester) async {
